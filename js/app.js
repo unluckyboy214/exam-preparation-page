@@ -8,7 +8,7 @@
    ========================================================= */
 import { getSetting, setSetting } from "./store.js";
 
-export const SITE_NAME = "SSAFY 과목평가 대비";
+export const SITE_NAME = "시험 대비 연습장";
 
 // 사이트 루트 기준 경로 → 실제 주소. 예: siteUrl("pages/solve.html?set=a")
 const ROOT = new URL("../", import.meta.url);

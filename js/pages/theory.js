@@ -4,7 +4,7 @@
    - #단원id 로 바로 그 단원으로 이동 (태그 = 단원 id)
    - 단원 끝 "이 단원 문제 풀기" → 그 태그가 붙은 문제만 모아 풀기
    ========================================================= */
-import { siteUrl } from "../app.js";
+import { siteUrl, SITE_NAME } from "../app.js";
 import { loadSubjects, loadExamList, loadExamSet, loadTheory } from "../data.js";
 import * as store from "../store.js";
 import { escapeHtml, md, mdInline, codeBlock, enableCopyButtons, renderError } from "../render.js";
@@ -96,7 +96,7 @@ async function showSubject() {
   const [subjects, theory, stats] = await Promise.all([loadSubjects(), loadTheory(subjectId), tagStats()]);
   const subject = subjects.find((s) => s.id === subjectId);
   const title = theory.title || (subject && subject.title) || subjectId;
-  document.title = `${title} 이론 · SSAFY 과목평가 대비`;
+  document.title = `${title} 이론 · ${SITE_NAME}`;
   document.querySelector(".page-head h1").textContent = `${title} 이론`;
   document.querySelector(".page-head p").textContent = "단원별 핵심 요약이에요. 단원 끝에서 그 단원 문제만 모아 풀 수 있어요.";
 

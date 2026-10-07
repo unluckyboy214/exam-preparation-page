@@ -9,7 +9,7 @@
                               (문항마다 원래 세트의 기록을 쓴다)
    키보드: ← → 이전/다음, 1~9 보기 선택, B 북마크
    ========================================================= */
-import { siteUrl } from "../app.js";
+import { siteUrl, SITE_NAME } from "../app.js";
 import { loadExamList, loadExamSet, loadTheory } from "../data.js";
 import * as store from "../store.js";
 import { escapeHtml, md, mdInline, codeBlock, enableCopyButtons, renderError } from "../render.js";
@@ -816,7 +816,7 @@ async function main() {
     renderError(headEl, error);
     return;
   }
-  document.title = `${set.meta.title} · ${MODE_LABEL[mode]} · SSAFY 과목평가 대비`;
+  document.title = `${set.meta.title} · ${MODE_LABEL[mode]} · ${SITE_NAME}`;
   enableCopyButtons();
   bindEvents();
 
