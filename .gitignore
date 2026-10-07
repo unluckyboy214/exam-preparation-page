@@ -1,0 +1,12 @@
+# 저작권 · 개인 자료
+private/
+*.pdf
+*.pptx
+*.ppt
+*.hwp
+*.hwpx
+# 로컬 환경
+.vscode/
+.DS_Store
+Thumbs.db
+node_modules/
