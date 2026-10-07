@@ -17,7 +17,7 @@
 - [x] M4 시험 모드: 타이머, 제출·결과, 오답만 다시 풀기
 - [x] M5 개인 페이지: 진행률, 오답 노트, 태그 분석, 내보내기/가져오기
 - [x] M6 이론: 이론 JSON 렌더링, 단원 → 문제 연결
-- [ ] M7 배포: GitHub Pages
+- [x] M7 배포: GitHub Pages
 
 ## 완료 기록
 
@@ -31,3 +31,4 @@
 | 2026-10-08 | Claude Code | M4 시험 모드·오답만 다시 풀기 완료 | `js/quiz.js`(새 파일), `js/pages/solve.js`(모드별로 다시 씀), `js/store.js`, `css/style.css` | 채점·집계는 `quiz.js`(`scoreExam`, `summarize`(유형별·태그별, 약한 순), `formatScore`). `store.js`에 `examSessions`(제출 전 상태, 새로고침해도 이어짐), `addResult`/`getResult`/`updateResult`, `markWrong` 추가. 결과 기록: `{score,total,mode,at,detail:{qid:0~1},pending,usedSec,auto}` — M5 태그 분석에 `detail` 사용 가능. 결과 화면 주소 `&result=<at>`. 시험 제출 시 답한 문항은 연습 기록에도 저장, 안 푼 문항은 오답 노트에 들어감. 오답만 풀기는 "복습 완료"가 아닌 오답 노트 문항만, 열 때 오답 기록을 비우고 다시 풀게 함 |
 | 2026-10-08 | Claude Code | M5 개인 페이지 + 홈 화면 완료 | `pages/my.html`, `js/pages/my.js`, `index.html`, `js/pages/home.js`, `js/store.js`, `css/style.css` | `store.js`: `setReviewed`/`removeWrong`/`exportData`/`parseImport`/`replaceAll`/`resetAll`/`doneCount` 추가, `normalize`가 모양이 틀린 필드를 기본값으로 바꿈(가져오기 대비). 가져오기는 합치지 않고 **통째로 바꿈**. 단원별 정답률은 문항마다 최근 기록 기준. 홈: 이어서 풀기(진행 중 시험 포함), 오늘의 복습, 과목 카드. 이론 링크는 `pages/theory.html?subject=...#태그` 형식(M6에서 단원 id로 앵커를 만들어야 함) |
 | 2026-10-08 | Claude Code | M6 이론 완료 | `data/theory/frontend.json`(17단원 본문 직접 작성), `pages/theory.html`, `js/pages/theory.js`, `js/pages/solve.js`(단원 모드), `js/data.js`, `css/style.css` | 이론 본문은 강의 자료를 옮기지 않고 새로 씀. 단원 섹션 id = 태그라서 `theory.html?subject=frontend#태그`로 바로 이동. 단원 모드: `solve.html?subject=..&tag=..` → 과목의 모든 세트에서 태그 문항을 모아 연습 모드로, 기록은 문항의 원래 세트에 저장(`sidOf(q)`). `loadTheory`는 `private/theory/<과목>.json`이 있으면 단원을 뒤에 붙임(로컬 전용 표시). `private/theory/frontend_summary.md`는 화면에서 쓰지 않음 |
+| 2026-10-08 | Claude Code | M7 배포 완료 | (코드 변경 없음) `origin` 연결, `main` 브랜치 push | 주소: https://unluckyboy214.github.io/exam-preparation-page/ — Pages 설정은 `main` / root (legacy 빌드, 첫 배포 약 6분). 배포 주소에서 페이지·JS·데이터 21개 200, `private/` 404, 풀이·시험·이론·단원 문제·내 기록 동작 확인. push 전에는 `node scripts/check-public.js` 필수 |
