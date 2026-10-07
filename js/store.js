@@ -14,6 +14,7 @@ function emptyData() {
     wrong: {},
     bookmarks: [],
     lastVisit: null,
+    examSessions: {}, // 제출 전 시험 진행 상태 (세트별)
     settings: {},
   };
 }
@@ -131,5 +132,52 @@ export function toggleBookmark(key) {
 export function setLastVisit(setId, qid) {
   update((data) => {
     data.lastVisit = { set: setId, q: qid };
+  });
+}
+
+// 답하지 않은 문항 등 답안 기록 없이 오답 노트에만 넣을 때
+export function markWrong(setId, qid) {
+  update((data) => {
+    data.wrong[qKey(setId, qid)] = { reviewed: false };
+  });
+}
+
+/* ---------- 시험 모드 ----------
+   진행 상태: { startedAt, deadline, responses: { qid: { picked } | { text } } }
+   새로고침하거나 창을 닫아도 이어서 풀 수 있게 저장한다 */
+export function getExamSession(setId) {
+  return load().examSessions[setId] || null;
+}
+
+export function saveExamSession(setId, session) {
+  update((data) => {
+    data.examSessions[setId] = session;
+  });
+}
+
+export function clearExamSession(setId) {
+  update((data) => {
+    delete data.examSessions[setId];
+  });
+}
+
+/* ---------- 점수 기록 ----------
+   { score, total, mode, at, detail: { qid: 0~1 }, pending: [서술형 id], usedSec, auto } */
+export function addResult(setId, result) {
+  update((data) => {
+    data.results[setId] = data.results[setId] || [];
+    data.results[setId].push(result);
+  });
+}
+
+export function getResult(setId, at) {
+  return (load().results[setId] || []).find((r) => r.at === at) || null;
+}
+
+// at 으로 찾은 결과를 fn 으로 고친다 (서술형 채점 반영 등)
+export function updateResult(setId, at, fn) {
+  update((data) => {
+    const r = (data.results[setId] || []).find((x) => x.at === at);
+    if (r) fn(r);
   });
 }
