@@ -6,15 +6,18 @@
     <title>문제 풀기 · SSAFY 과목평가 대비</title>
     <link rel="stylesheet" href="../css/style.css" />
     <script type="module" src="../js/app.js"></script>
+    <script type="module" src="../js/pages/solve.js"></script>
   </head>
   <body data-page="solve">
     <header id="topbar" class="topbar"></header>
-    <main class="container">
-      <div class="page-head">
-        <h1>문제 풀기</h1>
-        <p>연습 모드와 시험 모드로 풀 수 있어요.</p>
+    <main class="container solve">
+      <div id="solve-head">
+        <p class="empty">문제를 불러오는 중이에요…</p>
       </div>
-      <div class="empty">문제 풀기 화면은 준비 중이에요.</div>
+      <div class="solve-layout">
+        <section id="qcard" class="qcard" aria-label="문항"></section>
+        <aside id="qpanel" class="qpanel" aria-label="문항 번호"></aside>
+      </div>
     </main>
   </body>
 </html>
