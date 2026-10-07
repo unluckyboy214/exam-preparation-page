@@ -6,15 +6,18 @@
     <title>이론 · SSAFY 과목평가 대비</title>
     <link rel="stylesheet" href="../css/style.css" />
     <script type="module" src="../js/app.js"></script>
+    <script type="module" src="../js/pages/theory.js"></script>
   </head>
   <body data-page="theory">
     <header id="topbar" class="topbar"></header>
-    <main class="container">
+    <main class="container wide">
       <div class="page-head">
         <h1>이론</h1>
-        <p>과목별 핵심 요약을 단원별로 볼 수 있어요.</p>
+        <p>과목을 골라 단원별 핵심 요약을 보세요.</p>
       </div>
-      <div class="empty">이론 요약은 준비 중이에요.</div>
+      <div id="theory-root">
+        <p class="empty">불러오는 중이에요…</p>
+      </div>
     </main>
   </body>
 </html>

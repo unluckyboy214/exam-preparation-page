@@ -5,10 +5,12 @@
    - wrong    : 오답만 다시 풀기. 오답 노트에서 "복습 완료"가 아닌 문항만, 연습 모드 방식으로
    - exam     : 시험 모드. 타이머, 해설 숨김, 제출하면 한꺼번에 채점 → 결과 화면
                 (&result=시각 → 그 시험의 결과 화면)
+   ?subject=과목&tag=단원id : 단원 모드. 그 태그가 붙은 문항을 모든 세트에서 모아 연습 모드로
+                              (문항마다 원래 세트의 기록을 쓴다)
    키보드: ← → 이전/다음, 1~9 보기 선택, B 북마크
    ========================================================= */
 import { siteUrl } from "../app.js";
-import { loadExamSet, loadTheory } from "../data.js";
+import { loadExamList, loadExamSet, loadTheory } from "../data.js";
 import * as store from "../store.js";
 import { escapeHtml, md, mdInline, codeBlock, enableCopyButtons, renderError } from "../render.js";
 import {
@@ -27,14 +29,18 @@ const MODE_LABEL = { practice: "연습 모드", exam: "시험 모드", wrong: "�
 
 const params = new URLSearchParams(location.search);
 const setId = params.get("set");
-const mode = MODES.includes(params.get("mode")) ? params.get("mode") : "practice";
+const tag = params.get("tag");
+const tagMode = !setId && !!tag;
+const mode = !tagMode && MODES.includes(params.get("mode")) ? params.get("mode") : "practice";
 
 const headEl = document.getElementById("solve-head");
 const layoutEl = document.querySelector(".solve-layout");
 const panelEl = document.getElementById("qpanel");
 const cardEl = document.getElementById("qcard");
 
-let set; // { meta, questions, entry }
+let set; // { meta, questions, entry }  (단원 모드에서는 여러 세트의 문항을 모은 것)
+const qSet = new WeakMap(); // 문항 → 원래 세트 id (단원 모드)
+const sidOf = (q) => qSet.get(q) || setId;
 let list = []; // 이번 화면에서 푸는 문항 [{ q, no }]  (no: 세트 안 원래 번호)
 let current = 0; // list 안의 위치
 let view = "solve"; // solve | intro | result
@@ -44,6 +50,8 @@ let pendingMulti = []; // 연습 모드 복수 선택: 아직 제출하지 않�
 
 const isExam = () => mode === "exam";
 const solveUrl = (m, extra = "") => siteUrl(`pages/solve.html?set=${encodeURIComponent(setId)}&mode=${m}${extra}`);
+const theoryUrl = () =>
+  siteUrl(`pages/theory.html?subject=${encodeURIComponent(params.get("subject") || "")}#${encodeURIComponent(tag)}`);
 const STATUS_LABEL = { todo: "안 풂", correct: "정답", wrong: "오답", draft: "작성 중", answered: "답함" };
 
 /* =========================================================
@@ -51,8 +59,8 @@ const STATUS_LABEL = { todo: "안 풂", correct: "정답", wrong: "오답", draf
    ========================================================= */
 // 연습·오답 모드: 저장된 답안 기록
 function recordOf(q, data = store.load()) {
-  if (q.type === "essay") return (data.essays[setId] || {})[q.id] || null;
-  return (data.answers[setId] || {})[q.id] || null;
+  if (q.type === "essay") return (data.essays[sidOf(q)] || {})[q.id] || null;
+  return (data.answers[sidOf(q)] || {})[q.id] || null;
 }
 
 // 시험 모드: 아직 제출 전인 응답
@@ -97,11 +105,15 @@ function renderHead(data) {
   }
   headEl.innerHTML = `
     <div class="page-head solve-title">
-      <p class="eyebrow"><a href="${siteUrl("pages/exams.html")}">문제 목록</a> · ${MODE_LABEL[mode]}</p>
+      <p class="eyebrow">${
+        tagMode
+          ? `<a href="${theoryUrl()}">이론으로 돌아가기</a> · 단원 문제`
+          : `<a href="${siteUrl("pages/exams.html")}">문제 목록</a> · ${MODE_LABEL[mode]}`
+      }</p>
       <h1>${escapeHtml(set.meta.title)}</h1>
       ${status}
     </div>
-    ${modeTabs()}
+    ${tagMode ? "" : modeTabs()}
     ${view === "solve" && isExam() ? examBar(data) : ""}`;
   if (view === "solve" && isExam()) updateTimer({ canSubmit: false });
 }
@@ -113,7 +125,7 @@ function renderPanel(data) {
   const buttons = list
     .map(({ q, no }, i) => {
       const status = statusOf(q, data);
-      const marked = data.bookmarks.includes(store.qKey(setId, q.id));
+      const marked = data.bookmarks.includes(store.qKey(sidOf(q), q.id));
       const label = `${no}번 ${TYPE_LABEL[q.type]}, ${STATUS_LABEL[status]}${marked ? ", 북마크" : ""}`;
       return `<button type="button" class="qnum is-${status}${marked ? " is-marked" : ""}" data-go="${i}"
         aria-label="${escapeHtml(label)}" ${i === current ? 'aria-current="true"' : ""}>${no}</button>`;
@@ -128,7 +140,7 @@ function renderPanel(data) {
   const extra = isExam()
     ? '<button type="button" class="btn small" data-action="quit-exam">시험 그만두기</button>'
     : mode === "practice"
-      ? '<button type="button" class="btn small" data-action="reset">이 세트 풀이 지우기</button>'
+      ? `<button type="button" class="btn small" data-action="reset">${tagMode ? "이 단원 풀이 지우기" : "이 세트 풀이 지우기"}</button>`
       : "";
 
   panelEl.innerHTML = `
@@ -261,14 +273,16 @@ function examArea(q, resp) {
 function renderCard({ focus } = {}) {
   const { q, no } = list[current];
   const data = store.load();
-  const marked = data.bookmarks.includes(store.qKey(setId, q.id));
+  const marked = data.bookmarks.includes(store.qKey(sidOf(q), q.id));
   const last = current === list.length - 1;
 
   let nextBtn = '<button type="button" class="btn primary" data-action="next">다음 →</button>';
   if (last) {
     nextBtn = isExam()
       ? '<button type="button" class="btn primary" data-action="submit-exam">제출하기</button>'
-      : `<a class="btn" href="${siteUrl("pages/exams.html")}">목록으로</a>`;
+      : tagMode
+        ? `<a class="btn" href="${theoryUrl()}">이론으로</a>`
+        : `<a class="btn" href="${siteUrl("pages/exams.html")}">목록으로</a>`;
   }
 
   cardEl.innerHTML = `
@@ -312,9 +326,9 @@ function go(index) {
   current = index;
   pendingMulti = [];
   const q = list[current].q;
-  if (!isExam()) store.setLastVisit(setId, q.id);
+  if (!isExam()) store.setLastVisit(sidOf(q), q.id);
   const p = new URLSearchParams(location.search);
-  p.set("q", q.id);
+  p.set("q", tagMode ? store.qKey(sidOf(q), q.id) : q.id);
   history.replaceState(null, "", `?${p}`);
   renderAll({ focus: "title" });
   if (cardEl.getBoundingClientRect().top < 0) cardEl.scrollIntoView({ block: "start" });
@@ -350,7 +364,7 @@ function pick(i) {
 
   if (recordOf(q)) return; // 이미 답함 → "다시 풀기"로만 바꿀 수 있음
   if (q.type === "mc") {
-    store.saveAnswer(setId, q.id, { picked: i, correct: i === q.answer });
+    store.saveAnswer(sidOf(q), q.id, { picked: i, correct: i === q.answer });
     renderAll({ focus: "feedback" });
   } else {
     pendingMulti = pendingMulti.includes(i) ? pendingMulti.filter((v) => v !== i) : [...pendingMulti, i];
@@ -371,7 +385,7 @@ function saveText() {
   const input = document.getElementById("essay-input") || (isExam() && document.getElementById("short-input"));
   if (!q || !input) return;
   if (isExam()) setResponse(q.id, input.value.trim() ? { text: input.value } : null);
-  else store.saveEssay(setId, q.id, { text: input.value });
+  else store.saveEssay(sidOf(q), q.id, { text: input.value });
 }
 
 /* =========================================================
@@ -446,11 +460,11 @@ function submitExam({ auto = false } = {}) {
     const resp = session.responses[q.id];
     if (q.type === "essay") {
       if (hasResponse(q, resp)) {
-        store.saveEssay(setId, q.id, { text: resp.text, revealed: true, graded: false, checks: q.points.map(() => false) });
-      } else store.markWrong(setId, q.id);
+        store.saveEssay(sidOf(q), q.id, { text: resp.text, revealed: true, graded: false, checks: q.points.map(() => false) });
+      } else store.markWrong(sidOf(q), q.id);
     } else if (hasResponse(q, resp)) {
-      store.saveAnswer(setId, q.id, { ...resp, correct: gradeResponse(q, resp) });
-    } else store.markWrong(setId, q.id);
+      store.saveAnswer(sidOf(q), q.id, { ...resp, correct: gradeResponse(q, resp) });
+    } else store.markWrong(sidOf(q), q.id);
   }
 
   const at = Date.now();
@@ -563,7 +577,7 @@ function showResult(at, { auto = false } = {}) {
 
   const pendingHtml = pending
     .map((q) => {
-      const essay = (store.load().essays[setId] || {})[q.id] || { text: "", checks: [] };
+      const essay = (store.load().essays[sidOf(q)] || {})[q.id] || { text: "", checks: [] };
       const no = questions.indexOf(q) + 1;
       return `
       <article class="card pending-essay" data-essay="${escapeHtml(q.id)}">
@@ -645,30 +659,31 @@ function handleAction(action, btn) {
       return go(current + 1);
     case "bookmark":
       if (view !== "solve") return;
-      store.toggleBookmark(store.qKey(setId, q.id));
+      store.toggleBookmark(store.qKey(sidOf(q), q.id));
       return renderAll({ focus: ".bookmark" });
     case "retry":
-      store.clearAnswer(setId, q.id);
+      store.clearAnswer(sidOf(q), q.id);
       pendingMulti = [];
       return renderAll({ focus: ".option, #short-input, #essay-input" });
     case "submit-multi":
-      store.saveAnswer(setId, q.id, { picked: [...pendingMulti].sort(), correct: gradeResponse(q, { picked: pendingMulti }) });
+      store.saveAnswer(sidOf(q), q.id, { picked: [...pendingMulti].sort(), correct: gradeResponse(q, { picked: pendingMulti }) });
       pendingMulti = [];
       return renderAll({ focus: "feedback" });
     case "reveal":
       flushText();
-      store.saveEssay(setId, q.id, { revealed: true, checks: q.points.map(() => false) });
+      store.saveEssay(sidOf(q), q.id, { revealed: true, checks: q.points.map(() => false) });
       renderAll();
       return cardEl.querySelector(".model")?.scrollIntoView({ block: "nearest" });
     case "grade":
-      store.saveEssay(setId, q.id, { graded: true });
+      store.saveEssay(sidOf(q), q.id, { graded: true });
       return renderAll({ focus: "feedback" });
     case "regrade":
-      store.saveEssay(setId, q.id, { revealed: false, graded: false, checks: [] });
+      store.saveEssay(sidOf(q), q.id, { revealed: false, graded: false, checks: [] });
       return renderAll({ focus: "#essay-input" });
     case "reset":
-      if (!confirm("이 세트의 풀이 기록을 지울까요? (오답 노트, 북마크, 점수 기록은 남아요)")) return;
-      store.resetSet(setId);
+      if (!confirm(`${tagMode ? "이 단원 문항의" : "이 세트의"} 풀이 기록을 지울까요? (오답 노트, 북마크, 점수 기록은 남아요)`)) return;
+      if (tagMode) list.forEach((item) => store.clearAnswer(sidOf(item.q), item.q.id));
+      else store.resetSet(setId);
       return renderAll();
     case "start-exam":
       return startExam();
@@ -701,7 +716,7 @@ function bindEvents() {
     const { q } = list[current];
     const text = e.target.querySelector("input").value;
     if (!text.trim()) return;
-    store.saveAnswer(setId, q.id, { text: text.trim(), correct: gradeResponse(q, { text }) });
+    store.saveAnswer(sidOf(q), q.id, { text: text.trim(), correct: gradeResponse(q, { text }) });
     renderAll({ focus: "feedback" });
   });
 
@@ -726,7 +741,7 @@ function bindEvents() {
     if (view !== "solve" || !e.target.matches("[data-check]")) return;
     const { q } = list[current];
     const checks = [...cardEl.querySelectorAll("[data-check]")].map((c) => c.checked);
-    store.saveEssay(setId, q.id, { checks });
+    store.saveEssay(sidOf(q), q.id, { checks });
     const data = store.load();
     renderHead(data);
     renderPanel(data);
@@ -760,25 +775,43 @@ function prepareWrongList() {
   const items = set.questions
     .map((q, i) => ({ q, no: i + 1 }))
     .filter(({ q }) => {
-      const w = data.wrong[store.qKey(setId, q.id)];
+      const w = data.wrong[store.qKey(sidOf(q), q.id)];
       return w && !w.reviewed;
     });
   for (const { q } of items) {
     if (statusOf(q, data) !== "wrong") continue;
-    if (q.type === "essay") store.saveEssay(setId, q.id, { revealed: false, graded: false, checks: [] });
-    else store.clearAnswer(setId, q.id);
+    if (q.type === "essay") store.saveEssay(sidOf(q), q.id, { revealed: false, graded: false, checks: [] });
+    else store.clearAnswer(sidOf(q), q.id);
   }
   return items;
 }
 
+// 단원 모드: 과목의 모든 세트에서 태그가 붙은 문항을 모은다
+async function loadTagSet() {
+  const subject = params.get("subject");
+  const entries = (await loadExamList()).filter((e) => !subject || e.subject === subject);
+  const sets = await Promise.all(entries.map((e) => loadExamSet(e.id)));
+  const questions = [];
+  for (const s of sets) {
+    for (const q of s.questions) {
+      if (!(q.tags || []).includes(tag)) continue;
+      qSet.set(q, s.entry.id);
+      questions.push(q);
+    }
+  }
+  const theory = subject ? await loadTheory(subject).catch(() => null) : null;
+  const unit = theory && theory.units.find((u) => u.id === tag);
+  return { meta: { title: `${unit ? unit.title : tag} 문제`, subject }, questions, entry: {} };
+}
+
 async function main() {
-  if (!setId) {
+  if (!setId && !tagMode) {
     headEl.innerHTML = `<div class="page-head"><h1>문제 풀기</h1></div>
       <div class="note"><p>풀 문제 세트를 고르지 않았어요. <a href="${siteUrl("pages/exams.html")}">문제 목록</a>에서 골라 주세요.</p></div>`;
     return;
   }
   try {
-    set = await loadExamSet(setId);
+    set = tagMode ? await loadTagSet() : await loadExamSet(setId);
   } catch (error) {
     renderError(headEl, error);
     return;
@@ -809,6 +842,12 @@ async function main() {
   }
 
   list = mode === "wrong" ? prepareWrongList() : set.questions.map((q, i) => ({ q, no: i + 1 }));
+  if (list.length === 0 && tagMode) {
+    view = "empty";
+    singleView(`<div class="empty"><p>이 단원에 붙은 문제가 아직 없어요.</p>
+      <p><a href="${theoryUrl()}">이론으로 돌아가기</a></p></div>`);
+    return;
+  }
   if (list.length === 0) {
     view = "empty";
     singleView(`<div class="empty">
@@ -820,9 +859,9 @@ async function main() {
   // 시작 문항: ?q= → 이 세트에서 마지막으로 본 문항 → 첫 문항
   const last = store.load().lastVisit;
   const startId = params.get("q") || (last && last.set === setId ? last.q : null);
-  const found = list.findIndex(({ q }) => q.id === startId);
+  const found = list.findIndex(({ q }) => (tagMode ? store.qKey(sidOf(q), q.id) : q.id) === startId);
   current = found >= 0 ? found : 0;
-  store.setLastVisit(setId, list[current].q.id);
+  store.setLastVisit(sidOf(list[current].q), list[current].q.id);
   renderAll();
 }
 

@@ -70,7 +70,15 @@ export async function loadExamSet(setId) {
   return { ...set, entry };
 }
 
-/* ---------- 이론 ---------- */
-export function loadTheory(subject) {
-  return getJson(`data/theory/${subject}.json`, { what: "이론 파일을" });
+/* ---------- 이론 (공개 + private 병합) ---------- */
+// private/theory/<과목>.json 이 있으면 그 단원을 뒤에 붙인다 (isPrivate 표시, 같은 id 는 공개 쪽 우선)
+export async function loadTheory(subject) {
+  const [pub, priv] = await Promise.all([
+    getJson(`data/theory/${subject}.json`, { what: "이론 파일을" }),
+    getJson(`private/theory/${subject}.json`, { optional: true }),
+  ]);
+  if (!priv || !Array.isArray(priv.units)) return pub;
+  const ids = new Set(pub.units.map((u) => u.id));
+  const extra = priv.units.filter((u) => u && u.id && !ids.has(u.id)).map((u) => ({ ...u, isPrivate: true }));
+  return { ...pub, units: [...pub.units, ...extra] };
 }

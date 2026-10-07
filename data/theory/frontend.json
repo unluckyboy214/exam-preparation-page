@@ -5,138 +5,361 @@
     {
       "id": "html-elements",
       "title": "HTML 요소와 태그 구분",
-      "points": [],
-      "body": "",
-      "pitfalls": [],
-      "examples": []
+      "points": [
+        "요소 = 시작 태그 + 내용 + 종료 태그. `img`, `br`, `input`처럼 내용이 없는 **빈 요소**는 종료 태그가 없다",
+        "속성은 시작 태그 안에 `이름=\"값\"` 형태로 쓴다",
+        "**블록**: `div`, `p`, `h1`~`h6`, `ul`, `li`, `section` 등",
+        "**인라인**: `span`, `a`, `strong`, `em`, `img`, `input`, `label` 등"
+      ],
+      "body": "블록 요소는 부모의 가로 폭을 모두 차지하고 항상 새 줄에서 시작한다. `width`, `height`, 위아래 `margin`이 그대로 적용된다.\n\n인라인 요소는 내용만큼만 자리를 차지하고 글자처럼 옆으로 이어진다. `width`, `height`를 줘도 바뀌지 않고, 위아래 `margin`도 줄 간격에 영향을 주지 않는다. 다만 `img`처럼 외부 내용을 보여 주는 요소는 인라인이어도 크기를 지정할 수 있다.\n\n기본 배치 방식은 CSS의 `display`로 바꿀 수 있다. 인라인처럼 옆으로 놓이면서 크기도 주고 싶으면 `display: inline-block`을 쓴다.",
+      "pitfalls": [
+        "`span`이나 `a`에 `width`를 줘도 그대로다 → `display: inline-block` 또는 `block`으로 바꾼다",
+        "`p` 안에는 `div` 같은 블록 요소를 넣을 수 없다 (브라우저가 `p`를 강제로 닫는다)"
+      ],
+      "examples": [
+        {
+          "lang": "html",
+          "src": "<div>블록: 한 줄을 다 차지해요</div>\n<span>인라인1</span><span>인라인2</span>  <!-- 한 줄에 이어짐 -->\n<img src=\"cat.png\" alt=\"고양이\" width=\"100\" />"
+        }
+      ]
     },
     {
       "id": "html-semantic",
       "title": "시맨틱 태그",
-      "points": [],
-      "body": "",
-      "pitfalls": [],
-      "examples": []
+      "points": [
+        "`header`, `nav`, `main`, `article`, `section`, `aside`, `footer`처럼 **내용의 의미**를 나타내는 태그",
+        "생김새는 `div`와 거의 같다. 바뀌는 것은 **의미**뿐이다",
+        "의미가 분명하면 스크린 리더(접근성), 검색 엔진, 코드를 읽는 사람 모두에게 도움이 된다",
+        "`main`은 문서에 하나만, `header`·`footer`는 여러 번 쓸 수 있다 (`article` 안에도 가능)"
+      ],
+      "body": "`div`로만 만든 페이지는 어떤 부분이 메뉴이고 어떤 부분이 본문인지 태그만 봐서는 알 수 없다. 시맨틱 태그를 쓰면 구조가 태그 이름에 드러난다.\n\n`article`은 따로 떼어 내도 의미가 통하는 독립된 글(게시글, 댓글), `section`은 주제별로 묶은 영역, `aside`는 본문과 간접적으로 관련된 내용(사이드바)에 쓴다.",
+      "pitfalls": [
+        "시맨틱 태그를 쓴다고 레이아웃이 자동으로 잡히지 않는다. 배치는 여전히 CSS로 한다",
+        "글자를 굵게 보이려고 `strong`을 쓰는 것이 아니라 **중요하다는 의미**일 때 쓴다 (겉모양만이면 CSS)"
+      ],
+      "examples": [
+        {
+          "lang": "html",
+          "src": "<header>\n  <nav>메뉴</nav>\n</header>\n<main>\n  <article>\n    <h2>글 제목</h2>\n    <p>본문</p>\n  </article>\n  <aside>관련 링크</aside>\n</main>\n<footer>저작권 정보</footer>"
+        }
+      ]
     },
     {
       "id": "html-form",
       "title": "form과 input",
-      "points": [],
-      "body": "",
-      "pitfalls": [],
-      "examples": []
+      "points": [
+        "`form`의 `action`은 데이터를 보낼 주소, `method`는 보내는 방식(`GET` / `POST`)",
+        "`input`의 `name`이 키, 입력값이 값이 되어 `name=value`로 전송된다. **`name`이 없으면 전송되지 않는다**",
+        "`radio`는 **같은 `name`끼리 한 그룹**이 되어 하나만 선택된다. `checkbox`는 여러 개 선택 가능",
+        "`label`의 `for`와 `input`의 `id`를 같게 하면 글자를 눌러도 입력칸이 선택된다"
+      ],
+      "body": "**GET**은 데이터를 주소 뒤에 `?q=검색어&page=2`처럼 붙여 보낸다. 주소창에 보이고 북마크할 수 있으며 길이 제한이 있다. 검색처럼 데이터를 **조회**할 때 쓴다.\n\n**POST**는 데이터를 요청 본문(body)에 담아 보낸다. 주소창에 보이지 않고 큰 데이터도 보낼 수 있어, 글쓰기·로그인처럼 서버의 데이터를 **바꿀** 때 쓴다.\n\n`form` 안의 `button`은 따로 지정하지 않으면 `type=\"submit\"`이라 누르면 폼이 전송된다.",
+      "pitfalls": [
+        "POST라고 안전한 것은 아니다. 본문도 암호화되지 않으며, 보안은 HTTPS가 맡는다",
+        "`id`는 문서에서 하나뿐이어야 하므로 radio 그룹을 묶는 데 쓸 수 없다. 그룹은 `name`으로 묶는다",
+        "폼 안의 일반 버튼은 `type=\"button\"`을 줘야 전송되지 않는다"
+      ],
+      "examples": [
+        {
+          "lang": "html",
+          "src": "<form action=\"/search\" method=\"GET\">\n  <label for=\"q\">검색어</label>\n  <input id=\"q\" name=\"q\" type=\"text\" />\n\n  <input type=\"radio\" name=\"sort\" value=\"new\" id=\"new\" checked />\n  <label for=\"new\">최신순</label>\n  <input type=\"radio\" name=\"sort\" value=\"hot\" id=\"hot\" />\n  <label for=\"hot\">인기순</label>\n\n  <button>검색</button>  <!-- → /search?q=...&sort=new -->\n</form>"
+        }
+      ]
     },
     {
       "id": "css-selector",
       "title": "CSS 선택자",
-      "points": [],
-      "body": "",
-      "pitfalls": [],
-      "examples": []
+      "points": [
+        "기본: 전체 `*`, 요소 `p`, 클래스 `.box`, 아이디 `#main`, 속성 `[type=\"text\"]`",
+        "결합자: 자손 `A B`(공백), 자식 `A > B`, 인접 형제 `A + B`, 일반 형제 `A ~ B`",
+        "여러 선택자에 같은 스타일: `h1, h2`",
+        "가상 클래스 `:hover`, `:first-child`, `:nth-child(2)` / 가상 요소 `::before`, `::after`"
+      ],
+      "body": "**자손**(공백)은 안쪽 어디에 있든 모두 고르고, **자식**(`>`)은 바로 한 단계 아래만 고른다.\n\n**인접 형제**(`+`)는 바로 다음에 오는 형제 **하나**, **일반 형제**(`~`)는 뒤에 오는 형제 **전부**를 고른다. 둘 다 앞쪽 형제는 고르지 않는다.",
+      "pitfalls": [
+        "`div p`와 `div > p`는 다르다. 중첩된 `p`까지 고르는지 확인한다",
+        "`p:first-child`는 \"첫 번째 p\"가 아니라 \"부모의 첫 자식이면서 p인 요소\"다"
+      ],
+      "examples": [
+        {
+          "lang": "css",
+          "src": "/* .list 바로 아래 li 만 */\n.list > li { color: blue; }\n\n/* h2 바로 다음 p 하나 */\nh2 + p { font-weight: bold; }\n\n/* h2 뒤의 모든 형제 p */\nh2 ~ p { color: gray; }"
+        }
+      ]
     },
     {
       "id": "css-specificity",
       "title": "CSS 우선순위",
-      "points": [],
-      "body": "",
-      "pitfalls": [],
-      "examples": []
+      "points": [
+        "`!important` > 인라인 스타일 > 아이디 > 클래스·속성·가상 클래스 > 요소·가상 요소 > 전체 선택자",
+        "명시도(특이성)가 **같을 때만** 나중에 선언된 규칙이 이긴다",
+        "글자 관련 속성(`color`, `font-*`, `line-height`)은 상속되고, 박스 관련 속성(`width`, `margin`, `border`)은 상속되지 않는다",
+        "상속받은 값은 요소에 직접 지정한 스타일보다 항상 약하다"
+      ],
+      "body": "여러 규칙이 같은 요소에 같은 속성을 지정하면 브라우저는 먼저 **중요도**(`!important`), 다음 **명시도**, 마지막으로 **선언 순서**를 비교한다.\n\n명시도는 (아이디 개수, 클래스류 개수, 요소 개수)를 앞자리부터 비교한다고 생각하면 쉽다. 예를 들어 `#nav a`는 (1, 0, 1)이고 `.menu .item a`는 (0, 2, 1)이므로 아이디가 있는 `#nav a`가 이긴다.",
+      "pitfalls": [
+        "파일에서 아래에 썼다고 이기는 것이 아니다. 명시도를 먼저 비교한다",
+        "부모에 `!important`를 줘도 상속된 값은 자식에 직접 지정한 값보다 약하다"
+      ],
+      "examples": [
+        {
+          "lang": "html",
+          "src": "<style>\n  p { color: black; }\n  .text { color: blue; }\n  #msg { color: red; }   /* 아이디가 클래스보다 강함 */\n</style>\n<p id=\"msg\" class=\"text\">빨간색</p>"
+        }
+      ]
     },
     {
       "id": "css-box-model",
       "title": "박스 모델과 마진",
-      "points": [],
-      "body": "",
-      "pitfalls": [],
-      "examples": []
+      "points": [
+        "모든 요소는 안쪽부터 `content` → `padding` → `border` → `margin` 상자로 이루어진다",
+        "기본값 `box-sizing: content-box`에서 `width`는 content 폭만 뜻한다 → 실제 폭 = width + 좌우 padding + 좌우 border",
+        "`box-sizing: border-box`면 `width`에 padding과 border가 포함된다",
+        "위아래로 붙은 블록의 세로 margin은 **더해지지 않고 큰 값 하나만** 남는다 (마진 상쇄)"
+      ],
+      "body": "예를 들어 `width: 200px; padding: 20px; border: 5px solid;`이면 content-box에서는 200 + 20×2 + 5×2 = **250px**을 차지한다. border-box라면 그대로 200px이고 content가 150px로 줄어든다.\n\n마진 상쇄는 **세로 방향**에서만 일어난다. `margin-bottom: 30px`인 요소 아래에 `margin-top: 20px`인 요소가 오면 간격은 50px이 아니라 30px이다. 좌우 margin이나 flex 아이템 사이에서는 일어나지 않는다.",
+      "pitfalls": [
+        "`margin: 10px 20px 30px 40px`은 위 → 오른쪽 → 아래 → 왼쪽(시계 방향) 순서다",
+        "블록을 가로 가운데 두려면 `width`를 정하고 `margin: 0 auto`를 준다"
+      ],
+      "examples": [
+        {
+          "lang": "css",
+          "src": ".a { margin-bottom: 30px; }\n.b { margin-top: 20px; }   /* .a 와 .b 사이 간격은 30px */\n\n* { box-sizing: border-box; }  /* 크기 계산을 쉽게 */"
+        }
+      ]
     },
     {
       "id": "css-flex",
       "title": "Flexbox",
-      "points": [],
-      "body": "",
-      "pitfalls": [],
-      "examples": []
+      "points": [
+        "부모(컨테이너)에 `display: flex`를 주면 바로 아래 자식들이 flex 아이템이 된다",
+        "**주축**은 `flex-direction` 방향(기본 `row` = 가로), **교차축**은 그와 수직인 방향",
+        "`justify-content`: 주축 정렬 / `align-items`: 교차축 정렬",
+        "`flex-wrap: wrap`으로 줄바꿈, `gap`으로 아이템 사이 간격"
+      ],
+      "body": "`justify-content`에는 `flex-start`, `center`, `flex-end`, `space-between`(양 끝 붙이고 사이 균등), `space-around`, `space-evenly`가 있다.\n\n`flex-direction: column`으로 바꾸면 주축이 세로가 된다. 그러면 `justify-content`가 세로 정렬, `align-items`가 가로 정렬을 맡는다.\n\n아이템 쪽 속성 `flex-grow`는 남는 공간을 나눠 갖는 비율이다. `flex: 1`을 준 아이템끼리는 남는 공간을 똑같이 나눈다.",
+      "pitfalls": [
+        "컨테이너 속성(`justify-content`, `align-items`)을 아이템에 주면 효과가 없다",
+        "여러 줄일 때 줄 사이 정렬은 `align-items`가 아니라 `align-content`다"
+      ],
+      "examples": [
+        {
+          "lang": "css",
+          "src": ".container {\n  display: flex;\n  justify-content: space-between; /* 가로: 양 끝 + 사이 균등 */\n  align-items: center;            /* 세로: 가운데 */\n  gap: 8px;\n}\n.container .grow { flex: 1; }"
+        }
+      ]
     },
     {
       "id": "css-position",
       "title": "position",
-      "points": [],
-      "body": "",
-      "pitfalls": [],
-      "examples": []
+      "points": [
+        "`static`(기본): 문서 흐름대로. `top`, `left` 등이 무시된다",
+        "`relative`: 원래 자리를 기준으로 이동. 원래 자리는 비워 둔 채 남는다",
+        "`absolute`: 흐름에서 빠지고, **position이 static이 아닌 가장 가까운 조상** 기준으로 놓인다",
+        "`fixed`: 화면(뷰포트) 기준으로 고정 / `sticky`: 스크롤하다가 지정한 위치에 닿으면 붙는다"
+      ],
+      "body": "`absolute` 요소의 기준을 정하려면 보통 부모에 `position: relative`를 준다. 기준이 될 조상이 없으면 문서 전체를 기준으로 한다.\n\n`sticky`는 `top: 0`처럼 **붙을 위치를 반드시 지정**해야 동작한다. 또 부모 요소 영역 안에서만 붙어 있고, 부모가 화면에서 사라지면 같이 올라간다.\n\n`z-index`는 position이 지정된 요소에서 겹치는 순서를 정한다. 숫자가 클수록 위에 보인다.",
+      "pitfalls": [
+        "`sticky`가 안 붙으면 먼저 `top` 같은 기준값이 있는지 확인한다",
+        "조상에 `overflow: hidden`이나 `auto`가 있으면 sticky가 기대처럼 동작하지 않을 수 있다"
+      ],
+      "examples": [
+        {
+          "lang": "css",
+          "src": ".card { position: relative; }\n.card .badge {\n  position: absolute;  /* .card 기준 */\n  top: 8px;\n  right: 8px;\n}\n.header { position: sticky; top: 0; }"
+        }
+      ]
     },
     {
       "id": "js-types",
       "title": "변수와 자료형",
-      "points": [],
-      "body": "",
-      "pitfalls": [],
-      "examples": []
+      "points": [
+        "`let`: 다시 대입 가능 / `const`: 다시 대입 불가, 선언할 때 값 필수 / `var`: 함수 스코프라 요즘은 쓰지 않는다",
+        "`let`, `const`는 `{ }` 블록 안에서만 유효하다 (블록 스코프)",
+        "원시 타입: `number`, `string`, `boolean`, `undefined`, `null`, `bigint`, `symbol` / 그 밖은 객체(참조 타입)",
+        "falsy 값: `false`, `0`, `-0`, `0n`, `\"\"`, `null`, `undefined`, `NaN`. 나머지는 모두 truthy"
+      ],
+      "body": "`const`로 선언한 객체나 배열도 **내용은 바꿀 수 있다**. 막히는 것은 변수에 다른 값을 다시 대입하는 것뿐이다.\n\n`==`는 타입을 바꿔서 비교하고 `===`는 타입까지 같아야 참이다. 헷갈리지 않게 항상 `===`를 쓴다.\n\n`\"0\"`, `\"false\"`, `[]`, `{}`는 비어 보이지만 **truthy**다.",
+      "pitfalls": [
+        "`typeof null`은 `\"object\"`다 (오래된 버그가 그대로 남은 것)",
+        "`\"5\" + 1`은 `\"51\"`(문자열 이어 붙이기), `\"5\" - 1`은 `4`(숫자로 바뀜)",
+        "`NaN === NaN`은 `false`다. `Number.isNaN()`으로 확인한다"
+      ],
+      "examples": [
+        {
+          "lang": "js",
+          "src": "const user = { name: \"kim\" };\nuser.name = \"lee\";   // 가능 (내용 변경)\n// user = {};        // TypeError (재할당)\n\nif ([]) console.log(\"빈 배열도 truthy\");\nconsole.log(typeof null); // \"object\""
+        }
+      ]
     },
     {
       "id": "js-array-object",
       "title": "배열과 객체",
-      "points": [],
-      "body": "",
-      "pitfalls": [],
-      "examples": []
+      "points": [
+        "객체·배열을 다른 변수에 대입하면 **같은 것을 가리키는 주소**가 복사된다",
+        "스프레드 `[...arr]`, `{ ...obj }`는 **얕은 복사**: 바깥만 새로 만들고 안쪽 객체는 공유한다",
+        "`splice(시작, 개수, ...추가)`는 **원본을 바꾸고** 지운 요소를 배열로 돌려준다. `slice(시작, 끝)`은 원본을 그대로 둔다",
+        "구조 분해: `const [a, , c] = arr;` / `const { name, age: years = 0 } = obj;`"
+      ],
+      "body": "`push`/`pop`은 배열 끝에, `unshift`/`shift`는 배열 앞에 넣고 뺀다. 넷 다 원본을 바꾼다.\n\n`map`은 각 요소를 바꾼 **새 배열**, `filter`는 조건에 맞는 요소만 모은 **새 배열**, `find`는 조건에 맞는 **첫 요소**를 돌려준다. `forEach`는 반복만 하고 `undefined`를 돌려준다.\n\n구조 분해에서 `age: years`는 `age` 값을 `years`라는 이름으로 꺼낸다는 뜻이고, `= 0`은 값이 `undefined`일 때 쓸 기본값이다.",
+      "pitfalls": [
+        "스프레드로 복사한 뒤 안쪽 객체를 고치면 원본도 같이 바뀐다",
+        "`splice`와 `slice`를 헷갈리지 않는다. 원본이 바뀌는 쪽은 `splice`"
+      ],
+      "examples": [
+        {
+          "lang": "js",
+          "src": "const a = { info: { n: 1 } };\nconst b = { ...a };\nb.info.n = 2;\nconsole.log(a.info.n); // 2 (안쪽은 공유)\n\nconst arr = [1, 2, 3, 4];\nconst removed = arr.splice(1, 2);\nconsole.log(arr, removed); // [1, 4] [2, 3]"
+        }
+      ]
     },
     {
       "id": "js-this",
       "title": "this",
-      "points": [],
-      "body": "",
-      "pitfalls": [],
-      "examples": []
+      "points": [
+        "일반 함수의 `this`는 **어떻게 호출했는지**에 따라 실행할 때 정해진다",
+        "`obj.method()`처럼 메서드로 부르면 `this`는 `obj`, 그냥 `fn()`으로 부르면 전역 객체(`window`, strict 모드에서는 `undefined`)",
+        "화살표 함수는 자기 `this`가 없고, **선언된 위치 바깥의 `this`**를 그대로 쓴다",
+        "이벤트 리스너를 일반 함수로 쓰면 `this`는 리스너를 건 요소(`event.currentTarget`)다"
+      ],
+      "body": "`forEach`, `setTimeout` 등에 일반 함수를 콜백으로 넘기면 그 함수는 단순 호출되므로 `this`가 원래 객체를 잃어버린다. 이때 화살표 함수로 바꾸면 바깥 메서드의 `this`를 그대로 쓸 수 있다.\n\n반대로 객체의 메서드 자체를 화살표 함수로 만들면, `this`가 그 객체가 아니라 객체를 만든 바깥(보통 전역)을 가리키게 된다.",
+      "pitfalls": [
+        "객체 메서드를 화살표 함수로 정의하지 않는다",
+        "이벤트 리스너를 화살표 함수로 쓰면 `this`가 요소가 아니다. 이때는 `event.currentTarget`을 쓴다"
+      ],
+      "examples": [
+        {
+          "lang": "js",
+          "src": "const counter = {\n  count: 0,\n  start() {\n    setTimeout(function () {\n      console.log(this.count); // undefined (this = window)\n    });\n    setTimeout(() => {\n      console.log(this.count); // 0 (바깥 start 의 this = counter)\n    });\n  },\n};\ncounter.start();"
+        }
+      ]
     },
     {
       "id": "js-dom",
       "title": "DOM 조작",
-      "points": [],
-      "body": "",
-      "pitfalls": [],
-      "examples": []
+      "points": [
+        "`querySelector(선택자)`는 첫 번째 요소 하나(없으면 `null`), `querySelectorAll`은 모두(NodeList)를 고른다",
+        "만들기: `document.createElement(\"li\")` → 내용·속성 설정 → `부모.append(자식)`으로 붙인다",
+        "`append`는 끝에, `prepend`는 처음에 넣는다. `before`/`after`는 요소의 앞뒤 형제로, `remove()`는 자신을 지운다",
+        "클래스: `classList.add`, `remove`, `toggle`, `contains`"
+      ],
+      "body": "`textContent`는 글자를 **그대로** 넣고, `innerHTML`은 글자를 **HTML로 해석**해서 넣는다. 사용자가 입력한 글을 `innerHTML`에 넣으면 그 안의 스크립트가 실행될 수 있어(XSS) 위험하다.\n\n이미 문서에 있는 요소를 다른 곳에 `append`하면 복사되지 않고 **옮겨진다**.\n\n`classList.toggle(\"on\")`은 클래스가 있으면 빼고 없으면 넣는다. 결과로 지금 클래스가 붙어 있는지를 `true`/`false`로 돌려준다.",
+      "pitfalls": [
+        "`querySelectorAll`의 결과는 배열이 아니다. `forEach`는 되지만 `map`은 없다 → `[...nodes].map()`",
+        "선택한 요소가 `null`인데 속성을 쓰면 오류가 난다. 스크립트가 HTML보다 먼저 실행된 건 아닌지 확인한다"
+      ],
+      "examples": [
+        {
+          "lang": "js",
+          "src": "const list = document.querySelector(\"#list\");\nconst li = document.createElement(\"li\");\nli.textContent = \"새 항목\";\nlist.prepend(li);          // 맨 앞에\n\nli.classList.toggle(\"done\"); // true (붙음)"
+        }
+      ]
     },
     {
       "id": "js-event",
       "title": "이벤트",
-      "points": [],
-      "body": "",
-      "pitfalls": [],
-      "examples": []
+      "points": [
+        "`요소.addEventListener(\"click\", 함수)`로 이벤트에 반응한다. 함수는 **호출하지 않고 이름만** 넘긴다",
+        "`event.target`은 실제로 이벤트가 일어난 요소, `event.currentTarget`은 리스너를 건 요소",
+        "**버블링**: 안쪽 요소에서 일어난 이벤트가 바깥 조상으로 차례로 전달된다. `stopPropagation()`으로 멈춘다",
+        "`preventDefault()`는 브라우저 기본 동작(폼 전송 후 새로고침, 링크 이동)을 막는다"
+      ],
+      "body": "버블링 덕분에 자식마다 리스너를 달지 않고 부모 하나에만 달아서 `event.target`으로 어떤 자식이 눌렸는지 구분할 수 있다. 이를 **이벤트 위임**이라 한다.\n\n`setTimeout(함수, ms)`는 한 번, `setInterval(함수, ms)`는 반복해서 실행하고, 각각 `clearTimeout`, `clearInterval`로 취소한다. 지연을 0으로 줘도 지금 실행 중인 코드가 모두 끝난 뒤에 실행된다.",
+      "pitfalls": [
+        "`addEventListener(\"click\", handle())`처럼 괄호를 붙이면 그 자리에서 바로 실행된다",
+        "`preventDefault()`는 전파를 막지 않고, `stopPropagation()`은 기본 동작을 막지 않는다"
+      ],
+      "examples": [
+        {
+          "lang": "js",
+          "src": "const form = document.querySelector(\"form\");\nform.addEventListener(\"submit\", (event) => {\n  event.preventDefault(); // 새로고침 막기\n  console.log(\"직접 처리\");\n});\n\n// 이벤트 위임\nlist.addEventListener(\"click\", (e) => {\n  if (e.target.matches(\"li\")) e.target.remove();\n});"
+        }
+      ]
     },
     {
       "id": "js-bom",
       "title": "BOM",
-      "points": [],
-      "body": "",
-      "pitfalls": [],
-      "examples": []
+      "points": [
+        "BOM은 브라우저 창을 다루는 객체들. 최상위 `window` 아래에 `location`, `history`, `navigator` 등이 있다",
+        "`location.href`: 전체 주소. 새 주소를 **대입하면 그 페이지로 이동**한다",
+        "`location.search`는 `?` 뒤 쿼리, `location.hash`는 `#` 뒤, `location.pathname`은 경로",
+        "`location.reload()` 새로고침, `location.replace(주소)`는 방문 기록을 남기지 않고 이동"
+      ],
+      "body": "`location.href = \"...\"`로 이동하면 뒤로 가기로 돌아올 수 있지만, `location.replace(\"...\")`는 현재 페이지를 기록에서 바꿔치기해서 돌아올 수 없다.\n\n쿼리 문자열은 `new URLSearchParams(location.search).get(\"키\")`로 편하게 읽는다.\n\n`alert`, `confirm`, `prompt`는 창이 닫힐 때까지 코드 실행을 멈춘다.",
+      "pitfalls": [
+        "`location`은 읽기 전용이 아니다. 값을 대입하면 페이지가 이동한다",
+        "`history.back()`은 브라우저의 뒤로 가기와 같다. 기록이 없으면 아무 일도 없다"
+      ],
+      "examples": [
+        {
+          "lang": "js",
+          "src": "// 주소: /solve.html?set=a&mode=exam#top\nconsole.log(location.search); // \"?set=a&mode=exam\"\nconsole.log(location.hash);   // \"#top\"\n\nconst params = new URLSearchParams(location.search);\nparams.get(\"mode\");           // \"exam\""
+        }
+      ]
     },
     {
       "id": "js-async",
       "title": "비동기와 Promise",
-      "points": [],
-      "body": "",
-      "pitfalls": [],
-      "examples": []
+      "points": [
+        "JavaScript는 한 번에 한 가지 일만 한다(싱글 스레드). 오래 걸리는 일은 비동기로 맡기고 결과는 나중에 받는다",
+        "Promise 상태: `pending`(대기) → `fulfilled`(성공) 또는 `rejected`(실패). **한 번 정해지면 바뀌지 않는다**",
+        "`then`은 새 Promise를 돌려주므로 이어 쓸 수 있고, `then`에서 `return`한 값이 다음 `then`으로 간다",
+        "`async` 함수는 항상 Promise를 돌려주고, 그 안에서 `await`로 결과를 기다린다"
+      ],
+      "body": "비동기 작업이 끝나면 콜백은 대기열(큐)에 들어가고, **지금 실행 중인 코드가 모두 끝나 호출 스택이 비었을 때** 실행된다(이벤트 루프). Promise의 `then` 콜백(마이크로태스크)은 `setTimeout` 콜백보다 먼저 실행된다.\n\n오류는 `then` 체인 끝의 `catch`, 또는 `async` 함수 안의 `try { await ... } catch (e) { }`로 처리한다. `finally`는 성공·실패와 관계없이 실행된다.",
+      "pitfalls": [
+        "`async` 함수의 결과를 `await` 없이 쓰면 값이 아니라 Promise 객체다",
+        "`resolve`가 한 번 호출되면 그 뒤의 `resolve`, `reject`는 무시된다"
+      ],
+      "examples": [
+        {
+          "lang": "js",
+          "src": "console.log(1);\nsetTimeout(() => console.log(2), 0);\nPromise.resolve().then(() => console.log(3));\nconsole.log(4);\n// 출력: 1 4 3 2\n\nasync function getValue() {\n  return 10;\n}\nconst r = getValue(); // Promise\nconst v = await getValue(); // 10 (async 안이나 모듈 최상단에서)"
+        }
+      ]
     },
     {
       "id": "js-fetch",
       "title": "fetch API",
-      "points": [],
-      "body": "",
-      "pitfalls": [],
-      "examples": []
+      "points": [
+        "`fetch(주소, 옵션)`은 Promise를 돌려주고, 성공하면 응답(`Response`) 객체를 준다",
+        "`response.json()`도 Promise다. 한 번 더 `await`(또는 `then`)해야 데이터가 나온다",
+        "JSON을 보낼 때: `method: \"POST\"`, `headers: { \"Content-Type\": \"application/json\" }`, `body: JSON.stringify(data)`",
+        "404·500 같은 HTTP 오류는 reject가 **아니다**. `response.ok`(200~299이면 true)를 확인한다"
+      ],
+      "body": "`fetch`가 reject되는 경우는 네트워크가 끊겼거나 요청 자체를 보낼 수 없을 때(CORS 차단 등)뿐이다. 서버가 오류 상태 코드를 보내도 응답은 받은 것이므로 성공으로 처리된다.\n\n다른 출처(도메인·포트가 다른 곳)의 서버에 요청하면 서버가 허락해야만 결과를 읽을 수 있다. 이를 **CORS** 정책이라 한다.",
+      "pitfalls": [
+        "`body`에 객체를 그대로 넣으면 `\"[object Object]\"`가 전송된다. 반드시 `JSON.stringify`",
+        "`Content-Type`을 빠뜨리면 서버가 JSON으로 읽지 못할 수 있다"
+      ],
+      "examples": [
+        {
+          "lang": "js",
+          "src": "async function createPost(data) {\n  const res = await fetch(\"/api/posts\", {\n    method: \"POST\",\n    headers: { \"Content-Type\": \"application/json\" },\n    body: JSON.stringify(data),\n  });\n  if (!res.ok) throw new Error(\"요청 실패: \" + res.status);\n  return await res.json();\n}"
+        }
+      ]
     },
     {
       "id": "js-storage",
       "title": "Web Storage와 JSON",
-      "points": [],
-      "body": "",
-      "pitfalls": [],
-      "examples": []
+      "points": [
+        "`localStorage`는 브라우저를 닫아도 남고, `sessionStorage`는 탭을 닫으면 사라진다",
+        "둘 다 **출처(도메인)별**로 따로 저장되고, 쿠키와 달리 서버로 자동 전송되지 않는다",
+        "**문자열만** 저장된다. 객체·배열은 `JSON.stringify`로 바꿔 저장하고 `JSON.parse`로 되돌린다",
+        "`setItem(키, 값)`, `getItem(키)`(없으면 `null`), `removeItem(키)`, `clear()`"
+      ],
+      "body": "숫자를 저장해도 꺼내면 문자열이다. `localStorage.setItem(\"n\", 5)` 후 `getItem(\"n\")`은 `\"5\"`다.\n\nJSON은 데이터를 주고받기 위한 글자 형식이다. 키는 반드시 큰따옴표로 감싸고, 함수나 `undefined`는 담을 수 없다.\n\n저장된 값이 없을 때를 대비해 `JSON.parse(localStorage.getItem(\"cart\")) || []`처럼 기본값을 둔다.",
+      "pitfalls": [
+        "객체를 그대로 `setItem`하면 `\"[object Object]\"`라는 글자로 저장된다",
+        "시크릿 모드나 저장 공간이 꽉 찬 경우 저장이 실패할 수 있다. `try/catch`로 감싼다"
+      ],
+      "examples": [
+        {
+          "lang": "js",
+          "src": "const cart = [{ id: 1, qty: 2 }];\nlocalStorage.setItem(\"cart\", JSON.stringify(cart));\n\nconst saved = JSON.parse(localStorage.getItem(\"cart\")) || [];\nconsole.log(saved[0].qty); // 2"
+        }
+      ]
     }
   ]
 }
