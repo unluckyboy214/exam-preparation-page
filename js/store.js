@@ -19,11 +19,19 @@ function emptyData() {
   };
 }
 
-// 빠진 필드를 채워서 항상 같은 모양으로 돌려준다 (구조가 바뀌면 여기서 마이그레이션)
+// 빠진 필드를 채우고, 모양이 다른 필드는 기본값으로 바꿔서 항상 같은 모양으로 돌려준다
+// (구조가 바뀌면 여기서 마이그레이션)
 function normalize(data) {
   const base = emptyData();
-  if (!data || typeof data !== "object") return base;
-  return { ...base, ...data };
+  if (!data || typeof data !== "object" || Array.isArray(data)) return base;
+  for (const key of Object.keys(base)) {
+    const value = data[key];
+    if (value === undefined) continue;
+    if (Array.isArray(base[key]) ? Array.isArray(value) : base[key] === null || (typeof value === "object" && !Array.isArray(value))) {
+      base[key] = value;
+    }
+  }
+  return base;
 }
 
 export function load() {
@@ -180,4 +188,55 @@ export function updateResult(setId, at, fn) {
     const r = (data.results[setId] || []).find((x) => x.at === at);
     if (r) fn(r);
   });
+}
+
+/* ---------- 오답 노트 ---------- */
+export function setReviewed(key, reviewed) {
+  update((data) => {
+    if (data.wrong[key]) data.wrong[key].reviewed = reviewed;
+  });
+}
+
+export function removeWrong(key) {
+  update((data) => {
+    delete data.wrong[key];
+  });
+}
+
+/* ---------- 내보내기 · 가져오기 · 초기화 ---------- */
+const EXPORT_APP = "examsite";
+
+export function exportData() {
+  return { app: EXPORT_APP, version: 1, exportedAt: new Date().toISOString(), data: load() };
+}
+
+// 내보낸 파일 내용을 검사해서 기록 객체로 바꾼다. 형식이 틀리면 Error
+export function parseImport(json) {
+  const obj = typeof json === "string" ? JSON.parse(json) : json;
+  if (!obj || typeof obj !== "object") throw new Error("기록 파일 형식이 아니에요.");
+  const raw = obj.app === EXPORT_APP ? obj.data : obj;
+  const looksLikeRecord = raw && typeof raw === "object" && ["answers", "results", "wrong", "bookmarks"].some((k) => k in raw);
+  if (!looksLikeRecord) throw new Error("이 사이트에서 내보낸 기록 파일이 아니에요.");
+  return normalize(raw);
+}
+
+// 지금 기록을 통째로 바꾼다 (가져오기)
+export function replaceAll(data) {
+  return save(normalize(data));
+}
+
+// 전체 초기화 (테마 같은 설정도 함께 지워진다)
+export function resetAll() {
+  try {
+    localStorage.removeItem(KEY);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+/* ---------- 집계 도우미 ---------- */
+// 세트에서 푼 문항 수 (객관식·주관식 답 + 서술형 기록)
+export function doneCount(data, setId) {
+  return new Set([...Object.keys(data.answers[setId] || {}), ...Object.keys(data.essays[setId] || {})]).size;
 }
