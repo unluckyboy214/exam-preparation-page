@@ -28,10 +28,22 @@ const isStr = (v) => typeof v === "string" && v.trim() !== "";
 const isInt = (v) => Number.isInteger(v);
 const isStrList = (v, min) => Array.isArray(v) && v.length >= min && v.every(isStr);
 
-/* ---------- 기준 정보: 과목 목록, 과목별 이론 단원 id ---------- */
+/* ---------- 기준 정보: 시험(단체)·과목 목록, 과목별 이론 단원 id ---------- */
 const subjects = new Set();
 try {
-  for (const s of readJson(path.join(ROOT, "data/subjects.json")).subjects) subjects.add(s.id);
+  const catalog = readJson(path.join(ROOT, "data/subjects.json"));
+  const groups = new Set();
+  for (const g of catalog.groups || []) {
+    if (!isStr(g.id) || !isStr(g.title)) errors.push("data/subjects.json → groups 의 각 항목에는 id, title 이 있어야 함");
+    else if (groups.has(g.id)) errors.push(`data/subjects.json → 시험(단체) id "${g.id}" 중복`);
+    groups.add(g.id);
+  }
+  for (const s of catalog.subjects || []) {
+    if (!isStr(s.id) || !isStr(s.title)) errors.push("data/subjects.json → subjects 의 각 항목에는 id, title 이 있어야 함");
+    else if (subjects.has(s.id)) errors.push(`data/subjects.json → 과목 id "${s.id}" 중복 (시험이 달라도 과목 id 는 유일해야 함)`);
+    if (!groups.has(s.group)) warnings.push(`data/subjects.json → 과목 "${s.id}" 의 group("${s.group}") 이 groups 에 없음 (사이트에서 "기타"로 묶임)`);
+    subjects.add(s.id);
+  }
 } catch (e) {
   errors.push(`data/subjects.json → 읽을 수 없음 (${e.message})`);
 }

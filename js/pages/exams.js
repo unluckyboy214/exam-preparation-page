@@ -1,10 +1,12 @@
 /* =========================================================
    문제 세트 목록 (pages/exams.html)
+   - 시험(단체) → 과목 → 회차 순서로 제목을 달아 묶어 보여 준다
+   - ?group=ssafy : 시험(단체) 필터
    - ?subject=frontend : 과목 필터
    - ?kind=mock | past : 종류 필터 (예상 문제 / 기출(로컬 전용))
    ========================================================= */
 import { siteUrl } from "../app.js";
-import { loadSubjects, loadExamList } from "../data.js";
+import { loadCatalog, loadExamList } from "../data.js";
 import { load } from "../store.js";
 import { escapeHtml, renderError } from "../render.js";
 
@@ -16,6 +18,7 @@ const listEl = document.getElementById("list");
 
 const params = new URLSearchParams(location.search);
 const state = {
+  group: params.get("group") || "all",
   subject: params.get("subject") || "all",
   kind: params.get("kind") || "all",
 };
@@ -55,7 +58,7 @@ function setCard(set, subjectTitle, record) {
   return `
     <article class="card set-card">
       <p class="set-meta">
-        <span>${escapeHtml(subjectTitle)}</span>
+        ${subjectTitle ? `<span>${escapeHtml(subjectTitle)}</span>` : ""}
         ${set.isPrivate ? '<span class="tag tag-private">로컬 전용</span>' : ""}
         ${kindOf(set) === "past" ? '<span class="tag">기출</span>' : ""}
       </p>
@@ -84,20 +87,32 @@ function chips(name, options, current) {
 
 function syncUrl() {
   const p = new URLSearchParams();
+  if (state.group !== "all") p.set("group", state.group);
   if (state.subject !== "all") p.set("subject", state.subject);
   if (state.kind !== "all") p.set("kind", state.kind);
   const query = p.toString();
   history.replaceState(null, "", query ? `?${query}` : location.pathname);
 }
 
-function render(subjects, sets) {
-  const titles = Object.fromEntries(subjects.map((s) => [s.id, s.title]));
+function render(catalog, sets) {
+  const { groups, subjects } = catalog;
   const hasPast = sets.some((s) => kindOf(s) === "past");
   if (!hasPast) state.kind = "all"; // 기출이 없으면(배포 사이트) 종류 필터를 숨긴다
+  // 과목만 주어지면(?subject=) 그 과목의 시험(단체)을 고른 것으로 본다
+  const picked = subjects.find((s) => s.id === state.subject);
+  if (picked) state.group = picked.group;
+  if (!groups.some((g) => g.id === state.group)) state.group = "all";
+  const groupSubjects = state.group === "all" ? subjects : subjects.filter((s) => s.group === state.group);
+  if (!groupSubjects.some((s) => s.id === state.subject)) state.subject = "all";
 
   filtersEl.innerHTML = `
+    ${
+      groups.length > 1
+        ? `<div class="chips" role="group" aria-label="시험">${chips("group", [["all", "전체 시험"], ...groups.map((g) => [g.id, g.title])], state.group)}</div>`
+        : ""
+    }
     <div class="chips" role="group" aria-label="과목">
-      ${chips("subject", [["all", "전체 과목"], ...subjects.map((s) => [s.id, s.title])], state.subject)}
+      ${chips("subject", [["all", "전체 과목"], ...groupSubjects.map((s) => [s.id, s.title])], state.subject)}
     </div>
     ${
       hasPast
@@ -105,27 +120,52 @@ function render(subjects, sets) {
         : ""
     }`;
 
-  const shown = sets.filter(
-    (s) => (state.subject === "all" || s.subject === state.subject) && (state.kind === "all" || kindOf(s) === state.kind)
-  );
+  const shown = sets.filter((s) => (state.kind === "all" || kindOf(s) === state.kind));
   const record = load();
-  listEl.innerHTML = shown.length
-    ? shown.map((s) => setCard(s, titles[s.subject] || s.subject, record)).join("")
-    : '<p class="empty">조건에 맞는 문제 세트가 없어요.</p>';
+  // 시험(단체) → 과목 → 회차 (sets 는 data.js 에서 이미 이 순서로 정렬돼 있다)
+  const html = groups
+    .filter((g) => state.group === "all" || g.id === state.group)
+    .map((g) => {
+      const blocks = g.subjects
+        .filter((sub) => state.subject === "all" || sub.id === state.subject)
+        .map((sub) => {
+          const mine = shown.filter((s) => s.subject === sub.id);
+          if (!mine.length) return "";
+          return `<div class="subject-block">
+            <h3 class="subject-title">${escapeHtml(sub.title)} <span class="muted small">${mine.length}회차</span></h3>
+            <div class="grid">${mine.map((s) => setCard(s, "", record)).join("")}</div>
+          </div>`;
+        })
+        .join("");
+      return blocks ? `<section class="group-block"><h2 class="group-title">${escapeHtml(g.title)}</h2>${blocks}</section>` : "";
+    })
+    .join("");
+  // 과목 목록에 없는 과목의 세트 (subjects.json 에 빠진 경우)
+  const known = new Set(subjects.map((s) => s.id));
+  const orphans = state.group === "all" && state.subject === "all" ? shown.filter((s) => !known.has(s.subject)) : [];
+  const orphanHtml = orphans.length
+    ? `<section class="group-block"><h2 class="group-title">분류 없음</h2><div class="grid">${orphans.map((s) => setCard(s, s.subject, record)).join("")}</div></section>`
+    : "";
+
+  listEl.innerHTML = html + orphanHtml || '<p class="empty">조건에 맞는 문제 세트가 없어요.</p>';
 }
 
 async function main() {
   try {
-    const [subjects, sets] = await Promise.all([loadSubjects(), loadExamList()]);
-    render(subjects, sets);
+    const [catalog, sets] = await Promise.all([loadCatalog(), loadExamList()]);
+    render(catalog, sets);
 
     filtersEl.addEventListener("click", (e) => {
       const btn = e.target.closest(".chip");
       if (!btn) return;
+      if (btn.dataset.group) {
+        state.group = btn.dataset.group;
+        state.subject = "all"; // 시험을 바꾸면 과목 선택은 풀어 준다
+      }
       if (btn.dataset.subject) state.subject = btn.dataset.subject;
       if (btn.dataset.kind) state.kind = btn.dataset.kind;
+      render(catalog, sets);
       syncUrl();
-      render(subjects, sets);
     });
   } catch (error) {
     renderError(listEl, error);

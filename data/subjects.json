@@ -1,7 +1,15 @@
 {
+  "groups": [
+    {
+      "id": "ssafy",
+      "title": "SSAFY",
+      "description": "SSAFY 과목평가"
+    }
+  ],
   "subjects": [
     {
       "id": "frontend",
+      "group": "ssafy",
       "title": "프론트엔드",
       "description": "HTML · CSS · JavaScript · DOM · 비동기"
     }

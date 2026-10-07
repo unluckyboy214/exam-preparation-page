@@ -20,17 +20,23 @@ const tagUrl = (tag) =>
 async function showSubjects() {
   const subjects = await loadSubjects();
   const counts = await Promise.all(subjects.map((s) => loadTheory(s.id).then((t) => t.units.length).catch(() => 0)));
-  root.innerHTML = `<div class="grid">${subjects
-    .map(
-      (s, i) => `
+  const card = (s, i) => `
       <article class="card">
         <h3>${escapeHtml(s.title)}</h3>
         ${s.description ? `<p class="muted">${escapeHtml(s.description)}</p>` : ""}
         <p>단원 ${counts[i]}개</p>
         <div class="actions"><a class="btn primary" href="${siteUrl(`pages/theory.html?subject=${encodeURIComponent(s.id)}`)}">이론 보기</a></div>
-      </article>`
-    )
-    .join("")}</div>`;
+      </article>`;
+  // 시험(단체)별로 제목을 달아 묶는다 (subjects 는 이미 시험 → 과목 순서)
+  const groups = [];
+  subjects.forEach((s, i) => {
+    let g = groups[groups.length - 1];
+    if (!g || g.id !== s.group) groups.push((g = { id: s.group, title: s.groupTitle, cards: [] }));
+    g.cards.push(card(s, i));
+  });
+  root.innerHTML =
+    groups.map((g) => `<h2 class="group-title">${escapeHtml(g.title)}</h2><div class="grid">${g.cards.join("")}</div>`).join("") ||
+    '<p class="empty">과목이 없어요.</p>';
 }
 
 /* ---------- 태그별 문항 수와 내 정답률 ---------- */

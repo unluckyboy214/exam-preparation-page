@@ -1504,3 +1504,31 @@ kbd {
     margin-bottom: 8px;
   }
 }
+
+/* ---------- 시험(단체) · 과목 묶음 ---------- */
+.group-block + .group-block {
+  margin-top: 40px;
+}
+
+.group-title {
+  margin: 32px 0 12px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--accent);
+  font-size: 20px;
+  letter-spacing: -0.02em;
+}
+
+.group-block > .group-title:first-child,
+#home-root .section > .group-title:first-of-type,
+#theory-root > .group-title:first-child {
+  margin-top: 0;
+}
+
+.subject-block + .subject-block {
+  margin-top: 24px;
+}
+
+.subject-title {
+  margin: 16px 0 10px;
+  font-size: 17px;
+}

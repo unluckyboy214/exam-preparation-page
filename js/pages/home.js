@@ -85,6 +85,19 @@ function subjectCards(subjects, sets) {
     .join("");
 }
 
+// 시험(단체)별로 묶는다. subjects 는 이미 시험 → 과목 순서로 정렬돼 있다
+function subjectSection(subjects, sets) {
+  const groups = [];
+  for (const s of subjects) {
+    let g = groups[groups.length - 1];
+    if (!g || g.id !== s.group) groups.push((g = { id: s.group, title: s.groupTitle, items: [] }));
+    g.items.push(s);
+  }
+  return groups
+    .map((g) => `<h3 class="group-title">${escapeHtml(g.title)}</h3><div class="grid">${subjectCards(g.items, sets)}</div>`)
+    .join("");
+}
+
 async function main() {
   try {
     const [subjects, sets] = await Promise.all([loadSubjects(), loadExamList()]);
@@ -95,8 +108,8 @@ async function main() {
         ${reviewCard(data)}
       </div>
       <section class="section" aria-labelledby="subjects-title">
-        <h2 id="subjects-title">과목</h2>
-        <div class="grid">${subjectCards(subjects, sets)}</div>
+        <h2 id="subjects-title">시험별 과목</h2>
+        ${subjectSection(subjects, sets)}
       </section>`;
   } catch (error) {
     renderError(root, error);

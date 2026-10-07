@@ -35,10 +35,33 @@ function getJson(path, { optional = false, what } = {}) {
   return cache.get(key);
 }
 
-/* ---------- 과목 ---------- */
-export async function loadSubjects() {
+/* ---------- 시험(단체) · 과목 ----------
+   data/subjects.json: { groups: [{ id, title, description }], subjects: [{ id, group, title, description }] }
+   - 시험(단체) 순서 → 그 안의 과목 순서는 파일에 적은 순서를 따른다
+   - group 이 없거나 목록에 없는 과목은 맨 뒤 "기타" 로 묶는다 */
+const OTHER_GROUP = { id: "etc", title: "기타", description: "" };
+
+export async function loadCatalog() {
   const json = await getJson("data/subjects.json", { what: "과목 목록 파일을" });
-  return json.subjects || [];
+  const groups = (json.groups || []).map((g) => ({ ...g, subjects: [] }));
+  const byId = new Map(groups.map((g) => [g.id, g]));
+  let other = null;
+  for (const subject of json.subjects || []) {
+    let group = byId.get(subject.group);
+    if (!group) {
+      other = other || { ...OTHER_GROUP, subjects: [] };
+      group = other;
+    }
+    group.subjects.push({ ...subject, group: group.id, groupTitle: group.title });
+  }
+  if (other) groups.push(other);
+  const filled = groups.filter((g) => g.subjects.length);
+  return { groups: filled, subjects: filled.flatMap((g) => g.subjects) };
+}
+
+// 시험(단체) → 과목 순서대로 늘어놓은 과목 목록 (각 과목에 group, groupTitle 포함)
+export async function loadSubjects() {
+  return (await loadCatalog()).subjects;
 }
 
 /* ---------- 문제 세트 목록 (공개 + private 병합) ---------- */
@@ -59,7 +82,16 @@ export async function loadExamList() {
   };
   add(pub.sets, "data/exams", false);
   if (priv) add(priv.sets, "private/exams", true);
-  return list;
+  return sortSets(list, await loadSubjects().catch(() => []));
+}
+
+// 정렬: 시험(단체) → 과목 → 회차. 회차는 id 의 숫자를 숫자로 비교한다 (mock-2 < mock-10)
+const naturalCompare = new Intl.Collator("ko", { numeric: true }).compare;
+
+export function sortSets(sets, subjects) {
+  const order = new Map(subjects.map((s, i) => [s.id, i]));
+  const rank = (s) => (order.has(s.subject) ? order.get(s.subject) : subjects.length);
+  return [...sets].sort((a, b) => rank(a) - rank(b) || naturalCompare(a.id, b.id));
 }
 
 /* ---------- 문제 세트 하나 ---------- */

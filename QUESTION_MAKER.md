@@ -61,7 +61,7 @@ QUESTION_MAKER.md 를 읽고 그대로 문제 세트를 만들어 줘.
    고칠 파일: 새로 만들 세트 파일들, `data/exams/index.json`(validate가 갱신), 필요하면 `data/subjects.json`, `data/theory/<과목>.json`.
 2. **기준 읽기**
    - `PROJECT_SPEC.md` 6-2(문제 세트 형식), 6-3(이론 형식)
-   - `data/subjects.json` — 과목 id
+   - `data/subjects.json` — 시험(단체)과 과목 id
    - `data/theory/<과목>.json` — **단원 id 목록 = 쓸 수 있는 태그**
    - `data/exams/*.json`, `private/exams/*.json` — 기존 문제(중복을 피하고, 다음 세트 번호를 정한다)
 3. **자료 읽기** — 요청에 적힌 자료를 모두 읽고 **개념 목록**을 만든다. 개념마다 단원 id를 붙인다.
@@ -197,5 +197,8 @@ QUESTION_MAKER.md 를 읽고 그대로 문제 세트를 만들어 줘.
   - id는 `<영역>-<주제>` 형태의 소문자-하이픈으로 쓴다(예: `js-closure`).
   - 이미 있는 단원의 id는 바꾸지 않는다. 사용자 기록과 문제 태그가 이 id를 쓴다.
   - 단원 본문은 자료를 옮기지 않고 직접 쓴다. 이번 작업에서 쓰지 않았다면 비워 두고 보고한다.
-- **새 과목**: `data/subjects.json`에 `{ "id": "<과목>", "title": "<과목 이름>", "description": "<다루는 범위>" }`를 추가하고, 위와 같이 `data/theory/<과목>.json`을 만든다.
+- **새 과목**: `data/subjects.json`의 `subjects`에 `{ "id": "<과목>", "group": "<시험 id>", "title": "<과목 이름>", "description": "<다루는 범위>" }`를 추가하고, 위와 같이 `data/theory/<과목>.json`을 만든다.
+  - 과목 id는 모든 시험을 통틀어 유일해야 한다. 새 시험의 과목은 `adsp-analysis`처럼 시험 id를 앞에 붙인다.
+  - 자료 폴더 이름(`private/source/pdf/<과목>/`)도 이 과목 id와 같게 맞춘다.
+- **새 시험(단체)**: SSAFY가 아닌 시험(ADsP, 정보처리기사 등)이면 `groups`에 `{ "id": "adsp", "title": "ADsP", "description": "데이터분석 준전문가" }`처럼 먼저 추가한다. 화면에는 `groups`에 적은 순서대로 나온다.
 - 이론 파일을 고치기 전에 `PROGRESS.md`에서 그 파일을 맡는다.

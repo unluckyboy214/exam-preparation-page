@@ -69,12 +69,23 @@ function progressSection(data) {
           ${recent ? `<a class="btn" href="${solveUrl(entry.id, "exam")}&result=${recent.at}">최근 결과</a>` : ""}
         </div>
       </article>`;
-    })
-    .join("");
+    });
+  // 시험(단체)별로 제목을 달아 묶는다 (sets 는 이미 시험 → 과목 → 회차 순서)
+  const groups = [];
+  sets.forEach(({ entry }, i) => {
+    const sub = subjects.find((s) => s.id === entry.subject);
+    const title = sub ? sub.groupTitle : "분류 없음";
+    let g = groups[groups.length - 1];
+    if (!g || g.title !== title) groups.push((g = { title, cards: [] }));
+    g.cards.push(cards[i]);
+  });
   return `
     <section class="section" id="progress" aria-labelledby="progress-title">
       <h2 id="progress-title">진행률과 점수</h2>
-      <div class="grid">${cards || '<p class="empty">문제 세트가 없어요.</p>'}</div>
+      ${
+        groups.map((g) => `<h3 class="group-title">${escapeHtml(g.title)}</h3><div class="grid">${g.cards.join("")}</div>`).join("") ||
+        '<p class="empty">문제 세트가 없어요.</p>'
+      }
     </section>`;
 }
 

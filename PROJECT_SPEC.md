@@ -94,7 +94,7 @@
 │  ├─ render.js               # 문제·코드블록 렌더링, 마크다운-lite
 │  └─ pages/                  # 페이지별 스크립트 (home.js, solve.js ...)
 ├─ data/
-│  ├─ subjects.json           # 과목 목록
+│  ├─ subjects.json           # 시험(단체) · 과목 목록 (6-0)
 │  ├─ theory/
 │  │  └─ frontend.json        # 직접 작성한 이론 요약
 │  └─ exams/
@@ -126,7 +126,8 @@
 - 내용은 `data/theory/<과목>.json`(아래 6-3) 에서 읽는다. 원본 자료를 옮긴 요약은 `private/theory/` 로.
 
 ### 5-3. 문제 목록 (`exams.html`)
-- 과목·종류(예상 문제 / 기출(로컬 전용))로 필터.
+- 시험(단체)·과목·종류(예상 문제 / 기출(로컬 전용))로 필터.
+- **시험(단체) → 과목 → 회차** 순서로 제목을 달아 묶어 보여 준다(예: SSAFY › 프론트엔드 › 1회, 2회…). 회차는 세트 id의 숫자 순(`mock-2` < `mock-10`).
 - 세트 카드: 제목, 문항 구성(객관식 n · 주관식 n · 서술형 n), 제한 시간, 내 최고 점수, 진행 상태.
 
 ### 5-4. 문제 풀기 (`solve.html`)
@@ -149,6 +150,23 @@
 - 저장은 localStorage (아래 7). 서버·로그인은 만들지 않는다.
 
 ## 6. 데이터 형식
+
+### 6-0. 시험(단체) · 과목 목록 `data/subjects.json`
+```json
+{
+  "groups": [
+    { "id": "ssafy", "title": "SSAFY", "description": "SSAFY 과목평가" },
+    { "id": "adsp", "title": "ADsP", "description": "데이터분석 준전문가" }
+  ],
+  "subjects": [
+    { "id": "frontend", "group": "ssafy", "title": "프론트엔드", "description": "HTML · CSS · JavaScript" }
+  ]
+}
+```
+- `groups`: 시험이나 단체(SSAFY, ADsP, 정보처리기사 …). 적은 순서대로 화면에 나온다.
+- `subjects`: 과목. `group`으로 어느 시험에 속하는지 정한다. 같은 시험 안에서는 적은 순서대로 나온다.
+- 과목 `id`는 **모든 시험을 통틀어 유일**해야 한다(문제 세트·이론 파일·기록이 과목 id를 쓴다). 새 시험의 과목은 `adsp-analysis`처럼 시험 이름을 앞에 붙인다.
+- `group`이 없거나 `groups`에 없는 과목은 "기타"로 묶인다(`validate.js`가 경고).
 
 ### 6-1. 문제 세트 매니페스트 `data/exams/index.json`
 ```json
@@ -290,7 +308,7 @@
 | 항목 | 기본값 | 바꿀 때 |
 | --- | --- | --- |
 | 사이트 이름 | "시험 대비 연습장" (`js/app.js`의 `SITE_NAME`) | 사용자가 정하면 교체 |
-| 다룰 과목 | 프론트엔드부터 시작, `subjects.json` 에 추가하는 방식으로 확장 | — |
+| 다룰 과목 | 프론트엔드부터 시작, `subjects.json` 에 시험(`groups`)과 과목(`subjects`)을 추가하는 방식으로 확장 | — |
 | 이론 본문 형식 | JSON(6-3) | 긴 글이 많아지면 Markdown 파일 + `marked` CDN으로 전환 |
 | 점수 배점 | 문항당 동일 배점, 서술형은 채점 기준 체크 비율 | 세트 `meta`에 `scoring` 필드 추가 |
 | 여러 기기 동기화 | 없음(내보내기/가져오기로 대체) | 필요해지면 별도 논의 |
