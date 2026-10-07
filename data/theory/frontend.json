@@ -1,0 +1,142 @@
+{
+  "subject": "frontend",
+  "title": "프론트엔드",
+  "units": [
+    {
+      "id": "html-elements",
+      "title": "HTML 요소와 태그 구분",
+      "points": [],
+      "body": "",
+      "pitfalls": [],
+      "examples": []
+    },
+    {
+      "id": "html-semantic",
+      "title": "시맨틱 태그",
+      "points": [],
+      "body": "",
+      "pitfalls": [],
+      "examples": []
+    },
+    {
+      "id": "html-form",
+      "title": "form과 input",
+      "points": [],
+      "body": "",
+      "pitfalls": [],
+      "examples": []
+    },
+    {
+      "id": "css-selector",
+      "title": "CSS 선택자",
+      "points": [],
+      "body": "",
+      "pitfalls": [],
+      "examples": []
+    },
+    {
+      "id": "css-specificity",
+      "title": "CSS 우선순위",
+      "points": [],
+      "body": "",
+      "pitfalls": [],
+      "examples": []
+    },
+    {
+      "id": "css-box-model",
+      "title": "박스 모델과 마진",
+      "points": [],
+      "body": "",
+      "pitfalls": [],
+      "examples": []
+    },
+    {
+      "id": "css-flex",
+      "title": "Flexbox",
+      "points": [],
+      "body": "",
+      "pitfalls": [],
+      "examples": []
+    },
+    {
+      "id": "css-position",
+      "title": "position",
+      "points": [],
+      "body": "",
+      "pitfalls": [],
+      "examples": []
+    },
+    {
+      "id": "js-types",
+      "title": "변수와 자료형",
+      "points": [],
+      "body": "",
+      "pitfalls": [],
+      "examples": []
+    },
+    {
+      "id": "js-array-object",
+      "title": "배열과 객체",
+      "points": [],
+      "body": "",
+      "pitfalls": [],
+      "examples": []
+    },
+    {
+      "id": "js-this",
+      "title": "this",
+      "points": [],
+      "body": "",
+      "pitfalls": [],
+      "examples": []
+    },
+    {
+      "id": "js-dom",
+      "title": "DOM 조작",
+      "points": [],
+      "body": "",
+      "pitfalls": [],
+      "examples": []
+    },
+    {
+      "id": "js-event",
+      "title": "이벤트",
+      "points": [],
+      "body": "",
+      "pitfalls": [],
+      "examples": []
+    },
+    {
+      "id": "js-bom",
+      "title": "BOM",
+      "points": [],
+      "body": "",
+      "pitfalls": [],
+      "examples": []
+    },
+    {
+      "id": "js-async",
+      "title": "비동기와 Promise",
+      "points": [],
+      "body": "",
+      "pitfalls": [],
+      "examples": []
+    },
+    {
+      "id": "js-fetch",
+      "title": "fetch API",
+      "points": [],
+      "body": "",
+      "pitfalls": [],
+      "examples": []
+    },
+    {
+      "id": "js-storage",
+      "title": "Web Storage와 JSON",
+      "points": [],
+      "body": "",
+      "pitfalls": [],
+      "examples": []
+    }
+  ]
+}

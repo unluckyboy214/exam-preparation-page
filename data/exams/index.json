@@ -1,0 +1,19 @@
+{
+  "sets": [
+    {
+      "id": "frontend-mock-1",
+      "file": "frontend-mock-1.json",
+      "subject": "frontend",
+      "title": "프론트엔드 예상 문제 1회",
+      "source": "self-made",
+      "timeLimitMin": 60,
+      "version": 1,
+      "counts": {
+        "mc": 25,
+        "multi": 0,
+        "short": 5,
+        "essay": 2
+      }
+    }
+  ]
+}

@@ -346,6 +346,94 @@ kbd {
   vertical-align: middle;
 }
 
+/* ---------- 필터 칩 ---------- */
+.filters {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  padding: 4px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.chip:hover {
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+.chip[aria-pressed="true"] {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* ---------- 문제 세트 카드 ---------- */
+.set-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.set-card .set-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.set-card .set-status {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 12px;
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+.set-card .actions {
+  margin-top: auto;
+  padding-top: 16px;
+}
+
+.tag-private {
+  background: var(--yellow-soft);
+  color: var(--yellow);
+}
+
+.progress {
+  height: 6px;
+  margin-top: 6px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+
+.progress span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+
+.grid > .empty {
+  grid-column: 1 / -1;
+}
+
 /* ---------- 코드 블록 (render.js 가 만든다) ---------- */
 .code-block {
   margin: 16px 0;

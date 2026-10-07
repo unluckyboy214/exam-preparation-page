@@ -1,0 +1,575 @@
+{
+  "meta": {
+    "id": "frontend-mock-1",
+    "subject": "frontend",
+    "title": "프론트엔드 예상 문제 1회",
+    "source": "self-made",
+    "timeLimitMin": 60,
+    "version": 1
+  },
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mc",
+      "tags": [
+        "html-elements"
+      ],
+      "question": "다음 중 기본 `display` 값이 **인라인(inline)** 인 요소로만 짝지어진 것은?",
+      "options": [
+        "`div`, `span`",
+        "`p`, `img`",
+        "`a`, `strong`",
+        "`h1`, `em`"
+      ],
+      "answer": 2,
+      "explain": "`div`, `p`, `h1`은 블록 요소예요. `a`, `span`, `strong`, `em`, `img`는 인라인 요소입니다. 블록은 한 줄을 통째로 차지하고 새 줄에서 시작하고, 인라인은 글자처럼 내용만큼만 차지하며 옆으로 이어져요."
+    },
+    {
+      "id": "q2",
+      "type": "mc",
+      "tags": [
+        "html-form"
+      ],
+      "question": "`<input>` 요소에 대한 설명으로 **옳은** 것은?",
+      "options": [
+        "`type=\"checkbox\"`는 같은 `name`을 가진 항목 중 하나만 선택할 수 있다.",
+        "`type=\"radio\"`는 같은 `name`을 가진 항목 중 하나만 선택할 수 있다.",
+        "`type` 속성을 생략하면 기본값은 `submit`이다.",
+        "`type=\"password\"`는 입력값을 암호화하여 서버로 전송한다."
+      ],
+      "answer": 1,
+      "explain": "radio는 같은 `name` 그룹에서 **하나만**, checkbox는 **여러 개** 선택할 수 있어요. input의 type 기본값은 `text`예요(`submit`이 기본값인 건 `<button>`). password는 화면에 ●로 가릴 뿐 암호화하지 않아요."
+    },
+    {
+      "id": "q3",
+      "type": "mc",
+      "tags": [
+        "html-semantic"
+      ],
+      "question": "시맨틱 태그에 대한 설명으로 **옳지 않은** 것은?",
+      "options": [
+        "`<main>`: 문서의 핵심 콘텐츠를 나타내며, 화면에 보이는 `main`은 문서에 하나만 둔다.",
+        "`<article>`: 게시글·뉴스 기사처럼 독립적으로 배포하거나 재사용할 수 있는 콘텐츠를 나타낸다.",
+        "`<nav>`: 다른 페이지나 현재 페이지의 다른 부분으로 가는 내비게이션 링크 묶음을 나타낸다.",
+        "`<header>`: 문서 최상단의 제목 영역이므로 한 문서에 한 번만 사용할 수 있다."
+      ],
+      "answer": 3,
+      "explain": "`<header>`는 소개·탐색을 돕는 머리 영역이고, `<article>`이나 `<section>` 안에도 쓸 수 있어서 한 문서에 여러 번 나올 수 있어요. 시맨틱 태그는 겉모습은 `div`와 같지만 의미를 담아 **검색엔진 최적화(SEO), 스크린리더 접근성, 코드 가독성**에 도움을 줘요."
+    },
+    {
+      "id": "q4",
+      "type": "mc",
+      "tags": [
+        "css-selector"
+      ],
+      "question": "다음 CSS를 적용했을 때 **빨간색**이 되는 문단은?",
+      "code": {
+        "lang": "html",
+        "src": "<style>\n  h2 + p { color: red; }\n</style>\n\n<div class=\"box\">\n  <h2>제목</h2>\n  <p>첫째 문단</p>\n  <p>둘째 문단</p>\n</div>"
+      },
+      "options": [
+        "첫째 문단만",
+        "첫째, 둘째 문단 모두",
+        "둘째 문단만",
+        "빨간색이 되는 문단이 없다"
+      ],
+      "answer": 0,
+      "explain": "`A + B`는 **인접 형제 결합자**로, A 바로 다음에 오는 형제 B **하나**만 골라요. A 뒤의 모든 형제 B를 고르려면 일반 형제 결합자 `A ~ B`를 써요. 참고: `.`은 class, `#`은 id, 공백은 자손, `>`는 자식 선택자예요."
+    },
+    {
+      "id": "q5",
+      "type": "mc",
+      "tags": [
+        "css-specificity"
+      ],
+      "question": "다음 코드에서 `Hello`의 최종 글자색은?",
+      "code": {
+        "lang": "html",
+        "src": "<style>\n  p { color: black !important; }\n  #msg { color: red; }\n  .text { color: blue; }\n</style>\n\n<p id=\"msg\" class=\"text\" style=\"color: orange;\">Hello</p>"
+      },
+      "options": [
+        "black",
+        "orange",
+        "red",
+        "blue"
+      ],
+      "answer": 0,
+      "explain": "`!important`는 명시도 계산을 무시하고 가장 먼저 적용돼요. 인라인 스타일(orange)보다도 강해요. `!important`가 없었다면 인라인(orange) > id(red) > class(blue) > 요소 순서로 orange가 됐을 거예요."
+    },
+    {
+      "id": "q6",
+      "type": "mc",
+      "tags": [
+        "css-box-model"
+      ],
+      "question": "다음 요소가 화면에서 차지하는 **border 바깥선까지의 가로 크기**는? (`box-sizing`은 기본값)",
+      "code": {
+        "lang": "css",
+        "src": ".box {\n  width: 200px;\n  padding: 20px;\n  border: 5px solid black;\n  margin: 10px;\n}"
+      },
+      "options": [
+        "200px",
+        "230px",
+        "240px",
+        "250px"
+      ],
+      "answer": 3,
+      "explain": "기본값 `content-box`에서 `width`는 content 영역만 뜻해요. 200 + 좌우 padding 40 + 좌우 border 10 = **250px**. margin은 border 바깥의 여백이라 포함하지 않아요. `box-sizing: border-box`였다면 200px이에요. 박스 모델 순서는 안쪽부터 content → padding → border → margin."
+    },
+    {
+      "id": "q7",
+      "type": "mc",
+      "tags": [
+        "css-box-model"
+      ],
+      "question": "두 블록 요소가 위아래로 놓여 있을 때, `.a`와 `.b` 사이의 실제 간격은?",
+      "code": {
+        "lang": "css",
+        "src": ".a { height: 50px; margin-bottom: 40px; }\n.b { height: 50px; margin-top: 25px; }"
+      },
+      "options": [
+        "15px",
+        "25px",
+        "40px",
+        "65px"
+      ],
+      "answer": 2,
+      "explain": "블록 요소의 **위아래(세로) 마진**이 맞닿으면 둘을 더하지 않고 **큰 값 하나**만 남아요(마진 상쇄, Margin Collapsing). 그래서 40px. 좌우 마진이나 flex 아이템 사이에서는 일어나지 않아요."
+    },
+    {
+      "id": "q8",
+      "type": "mc",
+      "tags": [
+        "css-flex"
+      ],
+      "question": "다음 CSS를 적용했을 때 자식 아이템들은 어떻게 정렬되는가?",
+      "code": {
+        "lang": "css",
+        "src": ".container {\n  display: flex;\n  flex-direction: column;\n  height: 300px;\n  justify-content: center;\n}"
+      },
+      "options": [
+        "세로(수직) 방향 가운데로 정렬된다",
+        "가로(수평) 방향 가운데로 정렬된다",
+        "가로·세로 모두 가운데로 정렬된다",
+        "column에서는 justify-content가 동작하지 않는다"
+      ],
+      "answer": 0,
+      "explain": "`justify-content`는 **주축(main axis)** 정렬이에요. `flex-direction: column`이면 주축이 세로라서 세로 가운데로 모여요. 교차축(이 경우 가로) 정렬은 `align-items`가 맡아요."
+    },
+    {
+      "id": "q9",
+      "type": "mc",
+      "tags": [
+        "css-position"
+      ],
+      "question": "`position: sticky`를 지정했는데 스크롤해도 요소가 붙지 않는다. 가장 먼저 의심할 원인은?",
+      "options": [
+        "`z-index`를 지정하지 않았다",
+        "`display: block`인 요소에 지정했다",
+        "`width`를 지정하지 않았다",
+        "`top`, `bottom`, `left`, `right` 중 어떤 오프셋도 지정하지 않았다"
+      ],
+      "answer": 3,
+      "explain": "sticky는 \"스크롤하다가 `top: 0` 같은 **기준 위치에 닿으면** 고정\"되는 방식이라 오프셋이 반드시 필요해요. 그 밖에 부모에 `overflow: hidden`이 있거나, 부모 높이가 요소만큼밖에 안 되면 붙지 않는 것처럼 보여요(부모 영역 안에서만 붙어 있음)."
+    },
+    {
+      "id": "q10",
+      "type": "mc",
+      "tags": [
+        "js-types"
+      ],
+      "question": "변수 선언 키워드와 자료형에 대한 설명으로 **옳은** 것은?",
+      "options": [
+        "`var`는 블록 스코프를 가진다.",
+        "`const`로 선언한 배열에는 `push()`로 요소를 추가할 수 없다.",
+        "`let`은 재선언할 수 없지만 재할당은 할 수 있다.",
+        "`null`, `undefined`, 배열(Array)은 모두 원시 타입이다."
+      ],
+      "answer": 2,
+      "explain": "`var`는 함수 스코프, `let`/`const`는 블록 스코프예요. `const`는 **재할당**만 막을 뿐, 가리키는 배열·객체의 내용은 바꿀 수 있어서 push가 돼요. 원시 타입은 Number, String, Boolean, null, undefined, Symbol, BigInt 7가지이고 배열은 객체(참조 타입)예요."
+    },
+    {
+      "id": "q11",
+      "type": "mc",
+      "tags": [
+        "js-types"
+      ],
+      "question": "다음 코드의 출력 결과는?",
+      "code": {
+        "lang": "js",
+        "src": "const values = [0, \"0\", [], {}, null, NaN, \" \", -1, \"\"];\nlet count = 0;\nvalues.forEach((v) => {\n  if (v) count++;\n});\nconsole.log(count);"
+      },
+      "options": [
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "answer": 1,
+      "explain": "Falsy는 `false, 0, -0, 0n, \"\", null, undefined, NaN`뿐이에요. 여기서 truthy는 `\"0\"`(글자가 있는 문자열), `[]`, `{}`(빈 배열·객체도 truthy), `\" \"`(공백 문자열), `-1` → **5개**."
+    },
+    {
+      "id": "q12",
+      "type": "mc",
+      "tags": [
+        "js-array-object"
+      ],
+      "question": "다음 코드의 출력 결과는?",
+      "code": {
+        "lang": "js",
+        "src": "const a = { name: \"kim\", info: { age: 20 } };\nconst b = { ...a };\n\nb.name = \"lee\";\nb.info.age = 30;\n\nconsole.log(a.name, a.info.age);"
+      },
+      "options": [
+        "kim 30",
+        "kim 20",
+        "lee 30",
+        "lee 20"
+      ],
+      "answer": 0,
+      "explain": "스프레드는 **얕은 복사**예요. `name`(원시값)은 값이 복사돼서 b만 바뀌지만, `info`는 객체라 주소만 복사돼 a와 b가 같은 객체를 함께 가리켜요. 그래서 `a.info.age`도 30. 완전히 분리하려면 `structuredClone(a)` 같은 깊은 복사가 필요해요."
+    },
+    {
+      "id": "q13",
+      "type": "mc",
+      "tags": [
+        "js-array-object"
+      ],
+      "question": "다음 코드의 출력 결과는?",
+      "code": {
+        "lang": "js",
+        "src": "const arr = [1, 2, 3, 4, 5];\nconst removed = arr.splice(1, 2, \"a\", \"b\", \"c\");\n\nconsole.log(arr);\nconsole.log(removed);"
+      },
+      "options": [
+        "`[1, \"a\", \"b\", \"c\", 3, 4, 5]` / `[2]`",
+        "`[1, 2, 3, 4, 5]` / `[2, 3]`",
+        "`[1, \"a\", \"b\", \"c\", 4, 5]` / `[2, 3]`",
+        "`[1, \"a\", \"b\", \"c\", 5]` / `[2, 3, 4]`"
+      ],
+      "answer": 2,
+      "explain": "`splice(시작 인덱스, 삭제할 개수, ...추가할 값)`. 인덱스 1부터 **2개**(2, 3)를 지우고 그 자리에 a, b, c를 넣어요. splice는 **원본 배열을 바꾸고**, **삭제된 요소들의 배열**을 반환해요. (두 번째 인자가 끝 인덱스인 건 `slice`예요.)"
+    },
+    {
+      "id": "q14",
+      "type": "mc",
+      "tags": [
+        "js-array-object"
+      ],
+      "question": "다음 코드의 출력 결과는?",
+      "code": {
+        "lang": "js",
+        "src": "const [a, , b = 10, ...rest] = [1, 2, undefined, 4, 5];\nconsole.log(a, b, rest);"
+      },
+      "options": [
+        "`1 2 [undefined, 4, 5]`",
+        "`1 undefined [4, 5]`",
+        "`1 10 [undefined, 4, 5]`",
+        "`1 10 [4, 5]`"
+      ],
+      "answer": 3,
+      "explain": "쉼표만 있는 자리는 그 값(2)을 건너뛰어요. b 자리의 값이 `undefined`라서 기본값 10이 들어가요. `...rest`는 남은 요소 `[4, 5]`를 배열로 모아요."
+    },
+    {
+      "id": "q15",
+      "type": "mc",
+      "tags": [
+        "js-this"
+      ],
+      "question": "다음 코드를 브라우저에서 일반 `<script>`로 실행했을 때 출력 결과는?",
+      "code": {
+        "lang": "js",
+        "src": "const calc = {\n  PI: 3.14,\n  radiuses: [1, 2],\n  printArea() {\n    this.radiuses.forEach(function (r) {\n      console.log(this.PI * r * r);\n    });\n  },\n};\n\ncalc.printArea();"
+      },
+      "options": [
+        "`3.14`, `12.56`",
+        "`NaN`, `NaN`",
+        "`TypeError` 발생",
+        "`undefined`, `undefined`"
+      ],
+      "answer": 1,
+      "explain": "`printArea` 안의 this는 calc지만, forEach에 넘긴 **일반 함수 콜백**은 단순 호출되므로 this가 전역 객체(window)예요. `window.PI`는 undefined라 `undefined * 1 = NaN`. 콜백을 **화살표 함수**로 바꾸면 바깥(printArea)의 this인 calc를 써서 3.14, 12.56이 나와요."
+    },
+    {
+      "id": "q16",
+      "type": "mc",
+      "tags": [
+        "js-dom"
+      ],
+      "question": "다음 코드 실행 후 `#list`의 항목 순서는?",
+      "code": {
+        "lang": "js",
+        "src": "// <ul id=\"list\"><li>B</li></ul>\nconst list = document.querySelector(\"#list\");\nconst b = list.querySelector(\"li\");\n\nconst make = (t) => {\n  const li = document.createElement(\"li\");\n  li.textContent = t;\n  return li;\n};\n\nlist.prepend(make(\"C\"));\nb.after(make(\"A\"));\nlist.append(make(\"D\"));"
+      },
+      "options": [
+        "C A B D",
+        "A B C D",
+        "B C A D",
+        "C B A D"
+      ],
+      "answer": 3,
+      "explain": "`prepend`는 **자식의 맨 앞**에(C B), `b.after`는 **b 바로 뒤 형제**로(C B A), `append`는 **자식의 맨 끝**에(C B A D) 넣어요. `before`/`after`는 기준 요소의 형제 위치, `prepend`/`append`는 기준 요소의 자식 위치라는 점을 구분하세요."
+    },
+    {
+      "id": "q17",
+      "type": "mc",
+      "tags": [
+        "js-dom"
+      ],
+      "question": "다음 코드의 출력 결과는?",
+      "code": {
+        "lang": "js",
+        "src": "// <div id=\"box\" class=\"card active\"></div>\nconst box = document.querySelector(\"#box\");\n\nconst r1 = box.classList.toggle(\"active\");\nconst r2 = box.classList.toggle(\"dark\");\nconst r3 = box.classList.remove(\"card\");\n\nconsole.log(r1, r2, r3, box.className);"
+      },
+      "options": [
+        "`false true undefined dark`",
+        "`true false undefined dark`",
+        "`false true true` (빈 문자열)",
+        "`false true undefined card dark`"
+      ],
+      "answer": 0,
+      "explain": "`toggle`은 클래스가 있으면 지우고 `false`, 없으면 추가하고 `true`를 반환해요. active는 있었으니 제거 → false, dark는 없었으니 추가 → true. `remove`는 반환값이 없어서 `undefined`. 남은 클래스는 `dark`."
+    },
+    {
+      "id": "q18",
+      "type": "mc",
+      "tags": [
+        "js-event"
+      ],
+      "question": "다음 설명 중 **옳은** 것은?",
+      "options": [
+        "`setTimeout(fn, 1000)`은 1초마다 fn을 반복 실행한다.",
+        "`setTimeout(fn, 0)`의 fn은 그 아래에 있는 동기 코드보다 먼저 실행된다.",
+        "`setInterval(fn, 1000)`은 1초 간격으로 fn을 반복 실행하며, `clearInterval(id)`로 멈출 수 있다.",
+        "표준 이벤트 등록은 `el.addEventListener(\"onclick\", fn)`처럼 이벤트 이름에 on을 붙인다."
+      ],
+      "answer": 2,
+      "explain": "setTimeout은 지정 시간 뒤 **한 번**, setInterval은 **반복** 실행해요. 둘 다 반환된 id로 `clearTimeout`/`clearInterval` 할 수 있어요. 0ms여도 콜백은 콜 스택이 빈 뒤(동기 코드가 다 끝난 뒤)에 실행돼요. addEventListener의 이벤트 이름은 on 없이 `\"click\"`."
+    },
+    {
+      "id": "q19",
+      "type": "mc",
+      "tags": [
+        "js-bom"
+      ],
+      "question": "`window.location`에 대한 설명으로 **옳지 않은** 것은?",
+      "options": [
+        "`location.href = \"https://...\"`처럼 값을 넣으면 그 주소로 이동한다.",
+        "`location.reload()`는 현재 페이지를 새로고침한다.",
+        "`location.replace(url)`은 현재 페이지를 방문 기록에 남기므로 뒤로 가기로 돌아올 수 있다.",
+        "현재 페이지 URL의 protocol, host, pathname, search 같은 정보를 가지고 있다."
+      ],
+      "answer": 2,
+      "explain": "`replace`는 현재 기록을 새 주소로 **바꿔치기**하기 때문에 뒤로 가기로 이전 페이지에 돌아갈 수 없어요(로그인 후 이동 등에 사용). 뒤로 가기가 되는 이동은 `location.href = url` 또는 `location.assign(url)`."
+    },
+    {
+      "id": "q20",
+      "type": "mc",
+      "tags": [
+        "js-async"
+      ],
+      "question": "다음 코드의 출력 결과는?",
+      "code": {
+        "lang": "js",
+        "src": "const p = new Promise((resolve, reject) => {\n  resolve(\"성공\");\n  reject(\"실패\");\n  resolve(\"다시 성공\");\n});\n\np.then((v) => console.log(\"then:\", v))\n .catch((e) => console.log(\"catch:\", e));"
+      },
+      "options": [
+        "`catch: 실패`",
+        "`then: 성공`",
+        "`then: 다시 성공`",
+        "`then: 성공` 다음 `catch: 실패`"
+      ],
+      "answer": 1,
+      "explain": "Promise는 pending → fulfilled 또는 rejected로 **딱 한 번** 바뀌고, 한 번 정해지면(settled) 다시 바뀌지 않아요. 첫 `resolve(\"성공\")`에서 fulfilled가 됐으니 이후 호출은 모두 무시돼요."
+    },
+    {
+      "id": "q21",
+      "type": "mc",
+      "tags": [
+        "js-async"
+      ],
+      "question": "다음 코드의 출력 순서는?",
+      "code": {
+        "lang": "js",
+        "src": "Promise.resolve(1)\n  .then((v) => {\n    console.log(\"A\", v);\n    throw new Error(\"X\");\n  })\n  .then(() => console.log(\"B\"))\n  .catch((e) => {\n    console.log(\"C\", e.message);\n    return 2;\n  })\n  .then((v) => console.log(\"D\", v));"
+      },
+      "options": [
+        "A 1 → B → C X",
+        "A 1 → C X",
+        "A 1 → C X → D 2",
+        "A 1 → B → D 2"
+      ],
+      "answer": 2,
+      "explain": "에러가 나면 사이의 then(B)은 건너뛰고 가장 가까운 catch로 가요. catch가 에러를 처리하고 값을 **return**하면 다시 fulfilled된 Promise가 되어 뒤의 then이 그 값(2)을 받아 실행돼요. 체인이 catch에서 끝나는 게 아니에요."
+    },
+    {
+      "id": "q22",
+      "type": "mc",
+      "tags": [
+        "js-async"
+      ],
+      "question": "다음 코드에서 변수 `result`에 담기는 값은?",
+      "code": {
+        "lang": "js",
+        "src": "async function getNum() {\n  return 10;\n}\n\nconst result = getNum();"
+      },
+      "options": [
+        "숫자 `10`",
+        "`undefined`",
+        "함수 `getNum` 자체",
+        "10으로 이행(fulfilled)된 `Promise` 객체"
+      ],
+      "answer": 3,
+      "explain": "async 함수는 **항상 Promise를 반환**해요. return 값은 그 Promise의 결과값이 돼요. 10을 꺼내려면 `await getNum()`(async 함수 안에서) 또는 `getNum().then(v => ...)`."
+    },
+    {
+      "id": "q23",
+      "type": "mc",
+      "tags": [
+        "js-fetch"
+      ],
+      "question": "서버에 새 게시글 `data` 객체를 **JSON으로 생성 요청**하는 코드로 올바른 것은?",
+      "options": [
+        "`fetch(url, { method: \"POST\", headers: { \"Content-Type\": \"application/json\" }, body: data })`",
+        "`fetch(url, { method: \"POST\", headers: { \"Content-Type\": \"application/json\" }, body: JSON.stringify(data) })`",
+        "`fetch(url, { method: \"GET\", body: JSON.stringify(data) })`",
+        "`fetch(url, { type: \"POST\", header: { \"Content-Type\": \"application/json\" }, data: JSON.stringify(data) })`"
+      ],
+      "answer": 1,
+      "explain": "세 가지가 세트예요: ① `method: \"POST\"` ② `headers`에 `\"Content-Type\": \"application/json\"` ③ `body: JSON.stringify(data)`로 문자열 직렬화. 객체를 그대로 body에 넣으면 `\"[object Object]\"`가 전송돼요. GET 요청은 body를 가질 수 없고, 옵션 이름은 `type`/`header`/`data`가 아니라 `method`/`headers`/`body`예요."
+    },
+    {
+      "id": "q24",
+      "type": "mc",
+      "tags": [
+        "js-storage"
+      ],
+      "question": "`localStorage`와 `sessionStorage`에 대한 설명으로 **옳은** 것은?",
+      "options": [
+        "localStorage의 데이터는 일정 시간이 지나면 자동으로 만료된다.",
+        "sessionStorage의 데이터는 탭(창)을 닫으면 삭제되고, 같은 사이트를 연 다른 탭과도 공유되지 않는다.",
+        "localStorage는 다른 도메인(출처)의 사이트와도 데이터를 공유한다.",
+        "두 저장소 모두 객체를 넣으면 자동으로 JSON 문자열로 바꿔 저장한다."
+      ],
+      "answer": 1,
+      "explain": "localStorage는 직접 지우기 전까지 **영구 보관**되고 **같은 출처(origin)의 모든 탭·창**이 공유해요. sessionStorage는 **그 탭에서만** 유효하고 탭을 닫으면 사라져요. 둘 다 출처별로 분리되고, 값은 **문자열만** 저장돼서 객체를 그냥 넣으면 `\"[object Object]\"`가 돼요."
+    },
+    {
+      "id": "q25",
+      "type": "mc",
+      "tags": [
+        "html-form"
+      ],
+      "question": "form 데이터 전송 방식에 대한 설명으로 **옳지 않은** 것은?",
+      "options": [
+        "GET 방식은 데이터를 요청 본문(body)에 담아 보내므로 URL에 노출되지 않는다.",
+        "POST 방식은 데이터를 body에 담아 보내며, 주로 서버의 데이터를 생성·변경할 때 사용한다.",
+        "GET 방식은 `?key=value&key2=value2` 형태의 쿼리스트링으로 전달되어 북마크·공유가 가능하고, 주로 조회에 사용한다.",
+        "`<form>`에 `method`를 지정하지 않으면 기본값은 GET이다."
+      ],
+      "answer": 0,
+      "explain": "GET은 데이터를 **URL 쿼리스트링**에 붙여 보내므로 주소창·기록에 노출돼요. 그래서 비밀번호 같은 민감 정보에는 POST를 써요. 다만 POST도 body가 암호화되는 건 아니라서 실제 보안은 HTTPS가 담당해요."
+    },
+    {
+      "id": "s1",
+      "type": "short",
+      "tags": [
+        "html-form"
+      ],
+      "question": "`type=\"radio\"`인 `<input>` 여러 개 중 **하나만 선택**되도록 한 그룹으로 묶으려면, 모든 input에 같은 값을 주어야 하는 **속성 이름**은?",
+      "answers": [
+        "name"
+      ],
+      "explain": "같은 `name`을 가진 radio끼리 한 그룹이 되어 하나만 선택돼요. 서버로 보낼 때도 `name=value` 형태로 전송돼요. (`id`는 문서에서 유일해야 해서 그룹을 묶을 수 없어요.)"
+    },
+    {
+      "id": "s2",
+      "type": "short",
+      "tags": [
+        "css-flex"
+      ],
+      "question": "Flex 컨테이너에서 아이템들을 **주축(main axis)** 방향으로 정렬하는 CSS 속성 이름은?",
+      "answers": [
+        "justify-content"
+      ],
+      "explain": "주축 정렬은 `justify-content`(flex-start, center, space-between 등), 교차축 정렬은 `align-items`예요. 주축 방향은 `flex-direction`이 정해요."
+    },
+    {
+      "id": "s3",
+      "type": "short",
+      "tags": [
+        "js-event"
+      ],
+      "question": "빈칸에 들어갈 **메서드 이름**을 쓰시오.",
+      "code": {
+        "lang": "js",
+        "src": "const btn = document.querySelector(\"#btn\");\nbtn.________(\"click\", (event) => {\n  console.log(\"클릭!\");\n});"
+      },
+      "answers": [
+        "addEventListener"
+      ],
+      "explain": "`대상.addEventListener(이벤트타입, 핸들러)`가 표준 등록 방법이에요. 같은 이벤트에 여러 핸들러를 붙일 수 있고, `removeEventListener`로 뗄 수 있어요."
+    },
+    {
+      "id": "s4",
+      "type": "short",
+      "tags": [
+        "js-fetch"
+      ],
+      "question": "`fetch`로 JSON 데이터를 body에 담아 보낼 때, `headers`의 `\"Content-Type\"`에 지정해야 하는 값은?",
+      "answers": [
+        "application/json"
+      ],
+      "explain": "서버에 \"body가 JSON 형식\"이라고 알려 주는 값이에요. 이 헤더와 함께 body는 `JSON.stringify(data)`로 직렬화해서 보내요."
+    },
+    {
+      "id": "s5",
+      "type": "short",
+      "tags": [
+        "js-storage"
+      ],
+      "question": "다음 코드의 출력 결과를 쓰시오.",
+      "code": {
+        "lang": "js",
+        "src": "localStorage.setItem(\"count\", 10);\nconst v = localStorage.getItem(\"count\");\nconsole.log(typeof v);"
+      },
+      "answers": [
+        "string"
+      ],
+      "explain": "Web Storage는 **문자열만** 저장해요. 숫자 10을 넣어도 `\"10\"`으로 바뀌어 저장되고, 꺼낼 때도 문자열이에요. 숫자로 쓰려면 `Number(v)`, 객체·배열은 `JSON.stringify`로 넣고 `JSON.parse`로 꺼내요."
+    },
+    {
+      "id": "e1",
+      "type": "essay",
+      "tags": [
+        "js-this"
+      ],
+      "question": "다음 코드에서 ①의 출력이 `NaN`이 되는 이유를 **일반 함수의 this 결정 방식**으로 설명하고, ②처럼 화살표 함수로 바꾸면 결과가 어떻게 달라지는지 그 이유와 함께 서술하시오.",
+      "code": {
+        "lang": "js",
+        "src": "const calc = {\n  PI: 3.14,\n  radiuses: [1, 2],\n  printA() {\n    this.radiuses.forEach(function (r) {\n      console.log(this.PI * r * r); // ① NaN, NaN\n    });\n  },\n  printB() {\n    this.radiuses.forEach((r) => {\n      console.log(this.PI * r * r); // ② ?\n    });\n  },\n};"
+      },
+      "model": "일반 함수의 this는 함수가 **어떻게 호출되었는지**에 따라 실행 시점에 결정된다. `calc.printA()`처럼 메서드로 호출하면 this는 calc지만, forEach에 넘긴 콜백 함수는 forEach 내부에서 **단순 함수로 호출**되므로 this가 전역 객체(브라우저에서는 window, strict mode에서는 undefined)가 된다. `window.PI`는 undefined이므로 `undefined * r * r`이 되어 NaN이 출력된다.\n\n화살표 함수는 **자기만의 this를 갖지 않고**, 선언된 위치의 바깥 스코프(printB)의 this를 그대로 사용한다(렉시컬 this). printB를 `calc.printB()`로 호출하면 그 this가 calc이므로 콜백 안의 `this.PI`도 3.14가 되어 `3.14`, `12.56`이 출력된다.",
+      "points": [
+        "일반 함수의 this는 호출 방식에 따라 동적으로 결정된다고 썼다",
+        "콜백이 단순 호출되어 this가 window(전역 객체)가 되고, PI가 undefined라 NaN이 된다고 썼다",
+        "화살표 함수는 자신의 this가 없고 상위(바깥) 스코프의 this를 사용한다고 썼다",
+        "②의 결과가 3.14, 12.56임을 썼다"
+      ]
+    },
+    {
+      "id": "e2",
+      "type": "essay",
+      "tags": [
+        "js-storage"
+      ],
+      "question": "장바구니 배열 `cart = [{ id: 1, qty: 2 }]`를 브라우저에 저장했다가 다시 꺼내 쓰려고 한다. (1) 이때 `JSON.stringify()`와 `JSON.parse()`가 각각 왜 필요한지 서술하고, (2) `localStorage`와 `sessionStorage`의 차이를 **데이터 보관 기간**과 **공유 범위** 측면에서 비교하시오.",
+      "model": "(1) Web Storage는 키와 값을 **문자열로만** 저장한다. 배열·객체를 그대로 `setItem`하면 `\"[object Object]\"` 같은 문자열로 바뀌어 데이터가 사라진다. 그래서 저장할 때 `JSON.stringify(cart)`로 객체를 JSON 문자열로 바꾸고(**직렬화**), 꺼낼 때는 `getItem`으로 받은 문자열을 `JSON.parse()`로 다시 배열·객체로 되돌려(**역직렬화**) `cart[0].qty`처럼 사용한다.\n\n(2) **localStorage**는 사용자가 직접 지우거나 코드로 삭제하기 전까지 브라우저를 껐다 켜도 **영구 보관**되고, **같은 출처(프로토콜+도메인+포트)의 모든 탭·창이 공유**한다. **sessionStorage**는 **탭(창)을 닫으면 삭제**되며, 같은 사이트라도 **그 탭 안에서만** 유효하다. 둘 다 출처별로 분리되어 다른 사이트와는 공유되지 않는다.",
+      "points": [
+        "Web Storage는 문자열만 저장할 수 있다고 썼다",
+        "stringify = 객체 → 문자열(직렬화), 저장할 때 사용",
+        "parse = 문자열 → 객체(역직렬화), 꺼낼 때 사용",
+        "localStorage: 직접 지우기 전까지 영구 보관 / 같은 출처의 모든 탭이 공유",
+        "sessionStorage: 탭을 닫으면 삭제 / 해당 탭에서만 유효"
+      ]
+    }
+  ]
+}

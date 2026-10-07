@@ -1,0 +1,9 @@
+{
+  "subjects": [
+    {
+      "id": "frontend",
+      "title": "프론트엔드",
+      "description": "HTML · CSS · JavaScript · DOM · 비동기"
+    }
+  ]
+}
