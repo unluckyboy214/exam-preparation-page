@@ -1,0 +1,517 @@
+{
+  "meta": {
+    "id": "frontend-mock-2",
+    "subject": "frontend",
+    "title": "프론트엔드 예상 문제 2회",
+    "source": "self-made",
+    "timeLimitMin": 60,
+    "version": 1
+  },
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mc",
+      "tags": [
+        "html-elements"
+      ],
+      "question": "다음 중 내용을 담지 않아 **종료 태그를 쓰지 않는** 빈 요소는?",
+      "options": [
+        "`<p>`",
+        "`<br>`",
+        "`<span>`",
+        "`<li>`"
+      ],
+      "answer": 1,
+      "explain": "`<br>`은 줄바꿈만 하는 빈 요소라 종료 태그가 없다. `<p>`, `<span>`, `<li>`는 안에 내용을 담으므로 `</p>`처럼 종료 태그로 닫는다."
+    },
+    {
+      "id": "q2",
+      "type": "mc",
+      "tags": [
+        "html-elements"
+      ],
+      "question": "HTML 속성(attribute)에 대한 설명으로 **옳은** 것은?",
+      "options": [
+        "속성은 닫는 태그 안에 `이름=\"값\"` 형태로 쓴다.",
+        "한 요소에는 속성을 하나만 쓸 수 있다.",
+        "속성 값은 반드시 큰따옴표로만 감싸야 한다.",
+        "속성은 여는 태그 안에 `이름=\"값\"` 형태로 쓴다."
+      ],
+      "answer": 3,
+      "explain": "속성은 `<img src=\"a.png\" alt=\"사진\">`처럼 여는 태그 안에 쓰고, 여러 개를 함께 쓸 수 있다. 값은 큰따옴표와 작은따옴표 모두 쓸 수 있다."
+    },
+    {
+      "id": "q3",
+      "type": "mc",
+      "tags": [
+        "html-semantic"
+      ],
+      "question": "본문과 관련은 있지만 떼어 내도 본문을 이해하는 데 지장이 없는 **보조 콘텐츠**(관련 링크, 광고 등)를 나타내는 태그는?",
+      "options": [
+        "`<aside>`",
+        "`<section>`",
+        "`<article>`",
+        "`<footer>`"
+      ],
+      "answer": 0,
+      "explain": "`<aside>`는 본문 옆에 붙는 보조 영역을 뜻한다. `<section>`은 주제별 구획, `<article>`은 그 자체로 완결된 글, `<footer>`는 작성자·저작권 같은 마무리 정보다."
+    },
+    {
+      "id": "q4",
+      "type": "mc",
+      "tags": [
+        "html-semantic"
+      ],
+      "question": "시맨틱 태그를 쓰는 이유로 **옳지 않은** 것은?",
+      "options": [
+        "검색 엔진이 문서의 구조와 중요한 내용을 파악하기 쉬워진다.",
+        "스크린 리더 같은 보조 기기가 영역의 역할을 사용자에게 알려 줄 수 있다.",
+        "태그만 바꿔도 화면 배치가 자동으로 정리되어 CSS를 쓰지 않아도 된다.",
+        "코드를 읽는 사람이 각 영역의 용도를 바로 알 수 있다."
+      ],
+      "answer": 2,
+      "explain": "시맨틱 태그는 **의미**를 더할 뿐, 생김새와 배치는 `div`와 거의 같다. 배치는 여전히 CSS로 해야 한다. 나머지 보기는 검색 엔진, 접근성, 가독성 측면의 실제 장점이다."
+    },
+    {
+      "id": "q5",
+      "type": "mc",
+      "tags": [
+        "html-form"
+      ],
+      "question": "`<label for=\"email\">이메일</label>`을 눌렀을 때 입력칸이 선택되려면 `<input>`에 어떤 속성이 있어야 하는가?",
+      "options": [
+        "`name=\"email\"`",
+        "`for=\"email\"`",
+        "`id=\"email\"`",
+        "`class=\"email\"`"
+      ],
+      "answer": 2,
+      "explain": "`label`의 `for` 값은 연결할 입력칸의 `id`와 같아야 한다. `name`은 서버로 보낼 때 쓰는 키 이름이라 label 연결과는 상관이 없다."
+    },
+    {
+      "id": "q6",
+      "type": "mc",
+      "tags": [
+        "html-form"
+      ],
+      "question": "`<form>` 안에 `type` 속성 없이 `<button>저장</button>`을 넣었다. 이 버튼을 누르면 어떻게 되는가?",
+      "options": [
+        "form이 전송된다. 버튼의 기본 `type`이 `submit`이기 때문이다.",
+        "아무 일도 일어나지 않는다. 버튼의 기본 `type`이 `button`이기 때문이다.",
+        "입력칸이 모두 비워진다. 버튼의 기본 `type`이 `reset`이기 때문이다.",
+        "오류가 난다. 버튼에는 `type`을 반드시 적어야 하기 때문이다."
+      ],
+      "answer": 0,
+      "explain": "form 안 `<button>`의 기본 `type`은 `submit`이라 누르면 form이 전송된다. 전송 없이 스크립트만 실행하려면 `type=\"button\"`을 직접 적어야 한다."
+    },
+    {
+      "id": "q7",
+      "type": "mc",
+      "tags": [
+        "css-selector"
+      ],
+      "question": "선택자 `ul > li`가 고르는 요소는?",
+      "options": [
+        "`ul` 안에 있는 모든 하위 `li`",
+        "`ul` 바로 다음에 오는 형제 `li`",
+        "`ul`과 `li` 모두",
+        "`ul`의 **직계 자식**인 `li`만"
+      ],
+      "answer": 3,
+      "explain": "`>`는 자식 결합자라 바로 한 단계 아래 자식만 고른다. 모든 하위 요소를 고르는 것은 공백을 쓰는 자손 결합자 `ul li`이고, 바로 다음 형제는 `ul + li`다."
+    },
+    {
+      "id": "q8",
+      "type": "mc",
+      "tags": [
+        "css-selector"
+      ],
+      "question": "`input[type=\"email\"]`처럼 대괄호를 쓰는 선택자의 종류는?",
+      "options": [
+        "가상 클래스 선택자",
+        "속성 선택자",
+        "가상 요소 선택자",
+        "자손 결합자"
+      ],
+      "answer": 1,
+      "explain": "대괄호 `[ ]`는 요소의 속성과 값으로 고르는 속성 선택자다. 가상 클래스는 `:hover`처럼 콜론 하나, 가상 요소는 `::before`처럼 콜론 두 개를 쓴다."
+    },
+    {
+      "id": "q9",
+      "type": "mc",
+      "tags": [
+        "css-specificity"
+      ],
+      "question": "다음 중 명시도(특이성)가 **가장 높은** 선택자는?",
+      "options": [
+        "`#nav a`",
+        "`.menu .item a`",
+        "`ul li a`",
+        "`nav a:hover`"
+      ],
+      "answer": 0,
+      "explain": "아이디가 하나라도 있으면 클래스가 몇 개든 이긴다. `#nav a`는 (1, 0, 1), `.menu .item a`는 (0, 2, 1), `nav a:hover`는 (0, 1, 2), `ul li a`는 (0, 0, 3)이다."
+    },
+    {
+      "id": "q10",
+      "type": "mc",
+      "tags": [
+        "css-specificity"
+      ],
+      "question": "부모 요소에 지정하면 자식 요소에게 **상속되는** 속성은?",
+      "options": [
+        "`border`",
+        "`margin`",
+        "`color`",
+        "`width`"
+      ],
+      "answer": 2,
+      "explain": "글자색 `color`처럼 글자와 관련된 속성은 자식에게 상속된다. `border`, `margin`, `width` 같은 박스 관련 속성은 상속되지 않는다."
+    },
+    {
+      "id": "q11",
+      "type": "mc",
+      "tags": [
+        "css-box-model"
+      ],
+      "question": "`padding: 10px 20px;`이 뜻하는 것은?",
+      "options": [
+        "왼쪽 10px, 오른쪽 20px",
+        "위 10px, 아래 20px",
+        "좌우 10px, 위아래 20px",
+        "위아래 10px, 좌우 20px"
+      ],
+      "answer": 3,
+      "explain": "값이 두 개면 첫째는 위아래, 둘째는 좌우다. 네 개일 때는 위·오른쪽·아래·왼쪽(시계 방향) 순서다."
+    },
+    {
+      "id": "q12",
+      "type": "mc",
+      "tags": [
+        "css-box-model"
+      ],
+      "question": "블록 요소 `.wrap`을 부모 안에서 **가로 가운데**에 두는 CSS로 알맞은 것은?",
+      "options": [
+        "`.wrap { text-align: center; }`",
+        "`.wrap { width: 600px; margin: 0 auto; }`",
+        "`.wrap { width: 600px; margin: auto 0; }`",
+        "`.wrap { width: 600px; padding: 0 auto; }`"
+      ],
+      "answer": 1,
+      "explain": "폭을 정한 블록 요소는 좌우 margin을 `auto`로 주면 남은 공간이 양쪽에 똑같이 나뉘어 가운데에 온다. `text-align: center`는 요소 자체가 아니라 안쪽 글자를 가운데로 보낸다. `padding`에는 `auto`를 쓸 수 없다."
+    },
+    {
+      "id": "q13",
+      "type": "mc",
+      "tags": [
+        "css-flex"
+      ],
+      "question": "`display: flex`인 컨테이너에서 `flex-direction`을 따로 쓰지 않았을 때의 기본값은?",
+      "options": [
+        "`column`",
+        "`row`",
+        "`row-reverse`",
+        "`column-reverse`"
+      ],
+      "answer": 1,
+      "explain": "기본값은 `row`라서 아이템이 가로로 나란히 놓이고 주축이 가로가 된다. 세로로 쌓으려면 `column`을 직접 지정한다."
+    },
+    {
+      "id": "q14",
+      "type": "mc",
+      "tags": [
+        "css-grid"
+      ],
+      "question": "가로 폭이 400px인 그리드 컨테이너에 다음 CSS를 주었다(`gap` 없음). **가운데 열**의 폭은?",
+      "code": {
+        "lang": "css",
+        "src": ".grid {\n  display: grid;\n  width: 400px;\n  grid-template-columns: 1fr 2fr 1fr;\n}"
+      },
+      "options": [
+        "100px",
+        "133px",
+        "400px",
+        "200px"
+      ],
+      "answer": 3,
+      "explain": "`fr`은 남은 공간을 나누는 비율이다. 1 + 2 + 1 = 4등분이므로 한 몫은 100px이고, 가운데 열은 2몫인 200px이다. 133px은 세 열을 똑같이 나눈 값이다."
+    },
+    {
+      "id": "q15",
+      "type": "mc",
+      "tags": [
+        "css-position"
+      ],
+      "question": "원래 자리를 그대로 차지한 채, 그 자리를 기준으로 `top`, `left`만큼 옮겨 그려지는 `position` 값은?",
+      "options": [
+        "`relative`",
+        "`absolute`",
+        "`fixed`",
+        "`static`"
+      ],
+      "answer": 0,
+      "explain": "`relative`는 원래 자리를 비워 둔 채 그 자리 기준으로 이동한다. `absolute`와 `fixed`는 문서 흐름에서 빠지고, `static`은 `top`, `left`를 무시한다."
+    },
+    {
+      "id": "q16",
+      "type": "mc",
+      "tags": [
+        "css-responsive"
+      ],
+      "question": "`@media (max-width: 600px) { ... }` 안에 쓴 스타일이 적용되는 때는?",
+      "options": [
+        "화면(뷰포트) 너비가 600px **이상**일 때",
+        "화면 너비와 상관없이 항상",
+        "화면(뷰포트) 너비가 600px **이하**일 때",
+        "문서를 인쇄할 때만"
+      ],
+      "answer": 2,
+      "explain": "`max-width: 600px`은 '최대 600px까지'라는 뜻이라 600px 이하에서 적용된다. 600px 이상에서 적용하려면 `min-width`를 쓴다. 인쇄용은 `@media print`다."
+    },
+    {
+      "id": "q17",
+      "type": "mc",
+      "tags": [
+        "js-types"
+      ],
+      "question": "`typeof null`의 결과는?",
+      "options": [
+        "`\"null\"`",
+        "`\"object\"`",
+        "`\"undefined\"`",
+        "`\"number\"`"
+      ],
+      "answer": 1,
+      "explain": "`null`은 원시 값이지만 `typeof null`은 역사적인 이유로 `\"object\"`를 돌려준다. 그래서 null인지 확인할 때는 `value === null`로 비교한다."
+    },
+    {
+      "id": "q18",
+      "type": "mc",
+      "tags": [
+        "js-types"
+      ],
+      "question": "다음 코드의 출력 결과는?",
+      "code": {
+        "lang": "js",
+        "src": "console.log(\"5\" * 2, typeof (\"5\" * 2));"
+      },
+      "options": [
+        "`10 number`",
+        "`52 string`",
+        "`10 string`",
+        "`NaN number`"
+      ],
+      "answer": 0,
+      "explain": "`*`는 숫자 연산만 하므로 문자열 `\"5\"`를 숫자 5로 바꿔 계산한다. 결과는 숫자 10이다. 문자열을 이어 붙이는 것은 `+`일 때뿐이다."
+    },
+    {
+      "id": "q19",
+      "type": "mc",
+      "tags": [
+        "js-array-object"
+      ],
+      "question": "배열의 **맨 뒤**에 요소를 추가하는 메서드는?",
+      "options": [
+        "`pop()`",
+        "`shift()`",
+        "`unshift()`",
+        "`push()`"
+      ],
+      "answer": 3,
+      "explain": "`push()`는 맨 뒤에 넣고 새 길이를 돌려준다. `pop()`은 맨 뒤를 꺼내고, `shift()`는 맨 앞을 꺼내고, `unshift()`는 맨 앞에 넣는다."
+    },
+    {
+      "id": "q20",
+      "type": "mc",
+      "tags": [
+        "js-function"
+      ],
+      "question": "`const square = x => x * x;`와 **같은 값을 돌려주는** 함수는?",
+      "options": [
+        "`function square(x) { x * x; }`",
+        "`const square = (x) => { x * x; };`",
+        "`function square(x) { return x * x; }`",
+        "`const square = () => x * x;`"
+      ],
+      "answer": 2,
+      "explain": "화살표 함수 본문이 식 하나면 그 값이 바로 반환된다. 중괄호 `{ }`를 쓰면 `return`을 직접 적어야 하므로, `return`이 없는 두 보기는 `undefined`를 돌려준다. 매개변수가 없는 보기는 `x`를 받지 못한다."
+    },
+    {
+      "id": "q21",
+      "type": "mc",
+      "tags": [
+        "js-this"
+      ],
+      "question": "일반 함수로 만든 메서드를 `user.greet()`처럼 호출했다. `greet` 안의 `this`는?",
+      "options": [
+        "`user` 객체",
+        "항상 `window`",
+        "`greet` 함수 자신",
+        "항상 `undefined`"
+      ],
+      "answer": 0,
+      "explain": "일반 함수의 `this`는 호출할 때 점(`.`) 왼쪽에 있는 객체로 정해진다. 그래서 `user.greet()`에서는 `user`다. 점 없이 그냥 호출하면 전역 객체(strict 모드에서는 `undefined`)가 된다."
+    },
+    {
+      "id": "q22",
+      "type": "mc",
+      "tags": [
+        "js-dom"
+      ],
+      "question": "`document.querySelector(\".item\")`이 돌려주는 것은?",
+      "options": [
+        "class가 `item`인 요소를 모두 담은 NodeList",
+        "class가 `item`인 요소 중 **첫 번째** 하나",
+        "id가 `item`인 요소",
+        "class가 `item`인 요소 중 마지막 하나"
+      ],
+      "answer": 1,
+      "explain": "`querySelector`는 선택자와 맞는 첫 번째 요소 하나를 돌려주고, 없으면 `null`이다. 모두 고르려면 `querySelectorAll`을 쓴다. `.`은 클래스, `#`은 아이디 선택자다."
+    },
+    {
+      "id": "q23",
+      "type": "mc",
+      "tags": [
+        "js-event"
+      ],
+      "question": "`<a>` 링크를 눌렀을 때 페이지 이동을 막고 스크립트만 실행하려고 한다. 리스너 안에서 호출할 메서드는?",
+      "options": [
+        "`event.stopPropagation()`",
+        "`element.removeEventListener()`",
+        "`element.blur()`",
+        "`event.preventDefault()`"
+      ],
+      "answer": 3,
+      "explain": "`preventDefault()`는 링크 이동, 폼 전송 같은 브라우저 기본 동작을 막는다. `stopPropagation()`은 이벤트가 부모로 전달되는 것만 막고 기본 동작은 그대로 일어난다."
+    },
+    {
+      "id": "q24",
+      "type": "mc",
+      "tags": [
+        "js-bom"
+      ],
+      "question": "방문 기록에서 **바로 이전 페이지**로 돌아가는 코드는?",
+      "options": [
+        "`history.forward()`",
+        "`location.reload()`",
+        "`history.back()`",
+        "`location.replace(\"/\")`"
+      ],
+      "answer": 2,
+      "explain": "`history.back()`은 뒤로 가기 버튼과 같다. `forward()`는 앞으로 가기, `reload()`는 새로고침, `replace()`는 지정한 주소로 이동하면서 지금 페이지를 기록에서 바꿔치기한다."
+    },
+    {
+      "id": "q25",
+      "type": "mc",
+      "tags": [
+        "js-async"
+      ],
+      "question": "Promise가 가질 수 있는 상태 이름으로 **옳지 않은** 것은?",
+      "options": [
+        "`canceled`",
+        "`pending`",
+        "`fulfilled`",
+        "`rejected`"
+      ],
+      "answer": 0,
+      "explain": "Promise의 상태는 대기 중인 `pending`, 성공한 `fulfilled`, 실패한 `rejected` 세 가지다. 진행 중인 Promise를 취소하는 상태는 없다."
+    },
+    {
+      "id": "s1",
+      "type": "short",
+      "tags": [
+        "html-form"
+      ],
+      "question": "값을 입력하지 않으면 form이 전송되지 않도록, `<input>`에 값 없이 이름만 적는 **속성 이름**을 쓰시오.",
+      "answers": [
+        "required"
+      ],
+      "explain": "`required`가 있는 입력칸이 비어 있으면 브라우저가 전송을 막고 안내 문구를 보여 준다."
+    },
+    {
+      "id": "s2",
+      "type": "short",
+      "tags": [
+        "css-flex"
+      ],
+      "question": "flex 아이템이 한 줄에 다 들어가지 않을 때 **다음 줄로 넘어가게** 하려면 컨테이너에 `______: wrap;`을 준다. 빈칸에 들어갈 속성 이름을 쓰시오.",
+      "answers": [
+        "flex-wrap"
+      ],
+      "explain": "`flex-wrap`의 기본값은 `nowrap`이라 공간이 모자라면 아이템이 줄어든다. `wrap`으로 바꾸면 다음 줄로 넘어간다."
+    },
+    {
+      "id": "s3",
+      "type": "short",
+      "tags": [
+        "js-array-object"
+      ],
+      "question": "다음 코드의 출력 결과를 쓰시오.",
+      "code": {
+        "lang": "js",
+        "src": "const scores = [10, 20, 30];\nconsole.log(scores.indexOf(40));"
+      },
+      "answers": [
+        "-1"
+      ],
+      "explain": "`indexOf`는 값을 찾으면 그 위치를, 찾지 못하면 `-1`을 돌려준다. 배열에 40이 없으므로 `-1`이다."
+    },
+    {
+      "id": "s4",
+      "type": "short",
+      "tags": [
+        "js-fetch"
+      ],
+      "question": "`fetch`로 받은 응답(`Response`) 객체에서 본문을 **JSON으로 읽어 객체로 바꿀 때** 호출하는 메서드 이름을 쓰시오.",
+      "answers": [
+        "json",
+        "response.json",
+        "res.json"
+      ],
+      "explain": "`response.json()`은 본문을 읽어 객체로 바꾸며 Promise를 돌려준다. 그래서 한 번 더 `await`하거나 `then`으로 받아야 한다."
+    },
+    {
+      "id": "s5",
+      "type": "short",
+      "tags": [
+        "js-storage"
+      ],
+      "question": "`localStorage`에 저장된 데이터를 **한 번에 모두 지우는** 메서드 이름을 쓰시오.",
+      "answers": [
+        "clear",
+        "localStorage.clear"
+      ],
+      "explain": "`clear()`는 같은 출처의 저장소 데이터를 모두 지운다. 하나만 지울 때는 `removeItem(키)`를 쓴다."
+    },
+    {
+      "id": "e1",
+      "type": "essay",
+      "tags": [
+        "css-position"
+      ],
+      "question": "`display: none`과 `visibility: hidden`은 둘 다 요소를 화면에서 보이지 않게 한다. 두 방법의 차이를 **레이아웃 공간**과 **렌더링(렌더 트리)** 측면에서 비교하고, 각각 언제 쓰면 좋은지 서술하시오.",
+      "model": "`display: none`은 요소를 렌더 트리에서 아예 빼 버린다. 그래서 요소가 차지하던 공간도 사라지고, 뒤에 있던 요소들이 그 자리로 당겨진다.\n\n`visibility: hidden`은 요소를 렌더 트리에 그대로 두고 보이지만 않게 한다. 그래서 요소가 차지하던 공간은 빈 채로 남아 주변 배치가 바뀌지 않는다.\n\n탭 메뉴처럼 내용을 통째로 바꿔 끼울 때는 `display: none`이 알맞다. 자리를 유지한 채 잠시 숨기거나, 숨겼다 보여 줄 때 화면이 흔들리지 않아야 할 때는 `visibility: hidden`이 알맞다.",
+      "points": [
+        "`display: none`은 요소가 차지하던 공간까지 사라진다고 썼다",
+        "`visibility: hidden`은 보이지 않아도 공간은 그대로 남는다고 썼다",
+        "`display: none`은 렌더 트리에서 빠지고 `visibility: hidden`은 렌더 트리에 남는다고 썼다",
+        "각 방법을 쓰기 알맞은 상황을 하나씩 들었다"
+      ]
+    },
+    {
+      "id": "e2",
+      "type": "essay",
+      "tags": [
+        "js-types"
+      ],
+      "question": "JavaScript의 `==`와 `===`의 차이를 설명하고, `0 == \"\"`와 `0 === \"\"`의 결과가 어떻게 다른지 이유와 함께 쓰시오. 또 실무에서 어느 쪽을 권장하는지 그 이유를 서술하시오.",
+      "model": "`==`는 두 값의 타입이 다르면 먼저 같은 타입으로 바꾼 뒤 비교한다. `===`는 타입을 바꾸지 않고, 타입과 값이 모두 같아야 `true`다.\n\n`0 == \"\"`는 빈 문자열이 숫자 0으로 바뀐 뒤 비교되므로 `true`다. `0 === \"\"`는 숫자와 문자열로 타입이 다르므로 바로 `false`다.\n\n`==`의 자동 변환 규칙은 복잡해서 뜻하지 않은 결과가 나오기 쉽다. 그래서 `===`를 쓰고, 타입 변환이 필요하면 `Number()`처럼 직접 바꾸는 것을 권장한다.",
+      "points": [
+        "`==`는 타입을 바꾼 뒤 비교한다고 썼다",
+        "`===`는 타입과 값이 모두 같아야 true라고 썼다",
+        "`0 == \"\"`는 true, `0 === \"\"`는 false이고 그 이유를 썼다",
+        "자동 변환 때문에 생기는 실수를 이유로 `===`를 권장한다고 썼다"
+      ]
+    }
+  ]
+}

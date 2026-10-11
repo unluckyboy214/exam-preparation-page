@@ -1,0 +1,615 @@
+{
+  "meta": {
+    "id": "frontend-mock-3",
+    "subject": "frontend",
+    "title": "프론트엔드 예상 문제 3회",
+    "source": "self-made",
+    "timeLimitMin": 60,
+    "version": 1
+  },
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mc",
+      "tags": [
+        "html-form"
+      ],
+      "question": "다음 form에서 **검색** 버튼을 누르면 이동하는 주소는?",
+      "code": {
+        "lang": "html",
+        "src": "<form action=\"/search\" method=\"get\">\n  <input type=\"text\" name=\"q\" value=\"css\">\n  <input type=\"text\" id=\"page\" value=\"2\">\n  <input type=\"checkbox\" name=\"sort\" value=\"new\" checked>\n  <input type=\"text\" name=\"memo\" value=\"x\" disabled>\n  <button>검색</button>\n</form>"
+      },
+      "options": [
+        "`/search?q=css&page=2&sort=new`",
+        "`/search?q=css&sort=new&memo=x`",
+        "`/search?q=css&sort=new`",
+        "`/search?q=css&page=2&sort=new&memo=x`"
+      ],
+      "answer": 2,
+      "explain": "`name`이 없는 입력칸(`id=\"page\"`)은 키가 없어 전송되지 않는다. `disabled`인 입력칸(`memo`)도 전송에서 빠진다. 체크된 checkbox는 `name=value`로 전송된다."
+    },
+    {
+      "id": "q2",
+      "type": "mc",
+      "tags": [
+        "html-semantic"
+      ],
+      "question": "다음 페이지 구조에서 시맨틱 태그 사용 규칙에 **어긋나는** 부분은?",
+      "code": {
+        "lang": "html",
+        "src": "<header>\n  <nav>메뉴</nav>\n</header>\n<main>\n  <article>\n    <header><h2>글 제목</h2></header>\n    <p>본문</p>\n    <footer>작성일</footer>\n  </article>\n</main>\n<main>\n  <section><h2>추천 글</h2></section>\n</main>"
+      },
+      "options": [
+        "`<main>`을 두 번 썼다.",
+        "`<article>` 안에 `<header>`를 넣었다.",
+        "`<header>` 안에 `<nav>`를 넣었다.",
+        "`<article>` 안에 `<footer>`를 넣었다."
+      ],
+      "answer": 0,
+      "explain": "`<main>`은 문서의 핵심 내용이라 한 페이지에 하나만(보이는 것 기준) 둔다. `<header>`와 `<footer>`는 `article` 안에서 그 글의 머리말·꼬리말로 여러 번 쓸 수 있고, `header` 안의 `nav`도 흔한 구조다."
+    },
+    {
+      "id": "q3",
+      "type": "mc",
+      "tags": [
+        "html-elements",
+        "css-box-model"
+      ],
+      "question": "다음 CSS에서 `<span>`에 **적용되지 않는** 속성은?",
+      "code": {
+        "lang": "css",
+        "src": "span {\n  width: 100px;\n  padding: 0 10px;\n  margin-left: 8px;\n  color: red;\n}"
+      },
+      "options": [
+        "`padding: 0 10px`",
+        "`margin-left: 8px`",
+        "`color: red`",
+        "`width: 100px`"
+      ],
+      "answer": 3,
+      "explain": "`span`은 인라인 요소라 `width`, `height`가 무시되고 내용만큼만 폭을 차지한다. 좌우 padding과 좌우 margin, 글자색은 인라인 요소에도 적용된다."
+    },
+    {
+      "id": "q4",
+      "type": "mc",
+      "tags": [
+        "css-selector"
+      ],
+      "question": "다음 코드에서 **빨간색**이 되는 항목은?",
+      "code": {
+        "lang": "html",
+        "src": "<style>\n  li:nth-child(2n+1) { color: red; }\n</style>\n<ul>\n  <li>A</li><li>B</li><li>C</li><li>D</li><li>E</li>\n</ul>"
+      },
+      "options": [
+        "B, D",
+        "A, C, E",
+        "C, E",
+        "A, B, C"
+      ],
+      "answer": 1,
+      "explain": "`2n+1`에 n = 0, 1, 2…를 넣으면 1, 3, 5번째가 된다. 즉 홀수 번째 항목인 A, C, E다. B, D는 `2n`(짝수 번째)일 때 고른다."
+    },
+    {
+      "id": "q5",
+      "type": "mc",
+      "tags": [
+        "css-selector"
+      ],
+      "question": "다음 코드에서 **파란색**이 되는 문단은?",
+      "code": {
+        "lang": "html",
+        "src": "<style>\n  .menu ~ p { color: blue; }\n</style>\n<section>\n  <p>1</p>\n  <div class=\"menu\"></div>\n  <p>2</p>\n  <span>x</span>\n  <p>3</p>\n</section>"
+      },
+      "options": [
+        "2만",
+        "2, 3",
+        "1, 2, 3",
+        "3만"
+      ],
+      "answer": 1,
+      "explain": "`~`는 일반 형제 결합자로, `.menu` **뒤에 오는** 같은 부모의 모든 `p`를 고른다. 사이에 `span`이 끼어 있어도 3은 고른다. 앞에 있는 1은 고르지 않는다. 바로 다음 하나만 고르는 것은 `+`다."
+    },
+    {
+      "id": "q6",
+      "type": "mc",
+      "tags": [
+        "css-specificity"
+      ],
+      "question": "다음 코드에서 `Hi`의 글자색은?",
+      "code": {
+        "lang": "html",
+        "src": "<style>\n  .card .title { color: green; }\n  #main h2 { color: purple; }\n  h2.title { color: blue; }\n</style>\n<div id=\"main\">\n  <div class=\"card\">\n    <h2 class=\"title\">Hi</h2>\n  </div>\n</div>"
+      },
+      "options": [
+        "green",
+        "blue",
+        "black",
+        "purple"
+      ],
+      "answer": 3,
+      "explain": "명시도를 비교하면 `#main h2`가 (1, 0, 1)로 가장 높다. `.card .title`은 (0, 2, 0), `h2.title`은 (0, 1, 1)이다. 아이디 선택자가 있는 규칙이 선언 순서와 상관없이 이긴다."
+    },
+    {
+      "id": "q7",
+      "type": "mc",
+      "tags": [
+        "css-specificity"
+      ],
+      "question": "다음 코드에서 `<p>` 요소는 어떻게 보이는가?",
+      "code": {
+        "lang": "html",
+        "src": "<style>\n  .box { color: red; border: 1px solid red; }\n</style>\n<div class=\"box\">\n  <p>안내 문구</p>\n</div>"
+      },
+      "options": [
+        "글자는 빨간색이고, 테두리는 없다.",
+        "글자는 빨간색이고, 빨간 테두리가 있다.",
+        "글자는 검은색이고, 테두리는 없다.",
+        "글자는 검은색이고, 빨간 테두리가 있다."
+      ],
+      "answer": 0,
+      "explain": "`color`는 상속되는 속성이라 `p`도 빨간 글자가 된다. `border`는 상속되지 않으므로 테두리는 `.box`에만 그려지고 `p`에는 없다."
+    },
+    {
+      "id": "q8",
+      "type": "mc",
+      "tags": [
+        "css-box-model"
+      ],
+      "question": "다음 요소의 **content 영역 가로 폭**은?",
+      "code": {
+        "lang": "css",
+        "src": ".card {\n  box-sizing: border-box;\n  width: 200px;\n  padding: 20px;\n  border: 5px solid gray;\n}"
+      },
+      "options": [
+        "200px",
+        "250px",
+        "150px",
+        "160px"
+      ],
+      "answer": 2,
+      "explain": "`border-box`에서는 `width` 200px 안에 padding과 border가 들어 있다. 200 − (20 × 2) − (5 × 2) = 150px이다. 250px은 `content-box`일 때 border 바깥까지의 폭이다."
+    },
+    {
+      "id": "q9",
+      "type": "mc",
+      "tags": [
+        "css-box-model"
+      ],
+      "question": "두 `span`이 공백 없이 붙어 있다. 글자 A와 B의 테두리 사이 **가로 간격**은?",
+      "code": {
+        "lang": "html",
+        "src": "<style>\n  span { margin: 0 15px; border: 1px solid; }\n</style>\n<p><span>A</span><span>B</span></p>"
+      },
+      "options": [
+        "15px",
+        "0px",
+        "45px",
+        "30px"
+      ],
+      "answer": 3,
+      "explain": "가로 margin은 상쇄되지 않고 더해진다. A의 오른쪽 15px + B의 왼쪽 15px = 30px이다. 큰 값 하나만 남는 마진 상쇄는 블록 요소의 **세로** margin에서만 일어난다."
+    },
+    {
+      "id": "q10",
+      "type": "mc",
+      "tags": [
+        "css-flex"
+      ],
+      "question": "다음 코드에서 `.c`의 최종 가로 폭은?",
+      "code": {
+        "lang": "css",
+        "src": ".wrap { display: flex; width: 500px; }\n.a { width: 100px; }\n.b { width: 100px; flex-grow: 1; }\n.c { width: 100px; flex-grow: 3; }"
+      },
+      "options": [
+        "250px",
+        "150px",
+        "300px",
+        "400px"
+      ],
+      "answer": 0,
+      "explain": "아이템 폭의 합은 300px이라 200px이 남는다. 남은 공간을 `flex-grow` 비율 1 : 3으로 나누면 `.b`는 50px, `.c`는 150px을 더 받는다. 그래서 `.c`는 100 + 150 = 250px이다."
+    },
+    {
+      "id": "q11",
+      "type": "mc",
+      "tags": [
+        "css-flex"
+      ],
+      "question": "다음 flex 컨테이너에서 아이템이 화면에 놓이는 순서(왼쪽 → 오른쪽)는?",
+      "code": {
+        "lang": "html",
+        "src": "<style>\n  .row { display: flex; }\n  .a { order: 2; }\n  .c { order: -1; }\n</style>\n<div class=\"row\">\n  <div class=\"a\">a</div>\n  <div class=\"b\">b</div>\n  <div class=\"c\">c</div>\n</div>"
+      },
+      "options": [
+        "a b c",
+        "c b a",
+        "b c a",
+        "c a b"
+      ],
+      "answer": 1,
+      "explain": "`order`는 작은 값부터 놓이고 기본값은 0이다. `.c`(−1) → `.b`(0) → `.a`(2) 순서가 된다. HTML 순서는 바뀌지 않고 보이는 순서만 바뀐다."
+    },
+    {
+      "id": "q12",
+      "type": "mc",
+      "tags": [
+        "css-grid"
+      ],
+      "question": "열이 3개인 그리드에서 `.wide { grid-column: 1 / 3; }`인 아이템이 차지하는 칸은?",
+      "options": [
+        "1번째부터 3번째 열까지, 세 칸",
+        "3번째 열 한 칸",
+        "1번째와 2번째 열, 두 칸",
+        "1번째 열에서 세로로 세 칸"
+      ],
+      "answer": 2,
+      "explain": "`1 / 3`은 칸 번호가 아니라 **선 번호**다. 1번 선에서 3번 선까지이므로 1, 2번째 열 두 칸을 차지한다. 세 칸을 모두 쓰려면 `1 / 4`나 `1 / -1`이라고 쓴다."
+    },
+    {
+      "id": "q13",
+      "type": "mc",
+      "tags": [
+        "css-position"
+      ],
+      "question": "다음 코드에서 `.badge`가 놓이는 위치는?",
+      "code": {
+        "lang": "html",
+        "src": "<style>\n  .card { position: relative; }\n  .badge { position: absolute; top: 0; right: 0; }\n</style>\n<div class=\"card\">\n  <div class=\"inner\">\n    <span class=\"badge\">NEW</span>\n  </div>\n</div>"
+      },
+      "options": [
+        "`.inner`의 오른쪽 위",
+        "화면(뷰포트)의 오른쪽 위",
+        "`.card`의 오른쪽 위",
+        "`.badge`의 원래 자리"
+      ],
+      "answer": 2,
+      "explain": "`absolute`는 position이 `static`이 아닌 가장 가까운 조상을 기준으로 놓인다. `.inner`는 기본값 `static`이라 건너뛰고, `relative`인 `.card`가 기준이 된다."
+    },
+    {
+      "id": "q14",
+      "type": "mc",
+      "tags": [
+        "css-responsive"
+      ],
+      "question": "화면 너비가 **900px**일 때 `.col`의 `width`는?",
+      "code": {
+        "lang": "css",
+        "src": ".col { width: 100%; }\n\n@media (min-width: 768px) {\n  .col { width: 50%; }\n}\n@media (min-width: 1024px) {\n  .col { width: 25%; }\n}"
+      },
+      "options": [
+        "50%",
+        "100%",
+        "25%",
+        "75%"
+      ],
+      "answer": 0,
+      "explain": "900px에서는 `min-width: 768px` 조건만 맞고 `min-width: 1024px`는 맞지 않는다. 그래서 기본값 100%를 덮어쓴 50%가 적용된다. 25%는 1024px 이상에서만 적용된다."
+    },
+    {
+      "id": "q15",
+      "type": "mc",
+      "tags": [
+        "js-types"
+      ],
+      "question": "다음 코드의 출력 결과는?",
+      "code": {
+        "lang": "js",
+        "src": "console.log(1 + \"2\" - 1, true + null);"
+      },
+      "options": [
+        "`121 NaN`",
+        "`2 1`",
+        "`11 NaN`",
+        "`11 1`"
+      ],
+      "answer": 3,
+      "explain": "`1 + \"2\"`는 문자열 연결이라 `\"12\"`가 되고, `- 1`에서 다시 숫자로 바뀌어 11이 된다. `true + null`은 둘 다 숫자로 바뀌어 1 + 0 = 1이다. `null`은 숫자로 바꾸면 0이고, `NaN`이 되는 것은 `undefined`다."
+    },
+    {
+      "id": "q16",
+      "type": "mc",
+      "tags": [
+        "js-types"
+      ],
+      "question": "다음 코드의 출력 결과는?",
+      "code": {
+        "lang": "js",
+        "src": "const count = 0;\nconst a = count || 10;\nconst b = count ?? 10;\nconsole.log(a, b);"
+      },
+      "options": [
+        "`0 10`",
+        "`10 0`",
+        "`10 10`",
+        "`0 0`"
+      ],
+      "answer": 1,
+      "explain": "`||`는 왼쪽이 falsy면 오른쪽을 고른다. 0은 falsy라 `a`는 10이다. `??`는 왼쪽이 `null`이나 `undefined`일 때만 오른쪽을 고르므로, 0을 그대로 두어 `b`는 0이다."
+    },
+    {
+      "id": "q17",
+      "type": "mc",
+      "tags": [
+        "js-function"
+      ],
+      "question": "다음 코드의 출력 결과는?",
+      "code": {
+        "lang": "js",
+        "src": "console.log(typeof hello, typeof bye);\n\nfunction hello() {}\nvar bye = function () {};"
+      },
+      "options": [
+        "`function undefined`",
+        "`function function`",
+        "`undefined undefined`",
+        "`ReferenceError` 발생"
+      ],
+      "answer": 0,
+      "explain": "함수 선언문 `hello`는 실행 전에 함수로 준비되므로 `\"function\"`이다. `var bye`는 변수만 먼저 준비되고 값은 `undefined`라서, 대입 줄에 닿기 전에는 `\"undefined\"`다."
+    },
+    {
+      "id": "q18",
+      "type": "mc",
+      "tags": [
+        "js-function"
+      ],
+      "question": "다음 코드의 출력 결과는?",
+      "code": {
+        "lang": "js",
+        "src": "function show(a, b = 5, ...rest) {\n  console.log(a, b, rest);\n}\nshow(1, undefined, 3, 4);"
+      },
+      "options": [
+        "`1 undefined [3, 4]`",
+        "`1 5 [undefined, 3, 4]`",
+        "`1 5 [3, 4]`",
+        "`1 3 [4]`"
+      ],
+      "answer": 2,
+      "explain": "기본값은 인자가 `undefined`일 때 쓰이므로 `b`는 5다. 나머지 매개변수 `...rest`는 앞의 매개변수가 가져간 뒤 남은 인자 3, 4를 배열로 모은다."
+    },
+    {
+      "id": "q19",
+      "type": "mc",
+      "tags": [
+        "js-array-object"
+      ],
+      "question": "다음 코드의 출력 결과는?",
+      "code": {
+        "lang": "js",
+        "src": "const a = [1, 2];\nconst b = a;\nconst c = [...a];\n\nb.push(3);\nconsole.log(a.length, c.length);"
+      },
+      "options": [
+        "`2 2`",
+        "`3 2`",
+        "`3 3`",
+        "`2 3`"
+      ],
+      "answer": 1,
+      "explain": "`b = a`는 같은 배열의 주소를 복사하므로 `b.push(3)`이 `a`도 바꾼다. `c`는 스프레드로 만든 새 배열이라 영향을 받지 않는다."
+    },
+    {
+      "id": "q20",
+      "type": "mc",
+      "tags": [
+        "js-this"
+      ],
+      "question": "다음 코드의 출력 결과는?",
+      "code": {
+        "lang": "js",
+        "src": "const user = { name: \"Kim\", hi() { return this.name; } };\nconst other = { name: \"Lee\" };\n\nconst bound = user.hi.bind(other);\nconsole.log(user.hi(), bound(), user.hi.call(other));"
+      },
+      "options": [
+        "`Kim Kim Kim`",
+        "`Kim Kim Lee`",
+        "`Lee Lee Lee`",
+        "`Kim Lee Lee`"
+      ],
+      "answer": 3,
+      "explain": "`user.hi()`는 점 왼쪽인 `user`가 `this`라서 Kim이다. `bind(other)`로 만든 함수와 `call(other)`는 `this`를 `other`로 정해 주므로 둘 다 Lee다."
+    },
+    {
+      "id": "q21",
+      "type": "mc",
+      "tags": [
+        "js-dom"
+      ],
+      "question": "다음 코드를 실행한 뒤 화면에 보이는 것은?",
+      "code": {
+        "lang": "js",
+        "src": "// <p id=\"msg\"></p>\nconst msg = document.querySelector(\"#msg\");\nmsg.textContent = \"<b>Hi</b>\";"
+      },
+      "options": [
+        "`<b>Hi</b>` 글자가 태그째 그대로 보인다.",
+        "`Hi`만 굵은 글씨로 바뀌어 보인다.",
+        "문단이 빈 채로 아무것도 보이지 않는다.",
+        "문자열 안의 태그 때문에 `TypeError`가 난다."
+      ],
+      "answer": 0,
+      "explain": "`textContent`는 넣은 문자열을 HTML로 해석하지 않고 글자 그대로 넣는다. 태그로 해석해 굵게 보이게 하는 것은 `innerHTML`이다. 그래서 사용자 입력을 넣을 때는 `textContent`가 안전하다."
+    },
+    {
+      "id": "q22",
+      "type": "mc",
+      "tags": [
+        "js-dom"
+      ],
+      "question": "다음 코드의 출력 결과는?",
+      "code": {
+        "lang": "js",
+        "src": "// <input id=\"age\" value=\"1\">\nconst input = document.querySelector(\"#age\");\ninput.value = \"20\";\n\nconsole.log(input.getAttribute(\"value\"), input.value);"
+      },
+      "options": [
+        "`20 20`",
+        "`1 1`",
+        "`20 1`",
+        "`1 20`"
+      ],
+      "answer": 3,
+      "explain": "`input.value`(property)는 지금 입력칸의 실제 값이고, `getAttribute(\"value\")`는 HTML에 처음 적힌 값이다. property를 바꿔도 attribute는 바뀌지 않으므로 1과 20이 출력된다."
+    },
+    {
+      "id": "q23",
+      "type": "mc",
+      "tags": [
+        "js-event"
+      ],
+      "question": "버튼을 클릭했을 때 출력 결과는?",
+      "code": {
+        "lang": "js",
+        "src": "// <div id=\"outer\"><button id=\"btn\">OK</button></div>\nconst outer = document.querySelector(\"#outer\");\n\nouter.addEventListener(\"click\", (e) => {\n  console.log(e.target.id, e.currentTarget.id);\n});"
+      },
+      "options": [
+        "`outer outer`",
+        "`btn btn`",
+        "`btn outer`",
+        "`outer btn`"
+      ],
+      "answer": 2,
+      "explain": "버튼에서 일어난 클릭이 버블링으로 `#outer`의 리스너까지 올라온다. `target`은 실제로 클릭된 버튼, `currentTarget`은 리스너를 건 `#outer`다."
+    },
+    {
+      "id": "q24",
+      "type": "mc",
+      "tags": [
+        "js-async"
+      ],
+      "question": "다음 코드의 출력 순서는?",
+      "code": {
+        "lang": "js",
+        "src": "console.log(\"A\");\nsetTimeout(() => console.log(\"B\"), 0);\nPromise.resolve().then(() => console.log(\"C\"));\nconsole.log(\"D\");"
+      },
+      "options": [
+        "A B C D",
+        "A D C B",
+        "A D B C",
+        "A C D B"
+      ],
+      "answer": 1,
+      "explain": "동기 코드 A, D가 먼저 끝난다. 그다음 이벤트 루프는 Promise의 `then` 콜백이 들어가는 마이크로태스크 큐를 `setTimeout` 콜백이 들어가는 태스크 큐보다 먼저 비운다. 그래서 C가 B보다 먼저다."
+    },
+    {
+      "id": "q25",
+      "type": "mc",
+      "tags": [
+        "js-fetch"
+      ],
+      "question": "서버가 **404**로 응답할 때 다음 코드의 출력 결과는?",
+      "code": {
+        "lang": "js",
+        "src": "fetch(\"/api/none\")\n  .then((res) => console.log(\"then\", res.ok))\n  .catch(() => console.log(\"catch\"));"
+      },
+      "options": [
+        "`then false`",
+        "`catch`",
+        "`then true`",
+        "`then false` 다음 `catch`"
+      ],
+      "answer": 0,
+      "explain": "`fetch`는 서버가 응답만 하면 404·500이어도 fulfilled가 되어 `then`으로 간다. 대신 `res.ok`가 false다. `catch`로 가는 것은 네트워크 장애처럼 응답을 아예 받지 못했을 때다."
+    },
+    {
+      "id": "s1",
+      "type": "short",
+      "tags": [
+        "js-storage"
+      ],
+      "question": "다음 코드의 출력 결과를 쓰시오.",
+      "code": {
+        "lang": "js",
+        "src": "const user = { name: \"Kim\" };\nlocalStorage.setItem(\"user\", user);\nconsole.log(localStorage.getItem(\"user\"));"
+      },
+      "answers": [
+        "[object Object]"
+      ],
+      "explain": "Web Storage에는 문자열만 저장된다. 객체를 그대로 넣으면 `String(user)`처럼 바뀌어 `\"[object Object]\"`가 저장된다. 객체는 `JSON.stringify`로 바꿔 저장해야 한다."
+    },
+    {
+      "id": "s2",
+      "type": "short",
+      "tags": [
+        "js-bom"
+      ],
+      "question": "주소가 `https://shop.example.com:8080/items/list?page=3#top`인 페이지에서 `location.search`의 값을 쓰시오.",
+      "answers": [
+        "?page=3"
+      ],
+      "explain": "`search`는 `?`부터 `#` 앞까지의 쿼리 문자열이다. `#top`은 `location.hash`, `/items/list`는 `location.pathname`이다."
+    },
+    {
+      "id": "s3",
+      "type": "short",
+      "tags": [
+        "js-array-object"
+      ],
+      "question": "다음 코드의 출력 결과를 쓰시오.",
+      "code": {
+        "lang": "js",
+        "src": "const nums = [3, 8, 12, 5];\nconst v = nums.find((n) => n > 4);\nconst i = nums.findIndex((n) => n > 10);\nconsole.log(v + i);"
+      },
+      "answers": [
+        "10"
+      ],
+      "explain": "`find`는 조건에 맞는 첫 **값** 8을, `findIndex`는 조건에 맞는 첫 **위치** 2(12의 위치)를 돌려준다. 8 + 2 = 10이다."
+    },
+    {
+      "id": "s4",
+      "type": "short",
+      "tags": [
+        "css-grid"
+      ],
+      "question": "`grid-template-columns: 1fr 1fr 1fr 1fr;`을 함수를 써서 줄여 쓰려고 한다. `grid-template-columns: ______;`의 빈칸에 들어갈 값을 쓰시오.",
+      "answers": [
+        "repeat(4, 1fr)",
+        "repeat(4,1fr)",
+        "repeat(4 ,1fr)"
+      ],
+      "explain": "`repeat(횟수, 크기)`는 같은 트랙을 여러 번 쓸 때 줄여 쓰는 함수다. `repeat(4, 1fr)`은 `1fr`을 네 번 쓴 것과 같다."
+    },
+    {
+      "id": "s5",
+      "type": "short",
+      "tags": [
+        "js-event"
+      ],
+      "question": "입력칸에 글자를 칠 때마다(값이 바뀔 때마다) **바로바로** 발생하는 이벤트 이름을 쓰시오.",
+      "answers": [
+        "input"
+      ],
+      "explain": "`input` 이벤트는 값이 바뀔 때마다 즉시 발생한다. 비슷한 `change`는 값이 바뀐 뒤 포커스를 잃거나 Enter를 눌렀을 때 한 번 발생한다."
+    },
+    {
+      "id": "e1",
+      "type": "essay",
+      "tags": [
+        "js-async",
+        "js-fetch"
+      ],
+      "question": "다음 함수는 게시글 목록을 받아 개수를 출력하려고 하지만 제대로 동작하지 않는다. **문제점 두 가지**를 찾아 이유를 설명하고, 서버가 오류(404 등)로 응답한 경우까지 처리하도록 고치는 방법을 서술하시오.",
+      "code": {
+        "lang": "js",
+        "src": "async function loadPosts() {\n  const res = fetch(\"/api/posts\");\n  const data = res.json();\n  console.log(data.length);\n}"
+      },
+      "model": "첫째, `fetch()`는 Promise를 돌려주는데 `await` 없이 받았다. 그래서 `res`는 응답 객체가 아니라 Promise이고, `res.json`이 없어 오류가 난다. `const res = await fetch(...)`로 고쳐야 한다.\n\n둘째, `res.json()`도 Promise를 돌려준다. `await` 없이 받으면 `data`가 Promise라 `data.length`는 `undefined`다. `const data = await res.json()`으로 고쳐야 한다.\n\n또 `fetch`는 404·500 응답에도 reject되지 않는다. 그래서 `if (!res.ok)`로 상태를 확인해 오류를 던지고, 전체를 `try ~ catch`로 감싸 네트워크 오류와 함께 처리한다.",
+      "points": [
+        "`fetch()` 앞에 `await`가 없어 응답 대신 Promise를 받았다고 썼다",
+        "`res.json()`도 Promise라 `await`가 필요하다고 썼다",
+        "404·500은 reject가 아니므로 `res.ok`(또는 status)를 확인해야 한다고 썼다",
+        "`try ~ catch`로 오류를 처리하는 방법을 썼다"
+      ]
+    },
+    {
+      "id": "e2",
+      "type": "essay",
+      "tags": [
+        "css-flex",
+        "css-grid"
+      ],
+      "question": "Flexbox와 Grid의 차이를 **1차원/2차원** 배치라는 관점에서 설명하고, 각각이 더 알맞은 화면 구성 예를 하나씩 들어 서술하시오.",
+      "model": "Flexbox는 한 번에 한 방향(가로 또는 세로)만 다루는 1차원 배치다. 주축을 따라 아이템을 늘어놓고, 남는 공간을 나누거나 정렬하는 데 강하다.\n\nGrid는 행과 열을 함께 정하는 2차원 배치다. 칸을 먼저 나누고 아이템을 원하는 칸이나 여러 칸에 걸쳐 놓을 수 있다.\n\n그래서 상단 메뉴 버튼을 한 줄로 늘어놓고 양 끝을 맞추는 것처럼 한 줄 정렬에는 Flexbox가 알맞다. 머리말·사이드바·본문·꼬리말로 나뉜 페이지 전체 틀이나 사진 카드 목록처럼 행과 열을 함께 맞춰야 할 때는 Grid가 알맞다.",
+      "points": [
+        "Flexbox는 한 방향만 다루는 1차원 배치라고 썼다",
+        "Grid는 행과 열을 함께 다루는 2차원 배치라고 썼다",
+        "Flexbox가 알맞은 화면 예를 들었다",
+        "Grid가 알맞은 화면 예를 들었다"
+      ]
+    }
+  ]
+}
