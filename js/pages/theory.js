@@ -7,7 +7,7 @@
 import { siteUrl, SITE_NAME } from "../app.js";
 import { loadSubjects, loadExamList, loadExamSet, loadTheory } from "../data.js";
 import * as store from "../store.js";
-import { escapeHtml, md, mdInline, codeBlock, enableCopyButtons, renderError } from "../render.js";
+import { escapeHtml, md, mdInline, mdTable, codeBlock, enableCopyButtons, renderError } from "../render.js";
 import { formatScore } from "../quiz.js";
 
 const root = document.getElementById("theory-root");
@@ -70,8 +70,30 @@ async function tagStats() {
   return stats;
 }
 
+/* ---------- Part 묶음 ----------
+   theory.parts = [{ id, title, units: [단원 id...] }] (선택)
+   - parts 가 없으면 Part 제목 없이 단원만 차례로 보여 준다
+   - parts 에 없는 단원(로컬 전용 등)은 마지막 묶음으로 모은다 */
+function groupUnits(theory) {
+  const units = theory.units || [];
+  if (!Array.isArray(theory.parts) || theory.parts.length === 0) return [{ id: "", title: "", units }];
+  const byId = new Map(units.map((u) => [u.id, u]));
+  const used = new Set();
+  const parts = theory.parts.map((p) => {
+    const list = (p.units || []).map((id) => byId.get(id)).filter((u) => u && !used.has(u.id));
+    list.forEach((u) => used.add(u.id));
+    return { id: p.id, title: p.title, units: list };
+  });
+  const rest = units.filter((u) => !used.has(u.id));
+  if (rest.length) {
+    const allPrivate = rest.every((u) => u.isPrivate);
+    parts.push({ id: "part-etc", title: allPrivate ? "로컬 전용 단원" : "기타", units: rest });
+  }
+  return parts.filter((p) => p.units.length);
+}
+
 /* ---------- 단원 ---------- */
-function unitHtml(unit, stat) {
+function unitHtml(unit, stat, no) {
   const list = (items) => (items || []).map((p) => `<li>${mdInline(p)}</li>`).join("");
   const count = stat ? stat.count : 0;
   const mine =
@@ -81,9 +103,10 @@ function unitHtml(unit, stat) {
 
   return `
     <section class="card unit" id="${escapeHtml(unit.id)}" aria-labelledby="${escapeHtml(unit.id)}-title">
-      <h2 id="${escapeHtml(unit.id)}-title">${escapeHtml(unit.title)}
-        ${unit.isPrivate ? '<span class="tag tag-private">로컬 전용</span>' : ""}</h2>
-      ${unit.points && unit.points.length ? `<div class="unit-points"><h3>핵심 포인트</h3><ul>${list(unit.points)}</ul></div>` : ""}
+      <h3 class="unit-title" id="${escapeHtml(unit.id)}-title">${no ? `<span class="unit-no">${no}</span>` : ""}${escapeHtml(unit.title)}
+        ${unit.isPrivate ? '<span class="tag tag-private">로컬 전용</span>' : ""}</h3>
+      ${unit.points && unit.points.length ? `<div class="unit-points"><h4>핵심 포인트</h4><ul>${list(unit.points)}</ul></div>` : ""}
+      ${(unit.tables || []).map(mdTable).join("")}
       ${unit.body ? `<div class="unit-body">${md(unit.body)}</div>` : ""}
       ${(unit.examples || []).map(codeBlock).join("")}
       ${unit.pitfalls && unit.pitfalls.length ? `<div class="warn"><p class="box-title">자주 하는 실수</p><ul>${list(unit.pitfalls)}</ul></div>` : ""}
@@ -106,18 +129,48 @@ async function showSubject() {
   document.querySelector(".page-head h1").textContent = `${title} 이론`;
   document.querySelector(".page-head p").textContent = "단원별 핵심 요약이에요. 단원 끝에서 그 단원 문제만 모아 풀 수 있어요.";
 
-  const toc = theory.units
-    .map((u) => `<li><a href="#${encodeURIComponent(u.id)}" data-toc="${escapeHtml(u.id)}">${escapeHtml(u.title)}</a></li>`)
+  // Part 번호 · 단원 번호 (예: Part 1 → 1-1, 1-2 …). Part 가 하나뿐이고 제목이 없으면 단원 번호만
+  const parts = groupUnits(theory);
+  const titled = parts.some((p) => p.title);
+  const unitNo = (pi, ui) => (titled ? `${pi + 1}-${ui + 1}` : `${ui + 1}`);
+  const tocUnits = (p, pi) =>
+    p.units
+      .map(
+        (u, ui) =>
+          `<li><a href="#${encodeURIComponent(u.id)}" data-toc="${escapeHtml(u.id)}"><span class="toc-no">${unitNo(pi, ui)}</span>${escapeHtml(u.title)}</a></li>`
+      )
+      .join("");
+  const toc = titled
+    ? parts
+        .map(
+          (p, pi) => `
+          <li class="toc-part">
+            <a class="toc-part-title" href="#${encodeURIComponent(p.id)}">Part ${pi + 1}. ${escapeHtml(p.title)}</a>
+            <ol>${tocUnits(p, pi)}</ol>
+          </li>`
+        )
+        .join("")
+    : tocUnits(parts[0], 0);
+  const body = parts
+    .map((p, pi) => {
+      const units = p.units.map((u, ui) => unitHtml(u, stats[u.id], unitNo(pi, ui))).join("");
+      if (!titled) return units;
+      return `
+        <section class="part" id="${escapeHtml(p.id)}" aria-labelledby="${escapeHtml(p.id)}-title">
+          <h2 class="part-title" id="${escapeHtml(p.id)}-title"><span class="part-no">Part ${pi + 1}</span>${escapeHtml(p.title)}</h2>
+          ${units}
+        </section>`;
+    })
     .join("");
   root.innerHTML = `
     <div class="theory-layout">
       <nav class="toc" aria-label="단원 목차">
         <details class="toc-box" open>
-          <summary>단원 목차 (${theory.units.length})</summary>
-          <ol>${toc}</ol>
+          <summary>단원 목차 (${titled ? `Part ${parts.length} · ` : ""}단원 ${theory.units.length})</summary>
+          <ol class="${titled ? "toc-parts" : ""}">${toc}</ol>
         </details>
       </nav>
-      <div class="units">${theory.units.map((u) => unitHtml(u, stats[u.id])).join("")}</div>
+      <div class="units">${body}</div>
     </div>`;
 
   // 좁은 화면에서는 목차를 접어 두고, 창 크기가 바뀌면 다시 맞춘다
@@ -137,6 +190,7 @@ function highlightToc() {
       for (const entry of entries) {
         if (!entry.isIntersecting) continue;
         links.forEach((a) => a.classList.toggle("on", a.dataset.toc === entry.target.id));
+        root.querySelectorAll(".toc-part").forEach((p) => p.classList.toggle("on", !!p.querySelector("a.on")));
       }
     },
     { rootMargin: "-80px 0px -70% 0px" }

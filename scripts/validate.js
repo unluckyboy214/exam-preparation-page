@@ -56,7 +56,10 @@ function unitsOf(subject) {
     const file = path.join(ROOT, dir, subject + ".json");
     if (!fs.existsSync(file)) continue;
     try {
-      for (const u of readJson(file).units || []) ids.add(u.id);
+      const theory = readJson(file);
+      for (const u of theory.units || []) ids.add(u.id);
+      if (dir === "data/theory") checkParts(theory, `${dir}/${subject}.json`);
+      checkTables(theory, `${dir}/${subject}.json`);
     } catch (e) {
       errors.push(`${dir}/${subject}.json → 읽을 수 없음 (${e.message})`);
     }
@@ -64,6 +67,50 @@ function unitsOf(subject) {
   if (ids.size === 0) warnings.push(`과목 "${subject}" 의 이론 파일이 없어 태그를 확인하지 못했어요 (data/theory/${subject}.json)`);
   theoryUnits[subject] = ids;
   return ids;
+}
+
+// 이론 목차의 Part 묶음(선택): 단원 id 가 실제로 있고, 한 Part 에만 들어 있는지
+function checkParts(theory, where) {
+  if (theory.parts === undefined) return;
+  if (!Array.isArray(theory.parts)) return errors.push(`${where} → parts 는 배열이어야 함`);
+  const unitIds = new Set((theory.units || []).map((u) => u.id));
+  const placed = new Map(); // 단원 id → Part id
+  for (const p of theory.parts) {
+    if (!p || !isStr(p.id) || !isStr(p.title) || !Array.isArray(p.units)) {
+      errors.push(`${where} → parts 의 각 항목에는 id, title, units(배열)가 있어야 함`);
+      continue;
+    }
+    for (const id of p.units) {
+      if (!unitIds.has(id)) errors.push(`${where} → Part "${p.id}" 의 단원 "${id}" 가 units 에 없음`);
+      else if (placed.has(id)) errors.push(`${where} → 단원 "${id}" 가 Part "${placed.get(id)}" 와 "${p.id}" 에 중복`);
+      placed.set(id, p.id);
+    }
+  }
+  for (const id of unitIds) {
+    if (!placed.has(id)) warnings.push(`${where} → 단원 "${id}" 가 어느 Part 에도 없음 (목차 끝 "기타"에 나옴)`);
+  }
+}
+
+// 단원 표(선택): { caption?, head: [칸...], rows: [[칸...], ...] }, 모든 행의 칸 수는 head 와 같아야 함
+function checkTables(theory, where) {
+  for (const u of theory.units || []) {
+    if (u.tables === undefined) continue;
+    if (!Array.isArray(u.tables)) {
+      errors.push(`${where} → 단원 "${u.id}" 의 tables 는 배열이어야 함`);
+      continue;
+    }
+    u.tables.forEach((tb, i) => {
+      const name = `${where} → 단원 "${u.id}" 의 표 ${i + 1}${tb && tb.caption ? ` "${tb.caption}"` : ""}`;
+      if (!tb || !isStrList(tb.head, 1) || !Array.isArray(tb.rows) || tb.rows.length === 0) {
+        return errors.push(`${name} → head(문자열 배열)와 rows(배열)가 있어야 함`);
+      }
+      tb.rows.forEach((r, j) => {
+        if (!Array.isArray(r) || r.length !== tb.head.length || !r.every((c) => typeof c === "string")) {
+          errors.push(`${name} → ${j + 1}번째 행의 칸 수가 head(${tb.head.length}칸)와 다르거나 문자열이 아님`);
+        }
+      });
+    });
+  }
 }
 
 /* ---------- 문제 한 개 검사 ---------- */

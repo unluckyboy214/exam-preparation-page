@@ -33,6 +33,8 @@ SSAFY 과목평가, 자격증 등 여러 시험을 대비하는 사이트입니�
 
 `private/` 에 넣은 강의 자료로 AI(Claude Code, Codex)에게 예상 문제 세트를 2~3개씩 만들게 하려면
 [`QUESTION_MAKER.md`](QUESTION_MAKER.md) 의 "0. 요청하는 법" 양식을 복사해 요청하면 됩니다.
+같은 자료로 이론 요약(`data/theory/`)을 만들거나 보충하게 하려면 [`THEORY_MAKER.md`](THEORY_MAKER.md) 의 양식을 쓰면 됩니다.
+시험 구성이나 목차를 함께 주면 요약 목차를 그에 맞춰 구성합니다.
 
 ## 공개 규칙
 

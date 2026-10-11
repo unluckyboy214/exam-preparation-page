@@ -76,7 +76,7 @@
       "id": "q5",
       "type": "mc",
       "tags": [
-        "html-form"
+        "html-input"
       ],
       "question": "`<label for=\"email\">이메일</label>`을 눌렀을 때 입력칸이 선택되려면 `<input>`에 어떤 속성이 있어야 하는가?",
       "options": [
@@ -420,7 +420,7 @@
       "id": "s1",
       "type": "short",
       "tags": [
-        "html-form"
+        "html-input"
       ],
       "question": "값을 입력하지 않으면 form이 전송되지 않도록, `<input>`에 값 없이 이름만 적는 **속성 이름**을 쓰시오.",
       "answers": [

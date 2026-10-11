@@ -193,12 +193,15 @@ QUESTION_MAKER.md 를 읽고 그대로 문제 세트를 만들어 줘.
 
 ## 7. 단원이나 과목이 없을 때
 
-- **새 단원**: `data/theory/<과목>.json`의 `units` 끝에 `{ "id": "...", "title": "...", "points": [], "body": "", "pitfalls": [], "examples": [] }`를 추가한다.
+- **새 단원**: `data/theory/<과목>.json`의 `units`에 `{ "id": "...", "title": "...", "points": [], "body": "", "pitfalls": [], "examples": [] }`를 추가하고, 알맞은 Part(`parts[].units`)의 원하는 위치에도 id를 넣는다. `units` 배열도 같은 순서로 맞춘다.
+  - 한 단원에는 주제 하나만 담는다. 단원이 여러 주제로 커지면 새 단원으로 나누고, 해당 문항의 `tags`를 새 단원으로 옮긴다.
   - id는 `<영역>-<주제>` 형태의 소문자-하이픈으로 쓴다(예: `js-closure`).
   - 이미 있는 단원의 id는 바꾸지 않는다. 사용자 기록과 문제 태그가 이 id를 쓴다.
+  - 비교·속성 목록처럼 표가 어울리는 내용은 `tables`로 쓰고, 표에 담은 내용을 `body` 문장으로 다시 풀지 않는다.
   - 단원 본문은 자료를 옮기지 않고 직접 쓴다. 이번 작업에서 쓰지 않았다면 비워 두고 보고한다.
 - **새 과목**: `data/subjects.json`의 `subjects`에 `{ "id": "<과목>", "group": "<시험 id>", "title": "<과목 이름>", "description": "<다루는 범위>" }`를 추가하고, 위와 같이 `data/theory/<과목>.json`을 만든다.
   - 과목 id는 모든 시험을 통틀어 유일해야 한다. 새 시험의 과목은 `adsp-analysis`처럼 시험 id를 앞에 붙인다.
   - 자료 폴더 이름(`private/source/pdf/<과목>/`)도 이 과목 id와 같게 맞춘다.
 - **새 시험(단체)**: SSAFY가 아닌 시험(ADsP, 정보처리기사 등)이면 `groups`에 `{ "id": "adsp", "title": "ADsP", "description": "데이터분석 준전문가" }`처럼 먼저 추가한다. 화면에는 `groups`에 적은 순서대로 나온다.
 - 이론 파일을 고치기 전에 `PROGRESS.md`에서 그 파일을 맡는다.
+- 단원 내용을 제대로 채우거나 목차를 다시 짜야 하면 `THEORY_MAKER.md`를 따른다.

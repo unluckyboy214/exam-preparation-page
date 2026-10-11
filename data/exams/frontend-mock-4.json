@@ -12,8 +12,8 @@
       "id": "q1",
       "type": "mc",
       "tags": [
-        "html-form",
-        "js-event"
+        "html-input",
+        "html-form"
       ],
       "question": "다음 form에 대한 설명으로 **옳은** 것은? (입력칸은 비어 있다)",
       "code": {
@@ -106,7 +106,7 @@
       "id": "q6",
       "type": "mc",
       "tags": [
-        "css-box-model",
+        "css-margin-collapse",
         "css-flex"
       ],
       "question": "다음 코드에서 두 `.item` 사이의 세로 간격은?",
@@ -234,7 +234,7 @@
       "tags": [
         "js-types"
       ],
-      "question": "다음 중 결과가 **`true`**인 식은?",
+      "question": "다음 중 결과가 `true`인 식은?",
       "options": [
         "`null == 0`",
         "`NaN === NaN`",
@@ -288,8 +288,8 @@
       "id": "q16",
       "type": "mc",
       "tags": [
-        "js-function",
-        "js-async"
+        "js-variable",
+        "js-event-loop"
       ],
       "question": "다음 두 반복문의 출력을 바르게 짝지은 것은?",
       "code": {
@@ -447,7 +447,8 @@
       "id": "q24",
       "type": "mc",
       "tags": [
-        "js-async"
+        "js-async",
+        "js-event-loop"
       ],
       "question": "다음 코드의 출력 순서는?",
       "code": {
@@ -564,7 +565,7 @@
         "js-event",
         "js-dom"
       ],
-      "question": "할 일 목록 `<ul id=\"todo\">`에 `<li>`가 계속 추가된다. 각 `li`를 클릭하면 `done` 클래스를 켜고 끄려고 한다. `li`마다 리스너를 다는 대신 **`ul`에 리스너 하나만 다는 방법**(이벤트 위임)을 **버블링**과 **`event.target`** 을 이용해 설명하고, `li`마다 리스너를 다는 방식보다 나은 점을 서술하시오.",
+      "question": "할 일 목록 `<ul id=\"todo\">`에 `<li>`가 계속 추가된다. 각 `li`를 클릭하면 `done` 클래스를 켜고 끄려고 한다. `li`마다 리스너를 다는 대신 `ul`에 **리스너 하나만 다는 방법**(이벤트 위임)을 **버블링**과 `event.target`을 이용해 설명하고, `li`마다 리스너를 다는 방식보다 나은 점을 서술하시오.",
       "model": "`li`에서 일어난 클릭은 버블링으로 부모 `ul`까지 올라온다. 그래서 `ul`에 클릭 리스너를 하나만 걸어도 모든 `li`의 클릭을 받을 수 있다.\n\n리스너 안에서 `event.target`은 실제로 클릭된 요소다. `li` 안에 다른 태그가 있을 수 있으므로 `event.target.closest(\"li\")`로 가장 가까운 `li`를 찾고, 있으면 `classList.toggle(\"done\")`을 호출한다.\n\n이 방식은 나중에 추가된 `li`도 따로 리스너를 달 필요 없이 바로 동작한다. 또 리스너가 하나뿐이라 메모리를 덜 쓰고 코드도 한 곳에서 관리할 수 있다.",
       "points": [
         "`li`의 클릭이 버블링으로 `ul`까지 전달된다고 썼다",
@@ -578,7 +579,7 @@
       "id": "e2",
       "type": "essay",
       "tags": [
-        "js-async"
+        "js-event-loop"
       ],
       "question": "다음 코드에서 `setTimeout`의 지연 시간이 0인데도 `promise`가 `timeout`보다 먼저 출력된다. 그 이유를 **콜 스택**, **태스크 큐**, **마이크로태스크 큐**, **이벤트 루프**를 사용해 순서대로 서술하시오.",
       "code": {

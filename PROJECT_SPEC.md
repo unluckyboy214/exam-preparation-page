@@ -120,7 +120,7 @@
 - 상단 메뉴: 홈 · 이론 · 문제 · 내 기록, 테마 전환 버튼.
 
 ### 5-2. 이론 (`theory.html`)
-- 과목 선택 → 단원 목차(왼쪽 또는 상단) + 본문.
+- 과목 선택 → 단원 목차(왼쪽 또는 상단) + 본문. 목차는 **Part(큰 영역) → 단원** 2단계로 보여 주고 단원에 `1-2`처럼 번호를 붙인다(6-3 `parts`).
 - 단원마다 "핵심 포인트", "자주 하는 실수", 짧은 코드 예시.
 - 단원 끝에 **이 단원 문제 풀기** 버튼 → 해당 태그(`tags`)가 붙은 문제만 모아 풀기.
 - 내용은 `data/theory/<과목>.json`(아래 6-3) 에서 읽는다. 원본 자료를 옮긴 요약은 `private/theory/` 로.
@@ -231,11 +231,17 @@
 {
   "subject": "frontend",
   "title": "프론트엔드",
+  "parts": [
+    { "id": "part-css-basic", "title": "CSS 선택자와 우선순위", "units": ["css-selector", "css-specificity"] }
+  ],
   "units": [
     {
       "id": "css-specificity",
       "title": "CSS 우선순위",
       "points": ["`!important` > 인라인 > id > class > 요소"],
+      "tables": [
+        { "caption": "명시도 계산 예", "head": ["선택자", "명시도"], "rows": [["`#a .b p`", "1-1-1"]] }
+      ],
       "body": "본문 (마크다운-lite)",
       "pitfalls": ["명시도가 같을 때만 나중 규칙이 이긴다"],
       "examples": [{ "lang": "css", "src": "#a { color: red; }" }]
@@ -243,11 +249,17 @@
   ]
 }
 ```
+- `parts`(선택): 목차의 Part 묶음. `units`에는 단원 id를 목차 순서대로 적는다. 한 단원은 한 Part에만 넣는다. `parts`가 없으면 단원만 차례로 보이고, 어느 Part에도 없는 단원(로컬 전용 등)은 목차 끝 "기타"에 모인다.
+- `units` 배열 순서도 `parts` 순서와 맞춰 둔다(파일을 읽기 쉽게).
+- `tables`(선택): 비교·정리할 내용은 문장으로 풀지 않고 표로 쓴다. 각 표는 `caption`(선택), `head`(칸 제목), `rows`(행 배열)이고 모든 행의 칸 수는 `head`와 같다. 칸 글자는 마크다운-lite 한 줄. 화면에서는 핵심 포인트 다음에 나온다.
+- 마크다운-lite에서 백틱 자체를 보여 주려면 두 겹으로 감싼다: ``` `` `${a}` `` ```.
 
 ### 6-4. `scripts/validate.js` 가 검사할 것
 - 필수 필드, `type`별 필수 필드(`mc`: options 2개 이상 + answer 범위, `short`: answers 1개 이상, `essay`: model + points).
 - 세트 안 `id` 중복, 공개 폴더의 `source` 값.
 - `tags`가 이론 파일에 없는 단원이면 경고.
+- 이론 `parts`의 단원 id가 실제로 있는지, 두 Part에 중복되지 않는지(오류). Part에 빠진 단원은 경고.
+- 이론 `tables`의 모양(`head`, `rows`, 행마다 칸 수 일치)(오류).
 - 통과하면 `index.json` 을 다시 쓴다.
 
 ## 7. 기록 저장 (localStorage)

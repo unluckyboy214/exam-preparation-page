@@ -173,7 +173,7 @@
       "id": "q9",
       "type": "mc",
       "tags": [
-        "css-box-model"
+        "css-margin-collapse"
       ],
       "question": "두 `span`이 공백 없이 붙어 있다. 글자 A와 B의 테두리 사이 **가로 간격**은?",
       "code": {
@@ -369,7 +369,7 @@
       "id": "q19",
       "type": "mc",
       "tags": [
-        "js-array-object"
+        "js-copy"
       ],
       "question": "다음 코드의 출력 결과는?",
       "code": {
@@ -469,7 +469,7 @@
       "id": "q24",
       "type": "mc",
       "tags": [
-        "js-async"
+        "js-event-loop"
       ],
       "question": "다음 코드의 출력 순서는?",
       "code": {

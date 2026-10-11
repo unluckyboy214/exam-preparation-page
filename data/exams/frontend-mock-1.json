@@ -28,7 +28,7 @@
       "id": "q2",
       "type": "mc",
       "tags": [
-        "html-form"
+        "html-input"
       ],
       "question": "`<input>` 요소에 대한 설명으로 **옳은** 것은?",
       "options": [
@@ -120,7 +120,7 @@
       "id": "q7",
       "type": "mc",
       "tags": [
-        "css-box-model"
+        "css-margin-collapse"
       ],
       "question": "두 블록 요소가 위아래로 놓여 있을 때, `.a`와 `.b` 사이의 실제 간격은?",
       "code": {
@@ -176,6 +176,7 @@
       "id": "q10",
       "type": "mc",
       "tags": [
+        "js-variable",
         "js-types"
       ],
       "question": "변수 선언 키워드와 자료형에 대한 설명으로 **옳은** 것은?",
@@ -212,7 +213,7 @@
       "id": "q12",
       "type": "mc",
       "tags": [
-        "js-array-object"
+        "js-copy"
       ],
       "question": "다음 코드의 출력 결과는?",
       "code": {
@@ -472,7 +473,7 @@
       "id": "s1",
       "type": "short",
       "tags": [
-        "html-form"
+        "html-input"
       ],
       "question": "`type=\"radio\"`인 `<input>` 여러 개 중 **하나만 선택**되도록 한 그룹으로 묶으려면, 모든 input에 같은 값을 주어야 하는 **속성 이름**은?",
       "answers": [

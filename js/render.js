@@ -19,16 +19,31 @@ export function renderError(container, error) {
 }
 
 /* ---------- 마크다운-lite ---------- */
-// 한 줄 안의 서식: `코드` 를 먼저 떼어 내고, 나머지에서만 **굵게** 처리
+// 한 줄 안의 서식: `코드` 를 자리표시로 떼어 둔 채 **굵게** 를 처리하고 다시 끼운다
+// (그래서 **`a`가 없으면** 처럼 굵게 안에 코드가 있어도 된다. 코드 안의 ** 는 그대로)
+// 백틱 자체를 보여 줄 때는 두 겹으로 감싼다: `` ` `` , `` `${a}` ``
 export function mdInline(text) {
-  return String(text ?? "")
-    .split(/(`[^`\n]+`)/g)
-    .map((part, i) =>
-      i % 2 === 1
-        ? `<code>${escapeHtml(part.slice(1, -1))}</code>`
-        : escapeHtml(part).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-    )
-    .join("");
+  const codes = [];
+  const keep = (code) => `\u0000${codes.push(code) - 1}\u0000`;
+  const marked = String(text ?? "").replace(/``[ ]?([^\n]+?)[ ]?``|`([^`\n]+)`/g, (_, double, single) => keep(double ?? single));
+  return escapeHtml(marked)
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\u0000(\d+)\u0000/g, (_, i) => `<code>${escapeHtml(codes[i])}</code>`);
+}
+
+// 표: { caption?, head: [칸...], rows: [[칸...], ...] }. 칸 글자는 마크다운-lite 한 줄
+export function mdTable(table) {
+  if (!table || !Array.isArray(table.rows)) return "";
+  const cells = (row, tag) => row.map((c) => `<${tag}>${mdInline(c)}</${tag}>`).join("");
+  const head = Array.isArray(table.head) && table.head.length ? `<thead><tr>${cells(table.head, "th")}</tr></thead>` : "";
+  const body = table.rows.map((r) => `<tr>${cells(r, "td")}</tr>`).join("");
+  return `
+    <div class="table-wrap">
+      <table class="md-table">
+        ${table.caption ? `<caption>${mdInline(table.caption)}</caption>` : ""}
+        ${head}<tbody>${body}</tbody>
+      </table>
+    </div>`;
 }
 
 // 여러 문단: 빈 줄로 나누고, 문단 안의 줄바꿈은 <br>

@@ -1431,6 +1431,37 @@ kbd {
   font-weight: 600;
 }
 
+.toc-no {
+  margin-right: 6px;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.7;
+}
+
+/* Part → 단원 2단계 목차 */
+.toc ol.toc-parts {
+  border-left: 0;
+}
+
+.toc-part + .toc-part {
+  margin-top: 10px;
+}
+
+.toc a.toc-part-title {
+  padding-left: 0;
+  margin-left: 0;
+  border-left: 0;
+  color: var(--text);
+  font-weight: 700;
+}
+
+.toc-part.on > a.toc-part-title {
+  color: var(--accent);
+}
+
+.toc-part > ol {
+  margin: 4px 0 0 2px;
+}
+
 .units {
   display: grid;
   gap: 20px;
@@ -1442,13 +1473,39 @@ kbd {
   scroll-margin-top: 72px;
 }
 
-.unit h2 {
-  margin: 0 0 12px;
-  font-size: 22px;
+.part {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+  scroll-margin-top: 72px;
+}
+
+.part + .part {
+  margin-top: 20px;
+}
+
+.part-title {
+  margin: 0;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--accent);
+  font-size: 24px;
   letter-spacing: -0.02em;
 }
 
-.unit h3 {
+.part-no,
+.unit-no {
+  margin-right: 8px;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.unit .unit-title {
+  margin: 0 0 12px;
+  font-size: 21px;
+  letter-spacing: -0.02em;
+}
+
+.unit-points h4 {
   margin: 0 0 4px;
   font-size: 14px;
   color: var(--accent);
@@ -1467,6 +1524,48 @@ kbd {
 
 .unit-body p {
   margin: 12px 0;
+}
+
+/* 이론 표 (render.js mdTable) */
+.unit .table-wrap {
+  margin: 16px 0;
+}
+
+.md-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.md-table caption {
+  margin-bottom: 6px;
+  text-align: left;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--accent);
+}
+
+.md-table th,
+.md-table td {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.md-table thead th {
+  background: var(--surface-2, var(--bg));
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.md-table tbody td:first-child {
+  font-weight: 600;
+}
+
+.md-table code {
+  white-space: nowrap;
 }
 
 .unit-foot {
