@@ -8,8 +8,8 @@
 
 ## 0. 요청하는 법 (사용자용)
 
-1. 자료를 **`private/source/pdf/<과목>/`** 에 넣는다. 새 시험(과목)이 생기면 폴더를 하나 더 만든다.
-   (예: `private/source/pdf/frontend/`, `private/source/pdf/backend/`)
+1. 자료를 **`private/source/source/<시험>/<과목>/`** 에 넣는다. 새 시험이나 과목이 생기면 폴더를 하나 더 만든다.
+   (예: `private/source/source/ssafy/frontend/`, `private/source/source/ssafy/backend/`)
    - PDF, 정리 노트(md), 실습 코드 등 무엇이든 된다. `private/`는 저장소에 올라가지 않는다.
    - **실제 시험에 나온 문제(기출)**가 들어 있으면 요청할 때 꼭 알려 준다.
 2. 아래 양식을 복사해 고친 뒤 AI에게 보낸다. 빈 칸은 지워도 된다(기본값 사용).
@@ -17,7 +17,7 @@
 ```
 QUESTION_MAKER.md 를 읽고 그대로 문제 세트를 만들어 줘.
 - 과목: frontend
-- 자료: private/source/pdf/frontend/ (폴더 전체) 또는 파일 몇 개만: private/source/pdf/frontend/ss_4_js.pdf
+- 자료: private/source/source/ssafy/frontend/ (폴더 전체) 또는 파일 몇 개만: private/source/source/ssafy/frontend/ss_4_js.pdf
 - 세트 수: 3
 - 세트당 문항: 객관식 25 · 주관식 5 · 서술형 2 / 제한 시간 60분
 - 난이도: 섞어서
@@ -65,7 +65,7 @@ QUESTION_MAKER.md 를 읽고 그대로 문제 세트를 만들어 줘.
    - `data/theory/<과목>.json` — **단원 id 목록 = 쓸 수 있는 태그**
    - `data/exams/*.json`, `private/exams/*.json` — 기존 문제(중복을 피하고, 다음 세트 번호를 정한다)
 3. **자료 읽기** — 요청에 적힌 자료를 모두 읽고 **개념 목록**을 만든다. 개념마다 단원 id를 붙인다.
-   - 자료를 따로 적지 않았으면 `private/source/pdf/<과목>/` 폴더 전체를 읽는다. 폴더 이름이 과목 id다.
+   - 자료를 따로 적지 않았으면 `private/source/source/<시험>/<과목>/` 폴더 전체를 읽는다. 위 폴더 이름은 시험 id, 아래 폴더 이름은 과목 id다.
    - 단원 목록에 없는 개념이 많으면 7장대로 새 단원을 추가한다.
    - PDF를 읽을 수 없는 도구라면 멈추고 사용자에게 텍스트로 바꿔 달라고 요청한다.
 4. **설계표 만들기** — 문항을 쓰기 전에 세트별로 "단원 × 유형 × 문항 수"를 정한다(3장 규칙).
@@ -201,7 +201,7 @@ QUESTION_MAKER.md 를 읽고 그대로 문제 세트를 만들어 줘.
   - 단원 본문은 자료를 옮기지 않고 직접 쓴다. 이번 작업에서 쓰지 않았다면 비워 두고 보고한다.
 - **새 과목**: `data/subjects.json`의 `subjects`에 `{ "id": "<과목>", "group": "<시험 id>", "title": "<과목 이름>", "description": "<다루는 범위>" }`를 추가하고, 위와 같이 `data/theory/<과목>.json`을 만든다.
   - 과목 id는 모든 시험을 통틀어 유일해야 한다. 새 시험의 과목은 `adsp-analysis`처럼 시험 id를 앞에 붙인다.
-  - 자료 폴더 이름(`private/source/pdf/<과목>/`)도 이 과목 id와 같게 맞춘다.
+  - 자료 폴더 이름(`private/source/source/<시험>/<과목>/`)도 시험 id·과목 id와 같게 맞춘다.
 - **새 시험(단체)**: SSAFY가 아닌 시험(ADsP, 정보처리기사 등)이면 `groups`에 `{ "id": "adsp", "title": "ADsP", "description": "데이터분석 준전문가" }`처럼 먼저 추가한다. 화면에는 `groups`에 적은 순서대로 나온다.
 - 이론 파일을 고치기 전에 `PROGRESS.md`에서 그 파일을 맡는다.
 - 단원 내용을 제대로 채우거나 목차를 다시 짜야 하면 `THEORY_MAKER.md`를 따른다.

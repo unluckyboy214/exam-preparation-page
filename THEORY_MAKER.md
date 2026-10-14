@@ -8,13 +8,13 @@
 
 ## 0. 요청하는 법 (사용자용)
 
-1. 자료를 `private/source/pdf/<과목>/`처럼 `private/` 아래에 넣는다. PDF, 정리 노트(md), 실습 코드 등 무엇이든 된다.
+1. 자료를 `private/source/source/<시험>/<과목>/`처럼 `private/` 아래에 넣는다. PDF, 정리 노트(md), 실습 코드 등 무엇이든 된다.
 2. 아래 양식을 복사해 고친 뒤 AI에게 보낸다. 시험 구성·목차 줄은 없으면 지워도 된다.
 
 ```
 THEORY_MAKER.md 를 읽고 그대로 이론 요약을 만들어 줘.
 - 과목: frontend
-- 자료 경로: private/source/pdf/frontend/
+- 자료 경로: private/source/source/ssafy/frontend/
 - 시험 구성 / 목차 (있으면):
   1. HTML 기본 및 시맨틱 웹
      - 블록 vs 인라인 요소 구분
