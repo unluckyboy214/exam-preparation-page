@@ -20,8 +20,8 @@ SSAFY 과목평가, 자격증 등 여러 시험을 대비하는 사이트입니�
 | `pages/` | 나머지 페이지 (이론, 문제 목록, 문제 풀기, 내 기록) |
 | `css/style.css` | 색상 토큰, 공통 컴포넌트 |
 | `js/` | 공통 스크립트(`app.js`, `data.js`, `store.js`, `render.js`)와 페이지별 스크립트(`pages/`) |
-| `data/` | 과목 목록, 이론 요약, 문제 세트 JSON |
-| `scripts/` | 문제 검사(`validate.js`), 공개 점검(`check-public.js`) |
+| `data/` | 과목 목록, 이론 요약, 문제 세트 JSON, 실습 노트북 모의고사(`notebooks/`) |
+| `scripts/` | 문제 검사(`validate.js`), 노트북 모의고사 만들기(`build-notebooks.js`), 공개 점검(`check-public.js`) |
 | `private/` | 로컬 전용 자료. **저장소에 올라가지 않습니다** |
 
 ## 문제 추가 방법
@@ -30,6 +30,22 @@ SSAFY 과목평가, 자격증 등 여러 시험을 대비하는 사이트입니�
 2. `node scripts/validate.js` 를 실행합니다. 형식을 검사하고 `data/exams/index.json` 을 자동으로 갱신합니다.
    `index.json` 은 직접 고치지 않습니다.
 3. 문제의 `id` 는 한 번 배포한 뒤에는 바꾸지 않습니다. 사용자 풀이 기록의 키로 쓰입니다.
+
+### 실습 노트북 모의고사 (AI 실기 검정 등)
+
+코드를 직접 쓰는 실기 시험은 Jupyter Notebook 파일로 냅니다(`PROJECT_SPEC.md` "6-5").
+
+1. `data/notebooks/<세트 id>/` 에 `exam.json`, `practice_support.py`, `checker.py` 를 씁니다.
+2. `node scripts/build-notebooks.js` 를 실행합니다. 학생용·모범 답안 노트북, 문제지, zip, `data/notebooks/index.json` 을 만듭니다.
+3. 문제 목록 페이지의 과목 아래에 "실습 노트북" 카드로 나옵니다.
+
+푸는 방법은 두 가지입니다.
+
+- **Colab에서 풀기**(설치 없음): 카드의 버튼을 누르면 각자 구글 계정의 Colab에서 열립니다. 첫 셀이 준비 파일을 사이트에서 받아 옵니다. 고친 내용을 남기려면 Colab에서 "드라이브에 사본 저장"을 합니다.
+- **내 PC에서 풀기**: zip을 받아 푼 폴더에서 `student.ipynb` 를 엽니다. Python 3과 `numpy`, `pandas`, `scikit-learn`(1.1 이상), `matplotlib`, `torch`, `jupyter` 가 필요합니다.
+
+각 문항의 확인 셀이 소문항별 통과 여부와 점수를 알려 줍니다. 마지막 총점 셀의 **사이트에 기록하기** 링크를 누르면 "내 기록"에 점수가 저장됩니다.
+Colab은 GitHub에 올라간 노트북을 열기 때문에, 노트북을 고친 뒤에는 push해야 반영됩니다. 배포 주소는 `data/notebooks/config.json` 에 있습니다.
 
 `private/` 에 넣은 강의 자료로 AI(Claude Code, Codex)에게 예상 문제 세트를 2~3개씩 만들게 하려면
 [`QUESTION_MAKER.md`](QUESTION_MAKER.md) 의 "0. 요청하는 법" 양식을 복사해 요청하면 됩니다.

@@ -97,11 +97,15 @@
 │  ├─ subjects.json           # 시험(단체) · 과목 목록 (6-0)
 │  ├─ theory/
 │  │  └─ frontend.json        # 직접 작성한 이론 요약
-│  └─ exams/
-│     ├─ index.json           # 문제 세트 목록(매니페스트)
-│     └─ frontend-mock-1.json # 직접 만든 예상 문제
+│  ├─ exams/
+│  │  ├─ index.json           # 문제 세트 목록(매니페스트)
+│  │  └─ frontend-mock-1.json # 직접 만든 예상 문제
+│  └─ notebooks/              # 실기용 노트북 모의고사 (6-5)
+│     ├─ index.json           # 노트북 세트 목록 (build-notebooks.js 가 만든다)
+│     └─ aitest-nb-1/         # exam.json(원본), practice_support.py, checker.py + 만들어지는 파일
 ├─ scripts/
 │  ├─ validate.js             # 문제 JSON 검사 + index.json 자동 갱신
+│  ├─ build-notebooks.js      # 노트북 모의고사 만들기 + notebooks/index.json 갱신
 │  └─ check-public.js         # 공개 금지 규칙 점검
 ├─ private/                   # .gitignore 대상 (로컬 전용)
 │  ├─ exams/index.json, *.json
@@ -129,6 +133,7 @@
 - 시험(단체)·과목·종류(예상 문제 / 기출(로컬 전용))로 필터.
 - **시험(단체) → 과목 → 회차** 순서로 제목을 달아 묶어 보여 준다(예: SSAFY › 프론트엔드 › 1회, 2회…). 회차는 세트 id의 숫자 순(`mock-2` < `mock-10`).
 - 세트 카드: 제목, 문항 구성(객관식 n · 주관식 n · 서술형 n), 제한 시간, 내 최고 점수, 진행 상태.
+- 실기 과목은 과목 아래에 **실습 노트북 카드**(6-5)를 함께 보여 준다: 제목, 문항 수·배점·제한 시간, 내 최고 점수, **Colab에서 풀기**, 내 PC에서 풀기(zip), 문제지, 모범 답안. 노트북은 사이트에서 풀지 않는다(채점은 노트북 안의 `checker.py`).
 
 ### 5-4. 문제 풀기 (`solve.html`)
 - 문항 유형: **객관식(단일 정답)**, **주관식(단답)**, **서술형(자가 채점)**. 확장 여지로 `multi`(복수 정답)도 스키마에 둔다.
@@ -146,6 +151,7 @@
 - **오답 노트**: 틀린 문제 목록 → 클릭하면 해당 문제로 이동, "복습 완료" 체크.
 - **태그별 정답률**: 약한 단원 순으로 정렬 → 해당 이론 단원 링크.
 - 북마크 목록.
+- **실습 노트북 점수**: 노트북 총점 셀의 "사이트에 기록하기" 링크(`my.html?nb=<세트 id>&v=<버전>&s=<문항별 점수, 확인 안 함은 ->&t=<만든 시각>`)로 들어오면 형식을 검사해 저장하고 주소에서 지운다. 같은 `t`는 한 번만 저장한다. 최근·최고 점수, 횟수, 최근 기록의 문항별 점수를 보여 준다. 점수는 노트북이 스스로 채점한 값이라 조작할 수 있다(자기 학습용).
 - **기록 내보내기/가져오기(JSON 파일)**, 전체 초기화.
 - 저장은 localStorage (아래 7). 서버·로그인은 만들지 않는다.
 
@@ -223,6 +229,7 @@
 - `meta.source`: 공개 폴더는 반드시 `"self-made"`. 실제 기출은 `"past-exam"` 이고 `private/exams/` 에만 둔다.
 - `id`는 세트 안에서 유일하고, **한 번 배포한 뒤에는 바꾸지 않는다**(사용자 기록의 키가 된다). 내용을 크게 고치면 `meta.version`을 올린다.
 - `answer`는 0부터 센다. `code`는 선택.
+- 서술형의 `modelCode`(선택): `{ "lang", "src" }` 형태의 모범 답안 코드. 코드를 직접 써 보는 문항에 쓰고, 모범 답안 글 아래에 코드 블록으로 나온다. `lang`은 `html`, `css`, `js`, `python`.
 - 텍스트 필드는 **마크다운-lite**만 허용: `` `코드` ``, `**굵게**`, 빈 줄 = 문단. HTML은 이스케이프해서 출력한다(XSS 방지, innerHTML에 원문 삽입 금지).
 - `tags`는 이론 단원 id와 맞춘다(6-3). 태그별 정답률, "이 단원 문제 풀기"에 쓰인다.
 
@@ -260,7 +267,23 @@
 - `tags`가 이론 파일에 없는 단원이면 경고.
 - 이론 `parts`의 단원 id가 실제로 있는지, 두 Part에 중복되지 않는지(오류). Part에 빠진 단원은 경고.
 - 이론 `tables`의 모양(`head`, `rows`, 행마다 칸 수 일치)(오류).
+- 서술형 `modelCode`의 모양(`lang`, `src`)(오류).
 - 통과하면 `index.json` 을 다시 쓴다.
+
+### 6-5. 실습 노트북 모의고사 `data/notebooks/<세트 id>/`
+실기 시험(Jupyter Notebook에 코드를 쓰는 시험)은 사이트에서 채점할 수 없으므로 노트북 파일로 낸다.
+- 폴더 하나가 세트 하나다. 폴더 이름 = `meta.id`(예: `aitest-nb-1`).
+- 직접 쓰는 파일
+  - `exam.json`: 원본. `meta`(`id`, `subject`, `title`, `description`, `source: "self-made"`, `timeLimitMin`, `version`), `intro`·`data`(마크다운), `setup`(공통 준비 코드), `questions[]`(`title`, `points`, `tags`, `description`, `prep`(준비 코드, 선택), `tasks[]`(`label`, `points`, `text`), `answer`(학생용 빈 코드), `solution`(모범 답안 코드), `explain`(해설, 선택)).
+  - `practice_support.py`: 데이터 불러오기·나누기 등 준비 함수. 인터넷 없이 돌아가도록 scikit-learn 내장 데이터 등을 쓴다.
+  - `checker.py`: 문항별 자동 확인 `q1(globals())` … 와 `total()`. 소문항마다 통과 여부와 점수를 출력한다.
+- `node scripts/build-notebooks.js`가 만드는 파일(직접 고치지 않는다): `student.ipynb`, `solution.ipynb`, `questions.md`, `<세트 id>.zip`(학생용 묶음), `data/notebooks/index.json`.
+- `data/notebooks/config.json` `{ "repo": "<아이디>/<저장소>", "branch": "main", "siteUrl": "https://<아이디>.github.io/<저장소>/" }`가 있으면 아래를 함께 만든다(없으면 빼고 만든다).
+  - 노트북 앞쪽의 **준비 파일 받기 셀**: `practice_support.py`, `checker.py`가 없으면 `siteUrl`에서 받아 온다(Colab용).
+  - 총점 셀 `check.total(points=[...], record_url=...)`: 문항별 점수와 **사이트에 기록하기** 링크(5-5)를 출력한다.
+  - `index.json`의 `colab`: `https://colab.research.google.com/github/<repo>/blob/<branch>/data/notebooks/<세트 id>/student.ipynb`. GitHub에 push된 파일을 열므로, 노트북을 고치면 push해야 Colab에 반영된다.
+- 소문항 배점의 합이 문항 배점과 같아야 한다(검사). 문항마다 필요한 데이터를 따로 주어 앞 문항을 못 풀어도 다음 문항을 풀 수 있게 한다.
+- 실제 시험 문항이나 샘플 문항을 옮긴 노트북은 공개 폴더에 두지 않는다(`private/`).
 
 ## 7. 기록 저장 (localStorage)
 
@@ -272,7 +295,8 @@
     "results": { "frontend-mock-1": [ { "score": 23, "total": 30, "mode": "exam", "at": 1730000000000 } ] },
     "wrong":   { "frontend-mock-1:q1": { "reviewed": false } },
     "bookmarks": ["frontend-mock-1:q1"],
-    "lastVisit": { "set": "frontend-mock-1", "q": "q1" }
+    "lastVisit": { "set": "frontend-mock-1", "q": "q1" },
+    "notebooks": { "aitest-nb-1": [ { "score": 78, "total": 100, "detail": [12, 10, null, 14, 16, 18, 8, 0], "version": 1, "at": 1730000000000 } ] }
   }
   ```
 - 모든 읽기/쓰기는 `store.js` 를 거치고 `try/catch`로 감싼다(시크릿 모드에서도 페이지가 깨지지 않게).
