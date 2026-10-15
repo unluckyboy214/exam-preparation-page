@@ -64,6 +64,21 @@ for (const file of files) {
   }
 }
 
+// 2-1) 공개 노트북 모의고사(data/notebooks/<id>/exam.json)도 meta.source 는 "self-made" 여야 함
+for (const file of files) {
+  if (!/^data\/notebooks\/[^/]+\/exam\.json$/.test(file)) continue;
+  const full = path.join(ROOT, file);
+  if (!fs.existsSync(full)) continue;
+  try {
+    const source = JSON.parse(fs.readFileSync(full, "utf8")).meta?.source;
+    if (source !== "self-made") {
+      problems.push(`${file} → meta.source 가 "self-made" 가 아님 (현재: ${JSON.stringify(source)})`);
+    }
+  } catch (e) {
+    problems.push(`${file} → JSON 을 읽을 수 없음 (${e.message})`);
+  }
+}
+
 // 3) 파일 내용에 이메일 형식 문자열이 있는지
 for (const file of files) {
   if (BINARY.test(file)) continue;

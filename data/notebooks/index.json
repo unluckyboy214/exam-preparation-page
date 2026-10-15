@@ -1,0 +1,130 @@
+{
+  "notebooks": [
+    {
+      "id": "aitest-nb-1",
+      "subject": "aitest",
+      "title": "AI 실기 노트북 모의고사 1회",
+      "description": "붓꽃 측정값으로 품종 3개 분류 · 결정 트리, 학습 함수 직접 쓰기, 확률 차이로 재확인",
+      "source": "self-made",
+      "timeLimitMin": 120,
+      "version": 1,
+      "questionCount": 8,
+      "totalPoints": 100,
+      "points": [
+        12,
+        10,
+        12,
+        14,
+        16,
+        18,
+        10,
+        8
+      ],
+      "colab": "https://colab.research.google.com/github/unluckyboy214/exam-preparation-page/blob/main/data/notebooks/aitest-nb-1/student.ipynb",
+      "tags": [
+        "data-pandas",
+        "data-split",
+        "data-plot",
+        "ml-sklearn",
+        "ml-metric-cls",
+        "nn-layers",
+        "nn-loss",
+        "nn-optim",
+        "train-loop",
+        "infer-eval",
+        "infer-prob"
+      ],
+      "files": {
+        "zip": "aitest-nb-1/aitest-nb-1.zip",
+        "questions": "aitest-nb-1/questions.md",
+        "student": "aitest-nb-1/student.ipynb",
+        "solution": "aitest-nb-1/solution.ipynb"
+      }
+    },
+    {
+      "id": "aitest-nb-2",
+      "subject": "aitest",
+      "title": "AI 실기 노트북 모의고사 2회",
+      "description": "종양 측정값으로 정밀 검사 대상(1) 찾기 · 이진 분류, 표준화, 정밀도·재현율, 기준값 고르기",
+      "source": "self-made",
+      "timeLimitMin": 120,
+      "version": 1,
+      "questionCount": 8,
+      "totalPoints": 100,
+      "points": [
+        12,
+        10,
+        12,
+        14,
+        16,
+        18,
+        10,
+        8
+      ],
+      "colab": "https://colab.research.google.com/github/unluckyboy214/exam-preparation-page/blob/main/data/notebooks/aitest-nb-2/student.ipynb",
+      "tags": [
+        "data-pandas",
+        "data-split",
+        "data-plot",
+        "data-scaling",
+        "ml-sklearn",
+        "ml-metric-cls",
+        "nn-layers",
+        "nn-loss",
+        "nn-optim",
+        "nn-tensor",
+        "train-loop",
+        "train-overfit",
+        "infer-eval",
+        "infer-prob"
+      ],
+      "files": {
+        "zip": "aitest-nb-2/aitest-nb-2.zip",
+        "questions": "aitest-nb-2/questions.md",
+        "student": "aitest-nb-2/student.ipynb",
+        "solution": "aitest-nb-2/solution.ipynb"
+      }
+    },
+    {
+      "id": "aitest-nb-3",
+      "subject": "aitest",
+      "title": "AI 실기 노트북 모의고사 3회",
+      "description": "환자 검사 수치로 1년 뒤 진행 지표 예측 · 회귀, MAE·RMSE·R², 학습 반복문 전체 쓰기",
+      "source": "self-made",
+      "timeLimitMin": 120,
+      "version": 1,
+      "questionCount": 8,
+      "totalPoints": 100,
+      "points": [
+        12,
+        10,
+        12,
+        14,
+        16,
+        18,
+        10,
+        8
+      ],
+      "colab": "https://colab.research.google.com/github/unluckyboy214/exam-preparation-page/blob/main/data/notebooks/aitest-nb-3/student.ipynb",
+      "tags": [
+        "data-pandas",
+        "data-split",
+        "data-plot",
+        "ml-sklearn",
+        "ml-metric-reg",
+        "nn-layers",
+        "nn-loss",
+        "nn-optim",
+        "nn-tensor",
+        "train-loop",
+        "infer-eval"
+      ],
+      "files": {
+        "zip": "aitest-nb-3/aitest-nb-3.zip",
+        "questions": "aitest-nb-3/questions.md",
+        "student": "aitest-nb-3/student.ipynb",
+        "solution": "aitest-nb-3/solution.ipynb"
+      }
+    }
+  ]
+}

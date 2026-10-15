@@ -164,6 +164,9 @@ function checkByType(q, err) {
     case "essay":
       if (!isStr(q.model)) err("model(모범 답안) 이 없음");
       if (!isStrList(q.points, 1)) err("points(채점 기준) 는 문자열 1개 이상");
+      if (q.modelCode !== undefined && !(q.modelCode && isStr(q.modelCode.lang) && isStr(q.modelCode.src))) {
+        err("modelCode(모범 답안 코드) 는 { lang, src } 형태여야 함");
+      }
       break;
   }
 }

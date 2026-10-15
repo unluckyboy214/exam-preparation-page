@@ -181,6 +181,7 @@ function rubric(q, checks, disabled = false) {
     <div class="model">
       <p class="model-title">모범 답안</p>
       ${md(q.model)}
+      ${codeBlock(q.modelCode)}
     </div>
     <div class="rubric">
       <p class="model-title">채점 기준 — 내 답안에 들어 있으면 체크하세요</p>

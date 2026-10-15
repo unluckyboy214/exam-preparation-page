@@ -1,11 +1,12 @@
 /* =========================================================
    내 기록 (pages/my.html)
    - 세트별 진행률·점수, 오답 노트(복습 완료 체크), 단원(태그)별 정답률, 북마크
+   - 실습 노트북 점수: 노트북의 "사이트에 기록하기" 링크(?nb=&v=&s=&t=)로 들어오면 저장
    - 기록 내보내기/가져오기(JSON 파일), 전체 초기화
    - 기록은 이 브라우저의 localStorage 에만 있다
    ========================================================= */
 import { siteUrl } from "../app.js";
-import { loadSubjects, loadExamList, loadExamSet, loadTheory } from "../data.js";
+import { loadSubjects, loadExamList, loadExamSet, loadTheory, loadNotebookList } from "../data.js";
 import * as store from "../store.js";
 import { escapeHtml, renderError } from "../render.js";
 import { TYPE_LABEL, formatScore, preview, summarize } from "../quiz.js";
@@ -16,6 +17,8 @@ let subjects = []; // [{ id, title }]
 let sets = []; // [{ entry, questions }]  (불러오지 못한 세트는 questions: null)
 let tagTitles = {}; // { 과목: { 태그: 단원 제목 } }
 let wrongFilter = "todo"; // todo | done | all
+let notebooks = []; // data/notebooks/index.json 의 노트북 세트
+let notice = null; // 기록 링크를 처리한 결과 { ok, text }
 
 const solveUrl = (setId, mode, qid) =>
   siteUrl(`pages/solve.html?set=${encodeURIComponent(setId)}&mode=${mode}${qid ? `&q=${encodeURIComponent(qid)}` : ""}`);
@@ -86,6 +89,75 @@ function progressSection(data) {
         groups.map((g) => `<h3 class="group-title">${escapeHtml(g.title)}</h3><div class="grid">${g.cards.join("")}</div>`).join("") ||
         '<p class="empty">문제 세트가 없어요.</p>'
       }
+    </section>`;
+}
+
+/* ---------- 실습 노트북 점수 ---------- */
+// 노트북 총점 셀이 만든 링크: ?nb=<세트 id>&v=<버전>&s=12,10,-,…(문항별 점수, - 는 확인 안 함)&t=<만든 시각>
+function readRecordLink() {
+  const p = new URLSearchParams(location.search);
+  const id = p.get("nb");
+  if (!id) return null;
+  // 새로고침해도 다시 처리하지 않도록 주소에서 기록 정보를 지운다
+  history.replaceState(null, "", location.pathname + "#notebooks");
+  const fail = (text) => ({ ok: false, text });
+  const nb = notebooks.find((n) => n.id === id);
+  if (!nb) return fail(`알 수 없는 노트북이에요 (${id}). 사이트의 노트북 목록이 바뀌었을 수 있어요.`);
+
+  const parts = (p.get("s") || "").split(",");
+  const at = Number(p.get("t"));
+  const detail = parts.map((x) => (x === "-" ? null : Number(x)));
+  const valid =
+    parts.length === nb.points.length &&
+    Number.isFinite(at) &&
+    at > 0 &&
+    detail.every((v, i) => v === null || (Number.isInteger(v) && v >= 0 && v <= nb.points[i]));
+  if (!valid) return fail("기록 링크의 형식이 맞지 않아요. 노트북의 총점 셀을 다시 실행해 새 링크를 받아 주세요.");
+
+  const version = Number(p.get("v")) || 1;
+  const score = detail.reduce((sum, v) => sum + (v || 0), 0);
+  const added = store.addNotebookResult(id, { score, total: nb.totalPoints, detail, version, at });
+  if (!added) return { ok: true, text: `${nb.title}의 이 점수(${score}점)는 이미 기록되어 있어요.` };
+  const old = version !== nb.version ? " (지금 사이트의 노트북과 버전이 달라요. 새 노트북으로 다시 풀어 보세요.)" : "";
+  return { ok: true, text: `${nb.title} 점수 ${score} / ${nb.totalPoints}점을 기록했어요.${old}` };
+}
+
+function notebookSection(data) {
+  const cards = notebooks
+    .filter((nb) => (data.notebooks[nb.id] || []).length)
+    .map((nb) => {
+      const results = data.notebooks[nb.id];
+      const recent = results[results.length - 1];
+      const best = results.reduce((b, r) => (!b || r.score > b.score ? r : b), null);
+      const scores = Array.isArray(recent.detail) ? recent.detail : []; // 가져온 파일이 깨졌어도 페이지는 그린다
+      const skipped = scores.filter((v) => v === null).length;
+      const detail = scores
+        .map((v, i) => `<li>${i + 1}번 <strong>${v === null ? "–" : v}</strong>/${nb.points[i]}</li>`)
+        .join("");
+      return `
+      <article class="card set-card">
+        <p class="set-meta"><span class="tag tag-notebook">실습 노트북</span></p>
+        <h3>${escapeHtml(nb.title)}</h3>
+        <dl class="score-list">
+          <div><dt>최근</dt><dd>${recent.score} / ${recent.total}점 <span class="muted">${formatDate(recent.at)}</span></dd></div>
+          <div><dt>최고 점수</dt><dd>${best.score} / ${best.total}점</dd></div>
+          <div><dt>기록 횟수</dt><dd>${results.length}회</dd></div>
+        </dl>
+        <p class="muted small">최근 기록의 문항별 점수${skipped ? ` (확인 안 한 문항 ${skipped}개는 –)` : ""}</p>
+        <ul class="nb-detail">${detail}</ul>
+        <div class="actions">
+          ${nb.colab ? `<a class="btn primary" href="${escapeHtml(nb.colab)}" target="_blank" rel="noopener">Colab에서 다시 풀기</a>` : ""}
+          <button type="button" class="btn small" data-remove-nb="${escapeHtml(nb.id)}" data-at="${recent.at}">최근 기록 지우기</button>
+        </div>
+      </article>`;
+    })
+    .join("");
+  return `
+    <section class="section" id="notebooks" aria-labelledby="notebooks-title">
+      <h2 id="notebooks-title">실습 노트북 점수</h2>
+      <p class="muted">노트북 마지막 셀의 "사이트에 기록하기" 링크를 누르면 여기에 쌓여요. 점수는 노트북이 스스로 채점한 값이에요.</p>
+      ${notice ? `<p class="data-msg${notice.ok ? "" : " is-error"}" role="status">${escapeHtml(notice.text)}</p>` : ""}
+      ${cards ? `<div class="grid">${cards}</div>` : `<p class="empty">아직 기록한 노트북 점수가 없어요. <a href="${siteUrl("pages/exams.html")}">문제 목록</a>에서 노트북을 풀어 보세요.</p>`}
     </section>`;
 }
 
@@ -245,10 +317,11 @@ function render({ keepFocus } = {}) {
   const focusKey = keepFocus && document.activeElement?.dataset;
   root.innerHTML = `
     <nav class="chips my-toc" aria-label="이 페이지 목차">
-      <a class="chip" href="#progress">진행률</a><a class="chip" href="#wrong">오답 노트</a>
+      <a class="chip" href="#progress">진행률</a>${notebooks.length ? '<a class="chip" href="#notebooks">노트북 점수</a>' : ""}<a class="chip" href="#wrong">오답 노트</a>
       <a class="chip" href="#tags">단원별 정답률</a><a class="chip" href="#bookmarks">북마크</a><a class="chip" href="#data">기록 관리</a>
     </nav>
     ${progressSection(data)}
+    ${notebooks.length ? notebookSection(data) : ""}
     ${wrongSection(data)}
     ${tagSection(data)}
     ${bookmarkSection(data)}
@@ -308,6 +381,11 @@ function bindEvents() {
     } else if (t.dataset.unmark) {
       store.toggleBookmark(t.dataset.unmark);
       render();
+    } else if (t.dataset.removeNb) {
+      if (!confirm("이 노트북의 최근 점수 기록을 지울까요?")) return;
+      store.removeNotebookResult(t.dataset.removeNb, Number(t.dataset.at));
+      notice = null;
+      render();
     } else if (t.dataset.action === "export") {
       download();
     } else if (t.dataset.action === "reset-all") {
@@ -331,8 +409,14 @@ function bindEvents() {
 
 async function main() {
   try {
-    const [subjectList, list] = await Promise.all([loadSubjects(), loadExamList()]);
+    const [subjectList, list, nbList] = await Promise.all([
+      loadSubjects(),
+      loadExamList(),
+      loadNotebookList().catch(() => []),
+    ]);
     subjects = subjectList;
+    notebooks = nbList;
+    notice = readRecordLink();
     // 세트 하나를 못 읽어도 나머지는 보여 준다
     sets = await Promise.all(
       list.map((entry) =>

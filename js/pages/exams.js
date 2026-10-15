@@ -6,7 +6,7 @@
    - ?kind=mock | past : 종류 필터 (예상 문제 / 기출(로컬 전용))
    ========================================================= */
 import { siteUrl } from "../app.js";
-import { loadCatalog, loadExamList } from "../data.js";
+import { loadCatalog, loadExamList, loadNotebookList } from "../data.js";
 import { load } from "../store.js";
 import { escapeHtml, renderError } from "../render.js";
 
@@ -76,6 +76,37 @@ function setCard(set, subjectTitle, record) {
     </article>`;
 }
 
+// 실습 노트북 모의고사 카드: 사이트에서 풀지 않고 파일을 받아 Jupyter 에서 푼다
+// - Colab 에서 풀기: 각자 구글 계정의 실행 환경에서 열린다. 총점 셀의 링크로 내 기록에 점수를 남긴다
+function notebookCard(nb, record) {
+  const u = nb.urls;
+  const results = (record.notebooks || {})[nb.id] || [];
+  const best = results.reduce((b, r) => (!b || r.score > b.score ? r : b), null);
+  return `
+    <article class="card set-card notebook-card">
+      <p class="set-meta"><span class="tag tag-notebook">실습 노트북</span></p>
+      <h3>${escapeHtml(nb.title)}</h3>
+      <p class="muted">${escapeHtml(nb.questionCount)}문항 · ${escapeHtml(nb.totalPoints)}점 · 제한 시간 ${escapeHtml(nb.timeLimitMin)}분</p>
+      ${nb.description ? `<p>${escapeHtml(nb.description)}</p>` : ""}
+      <p class="set-status">
+        <span>${results.length ? `기록 ${results.length}회` : "아직 기록 없음"}</span>
+        <span>${best ? `최고 ${best.score} / ${best.total}점` : "최고 점수 없음"}</span>
+      </p>
+      <ul class="nb-files">
+        <li><a href="${escapeHtml(u.zip)}" download>내 PC에서 풀기 (zip)</a></li>
+        <li><a href="${escapeHtml(u.questions)}" download>문제지 (.md)</a></li>
+        <li><a href="${escapeHtml(u.solution)}" download>모범 답안 (.ipynb)</a></li>
+      </ul>
+      <div class="actions">
+        ${
+          nb.colab
+            ? `<a class="btn primary" href="${escapeHtml(nb.colab)}" target="_blank" rel="noopener">Colab에서 풀기</a>`
+            : `<a class="btn primary" href="${escapeHtml(u.zip)}" download>노트북 받기 (zip)</a>`
+        }
+      </div>
+    </article>`;
+}
+
 function chips(name, options, current) {
   return options
     .map(
@@ -94,7 +125,7 @@ function syncUrl() {
   history.replaceState(null, "", query ? `?${query}` : location.pathname);
 }
 
-function render(catalog, sets) {
+function render(catalog, sets, notebooks) {
   const { groups, subjects } = catalog;
   const hasPast = sets.some((s) => kindOf(s) === "past");
   if (!hasPast) state.kind = "all"; // 기출이 없으면(배포 사이트) 종류 필터를 숨긴다
@@ -130,10 +161,19 @@ function render(catalog, sets) {
         .filter((sub) => state.subject === "all" || sub.id === state.subject)
         .map((sub) => {
           const mine = shown.filter((s) => s.subject === sub.id);
-          if (!mine.length) return "";
+          // 노트북은 예상 문제(self-made)라 "기출" 필터에서는 숨긴다
+          const nbs = state.kind === "past" ? [] : notebooks.filter((nb) => nb.subject === sub.id);
+          if (!mine.length && !nbs.length) return "";
+          const count = [mine.length ? `${mine.length}회차` : "", nbs.length ? `노트북 ${nbs.length}개` : ""].filter(Boolean).join(" · ");
           return `<div class="subject-block">
-            <h3 class="subject-title">${escapeHtml(sub.title)} <span class="muted small">${mine.length}회차</span></h3>
-            <div class="grid">${mine.map((s) => setCard(s, "", record)).join("")}</div>
+            <h3 class="subject-title">${escapeHtml(sub.title)} <span class="muted small">${count}</span></h3>
+            ${mine.length ? `<div class="grid">${mine.map((s) => setCard(s, "", record)).join("")}</div>` : ""}
+            ${
+              nbs.length
+                ? `<p class="notebook-heading">실습 노트북 모의고사 — Colab(구글 계정)이나 내 PC의 Jupyter에서 풀어요</p>
+                   <div class="grid">${nbs.map((nb) => notebookCard(nb, record)).join("")}</div>`
+                : ""
+            }
           </div>`;
         })
         .join("");
@@ -152,8 +192,12 @@ function render(catalog, sets) {
 
 async function main() {
   try {
-    const [catalog, sets] = await Promise.all([loadCatalog(), loadExamList()]);
-    render(catalog, sets);
+    const [catalog, sets, notebooks] = await Promise.all([
+      loadCatalog(),
+      loadExamList(),
+      loadNotebookList().catch(() => []),
+    ]);
+    render(catalog, sets, notebooks);
 
     filtersEl.addEventListener("click", (e) => {
       const btn = e.target.closest(".chip");
@@ -164,7 +208,7 @@ async function main() {
       }
       if (btn.dataset.subject) state.subject = btn.dataset.subject;
       if (btn.dataset.kind) state.kind = btn.dataset.kind;
-      render(catalog, sets);
+      render(catalog, sets, notebooks);
       syncUrl();
     });
   } catch (error) {

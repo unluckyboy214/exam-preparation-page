@@ -137,10 +137,29 @@ function hlHTML(src) {
   return out + hlMarkup(src.slice(last));
 }
 
+function hlPython(src) {
+  const re =
+    /(#[^\n]*)|("""[\s\S]*?"""|'''[\s\S]*?'''|[rbfRBF]?"(?:\\.|[^"\\\n])*"|[rbfRBF]?'(?:\\.|[^'\\\n])*')|\b(def|return|if|elif|else|for|while|in|not|and|or|is|import|from|as|with|class|try|except|finally|raise|lambda|pass|break|continue|None|True|False|yield|global)\b|\b(\d+(?:\.\d+)?(?:e-?\d+)?)\b|([A-Za-z_][\w]*)(?=\s*\()/g;
+  let out = "";
+  let last = 0;
+  let m;
+  while ((m = re.exec(src))) {
+    out += escapeHtml(src.slice(last, m.index));
+    if (m[1]) out += tok("com", m[1]);
+    else if (m[2]) out += tok("str", m[2]);
+    else if (m[3]) out += tok("key", m[3]);
+    else if (m[4]) out += tok("num", m[4]);
+    else out += tok("fn", m[5]);
+    last = re.lastIndex;
+  }
+  return out + escapeHtml(src.slice(last));
+}
+
 export function highlight(src, lang) {
   if (lang === "html") return hlHTML(src);
   if (lang === "css") return hlCSS(src);
   if (lang === "js" || lang === "javascript") return hlJS(src);
+  if (lang === "python" || lang === "py") return hlPython(src);
   return escapeHtml(src);
 }
 

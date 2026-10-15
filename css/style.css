@@ -423,6 +423,44 @@ kbd {
   color: var(--yellow);
 }
 
+/* 실습 노트북 카드 (exams.js) */
+.tag-notebook {
+  background: var(--green-soft);
+  color: var(--green);
+}
+
+.notebook-heading {
+  margin: 20px 0 8px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.nb-detail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.nb-detail strong {
+  color: var(--text);
+}
+
+.notebook-card .nb-files {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+}
+
 .progress {
   height: 6px;
   margin-top: 6px;

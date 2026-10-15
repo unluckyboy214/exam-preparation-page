@@ -94,6 +94,20 @@ export function sortSets(sets, subjects) {
   return [...sets].sort((a, b) => rank(a) - rank(b) || naturalCompare(a.id, b.id));
 }
 
+/* ---------- 실습 노트북 모의고사 목록 ----------
+   data/notebooks/index.json (node scripts/build-notebooks.js 가 만든다)
+   - 파일이 없으면 빈 목록 (노트북이 없는 사이트도 그대로 동작)
+   - files 의 경로를 사이트 기준 URL 로 바꿔 둔다 */
+export async function loadNotebookList() {
+  const json = await getJson("data/notebooks/index.json", { optional: true });
+  return ((json && json.notebooks) || []).map((nb) => ({
+    ...nb,
+    urls: Object.fromEntries(
+      Object.entries(nb.files || {}).map(([k, p]) => [k, new URL(`data/notebooks/${p}`, ROOT).href])
+    ),
+  }));
+}
+
 /* ---------- 문제 세트 하나 ---------- */
 export async function loadExamSet(setId) {
   const entry = (await loadExamList()).find((s) => s.id === setId);

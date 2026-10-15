@@ -15,6 +15,7 @@ function emptyData() {
     bookmarks: [],
     lastVisit: null,
     examSessions: {}, // 제출 전 시험 진행 상태 (세트별)
+    notebooks: {}, // 실습 노트북 점수 기록 (노트북 세트별 배열)
     settings: {},
   };
 }
@@ -190,6 +191,30 @@ export function updateResult(setId, at, fn) {
   });
 }
 
+/* ---------- 실습 노트북 점수 ----------
+   노트북의 "사이트에 기록하기" 링크로 들어온다
+   { score, total, detail: [문항별 점수 | null(확인 안 함)], version, at(노트북에서 만든 시각) }
+   같은 링크를 다시 열어도 한 번만 저장되도록 at 이 같은 기록은 건너뛴다 */
+export function addNotebookResult(nbId, result) {
+  let added = false;
+  update((data) => {
+    const list = (data.notebooks[nbId] = data.notebooks[nbId] || []);
+    if (list.some((r) => r.at === result.at)) return;
+    list.push(result);
+    added = true;
+  });
+  return added;
+}
+
+export function removeNotebookResult(nbId, at) {
+  update((data) => {
+    const list = data.notebooks[nbId];
+    if (!list) return;
+    data.notebooks[nbId] = list.filter((r) => r.at !== at);
+    if (!data.notebooks[nbId].length) delete data.notebooks[nbId];
+  });
+}
+
 /* ---------- 오답 노트 ---------- */
 export function setReviewed(key, reviewed) {
   update((data) => {
@@ -215,7 +240,8 @@ export function parseImport(json) {
   const obj = typeof json === "string" ? JSON.parse(json) : json;
   if (!obj || typeof obj !== "object") throw new Error("기록 파일 형식이 아니에요.");
   const raw = obj.app === EXPORT_APP ? obj.data : obj;
-  const looksLikeRecord = raw && typeof raw === "object" && ["answers", "results", "wrong", "bookmarks"].some((k) => k in raw);
+  const looksLikeRecord =
+    raw && typeof raw === "object" && ["answers", "results", "wrong", "bookmarks", "notebooks"].some((k) => k in raw);
   if (!looksLikeRecord) throw new Error("이 사이트에서 내보낸 기록 파일이 아니에요.");
   return normalize(raw);
 }
