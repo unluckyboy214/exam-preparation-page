@@ -1,0 +1,1018 @@
+{
+  "subject": "aitest",
+  "title": "AI 실기 검정",
+  "parts": [
+    {
+      "id": "part-data",
+      "title": "데이터 준비와 탐색",
+      "units": [
+        "data-pandas",
+        "data-split",
+        "data-scaling",
+        "data-plot"
+      ]
+    },
+    {
+      "id": "part-ml",
+      "title": "머신러닝 모델과 평가",
+      "units": [
+        "ml-sklearn",
+        "ml-metric-cls",
+        "ml-metric-reg"
+      ]
+    },
+    {
+      "id": "part-nn",
+      "title": "PyTorch 신경망 만들기",
+      "units": [
+        "nn-tensor",
+        "nn-layers",
+        "nn-loss",
+        "nn-optim"
+      ]
+    },
+    {
+      "id": "part-train",
+      "title": "학습과 추론",
+      "units": [
+        "train-loop",
+        "train-overfit",
+        "infer-eval",
+        "infer-prob"
+      ]
+    }
+  ],
+  "units": [
+    {
+      "id": "data-pandas",
+      "title": "pandas로 개수 · 평균 구하기",
+      "points": [
+        "`df['열']`은 Series 하나, `df[['열1', '열2']]`는 DataFrame. 대괄호를 두 겹 쓰면 열 목록을 고른다",
+        "`value_counts()`는 **많은 순서**로 정렬된다. 범주 번호 순서가 필요하면 `.sort_index()`를 붙인다",
+        "`groupby('기준')[열 목록].mean()`의 결과는 **기준 값이 행 인덱스**가 된다(기본 오름차순)",
+        "`loc`은 이름(인덱스 값)으로, `iloc`은 위치(0부터)로 고른다"
+      ],
+      "tables": [
+        {
+          "caption": "자주 쓰는 집계",
+          "head": [
+            "하고 싶은 것",
+            "코드",
+            "결과 모양"
+          ],
+          "rows": [
+            [
+              "범주별 개수",
+              "`df['y'].value_counts().sort_index()`",
+              "Series (인덱스 = 범주)"
+            ],
+            [
+              "범주별 평균",
+              "`df.groupby('y')[['a', 'b']].mean()`",
+              "DataFrame (행 = 범주, 열 = a, b)"
+            ],
+            [
+              "열 하나의 평균",
+              "`df['a'].mean()`",
+              "숫자 하나"
+            ],
+            [
+              "조건에 맞는 행",
+              "`df[df['a'] > 3]`",
+              "DataFrame (원래 인덱스 유지)"
+            ],
+            [
+              "행 · 열 수",
+              "`df.shape`",
+              "`(행, 열)` 튜플"
+            ]
+          ]
+        },
+        {
+          "caption": "loc과 iloc",
+          "head": [
+            "구분",
+            "`loc`",
+            "`iloc`"
+          ],
+          "rows": [
+            [
+              "기준",
+              "인덱스 이름",
+              "위치 번호(0부터)"
+            ],
+            [
+              "슬라이스 끝",
+              "끝 **포함**",
+              "끝 **제외**"
+            ],
+            [
+              "예",
+              "`df.loc[5, 'a']`",
+              "`df.iloc[0, 2]`"
+            ]
+          ]
+        }
+      ],
+      "body": "실기 문제는 결과의 **모양**(Series인지 DataFrame인지, 인덱스 순서, 열 순서)까지 지정하는 경우가 많다. 계산이 맞아도 순서가 다르면 틀린 답이 될 수 있으므로 문제에 적힌 순서를 그대로 맞춘다.",
+      "pitfalls": [
+        "`value_counts()`만 쓰고 `sort_index()`를 빼면 범주 0, 1, 2 순서가 보장되지 않는다",
+        "`groupby('y')['a', 'b']`처럼 대괄호를 한 겹만 쓰면 오류가 난다. 열 목록은 `[['a', 'b']]`",
+        "평균을 낼 때 범주 번호 열까지 함께 평균 내지 않는다(번호는 크기가 아니다)"
+      ],
+      "examples": [
+        {
+          "lang": "python",
+          "src": "# 과일 무게 표에서 종류별 개수와 평균\ncounts = fruit['kind'].value_counts().sort_index()\nmean_by_kind = fruit.groupby('kind')[['weight', 'sugar']].mean()\nheavy = fruit[fruit['weight'] >= 200]"
+        }
+      ]
+    },
+    {
+      "id": "data-split",
+      "title": "학습용 · 검증용 나누기",
+      "points": [
+        "`train_test_split(데이터, test_size=0.2, random_state=7, stratify=정답)` → `(학습, 검증)` 순서로 돌려준다",
+        "`stratify`에 **정답(범주)** 을 주면 학습용·검증용에 범주 비율이 비슷하게 들어간다(분류 문제)",
+        "`random_state`를 정하면 매번 같은 결과로 나뉜다. 문제에 적힌 값을 그대로 쓴다",
+        "DataFrame을 나누면 열과 **원래 행 인덱스가 그대로** 남는다. `reset_index`를 하라는 말이 없으면 하지 않는다"
+      ],
+      "tables": [
+        {
+          "caption": "입력 개수에 따른 반환값",
+          "head": [
+            "호출",
+            "반환 순서"
+          ],
+          "rows": [
+            [
+              "`train_test_split(df, ...)`",
+              "`train_df, valid_df`"
+            ],
+            [
+              "`train_test_split(X, y, ...)`",
+              "`X_train, X_valid, y_train, y_valid`"
+            ]
+          ]
+        },
+        {
+          "caption": "자주 쓰는 인자",
+          "head": [
+            "인자",
+            "뜻",
+            "예"
+          ],
+          "rows": [
+            [
+              "`test_size`",
+              "검증용 비율(0~1) 또는 개수(정수)",
+              "`0.25` → 25%"
+            ],
+            [
+              "`random_state`",
+              "섞는 방법을 고정하는 번호",
+              "`random_state=42`"
+            ],
+            [
+              "`stratify`",
+              "비율을 지킬 범주 배열",
+              "`stratify=df['label']`"
+            ],
+            [
+              "`shuffle`",
+              "섞을지 여부(기본 `True`)",
+              "`stratify`를 쓰려면 `True`"
+            ]
+          ]
+        }
+      ],
+      "body": "검증용 데이터는 **모델이 처음 보는 데이터**처럼 다뤄야 한다. 검증용으로 모델을 학습하거나, 검증용에서 구한 값으로 전처리 기준을 정하면 성능이 실제보다 좋게 나온다.",
+      "pitfalls": [
+        "`X`, `y`를 함께 넣고 반환값을 `X_train, y_train, X_valid, y_valid` 순서로 받는 실수",
+        "회귀(수치 예측) 문제에 연속값을 `stratify`로 넘기면 오류가 날 수 있다. `stratify`는 범주에 쓴다",
+        "`test_size=25`처럼 정수를 쓰면 비율이 아니라 **25개**를 뜻한다"
+      ],
+      "examples": [
+        {
+          "lang": "python",
+          "src": "from sklearn.model_selection import train_test_split\n\ntrain_df, valid_df = train_test_split(\n    songs, test_size=0.2, random_state=11, stratify=songs['genre']\n)\nprint(len(train_df), len(valid_df))"
+        }
+      ]
+    },
+    {
+      "id": "data-scaling",
+      "title": "표준화와 데이터 누수",
+      "points": [
+        "표준화: `(값 - 평균) / 표준편차` → 각 열의 평균 0, 표준편차 1. 거리 기반 모델(kNN)과 신경망에 중요하다",
+        "평균·표준편차는 **학습용으로만** 구하고(`fit`), 같은 기준을 검증용·새 데이터에 적용한다(`transform`)",
+        "`StandardScaler`: 학습용에 `fit_transform`, 검증용에는 `transform`만",
+        "식별자(id)나 정답 열은 입력에 넣지 않는다"
+      ],
+      "tables": [
+        {
+          "caption": "어디에 무엇을 쓰나",
+          "head": [
+            "데이터",
+            "호출",
+            "이유"
+          ],
+          "rows": [
+            [
+              "학습용",
+              "`scaler.fit_transform(X_train)`",
+              "기준(평균·표준편차)을 정하고 바로 변환"
+            ],
+            [
+              "검증용",
+              "`scaler.transform(X_valid)`",
+              "학습용 기준을 그대로 적용"
+            ],
+            [
+              "새 데이터",
+              "`scaler.transform(X_new)`",
+              "실제 사용 상황과 같게"
+            ]
+          ]
+        }
+      ],
+      "body": "검증용까지 합쳐서 평균을 구하면 검증용의 정보가 학습 과정에 새어 들어간다. 이것을 **데이터 누수**라고 한다. 누수가 있으면 검증 성능을 믿을 수 없다.",
+      "pitfalls": [
+        "검증용에 `fit_transform`을 다시 호출하면 검증용 기준으로 변환되어 학습용과 기준이 달라진다",
+        "표준화한 뒤에도 행 순서는 그대로다. 정답 배열과 순서가 어긋나지 않게 같은 행 순서를 유지한다"
+      ],
+      "examples": [
+        {
+          "lang": "python",
+          "src": "from sklearn.preprocessing import StandardScaler\n\nscaler = StandardScaler()\nX_train_s = scaler.fit_transform(X_train)   # 학습용: 기준 정하기 + 변환\nX_valid_s = scaler.transform(X_valid)       # 검증용: 변환만"
+        }
+      ]
+    },
+    {
+      "id": "data-plot",
+      "title": "matplotlib로 그래프 그리기",
+      "points": [
+        "`fig, ax = plt.subplots()`로 받은 **`ax`에 그린다**: `ax.scatter`, `ax.plot`. 문제가 준 `ax`를 새로 만들지 않는다",
+        "산점도 점 색을 범주별로: `ax.scatter(x, y, c=정답)` 또는 범주마다 나눠 여러 번 `scatter`",
+        "선 그래프 이름은 `label=`로 주고 `ax.legend()`로 범례를 표시한다",
+        "축 이름 `ax.set_xlabel`, `ax.set_ylabel`, 제목 `ax.set_title`"
+      ],
+      "tables": [
+        {
+          "caption": "그래프 종류",
+          "head": [
+            "목적",
+            "함수",
+            "예"
+          ],
+          "rows": [
+            [
+              "두 수치의 관계",
+              "`ax.scatter`",
+              "`ax.scatter(df['a'], df['b'], c=df['y'])`"
+            ],
+            [
+              "값의 변화(순서)",
+              "`ax.plot`",
+              "`ax.plot(h['epoch'], h['loss'], label='train')`"
+            ],
+            [
+              "값의 분포",
+              "`ax.hist`",
+              "`ax.hist(df['a'], bins=20)`"
+            ],
+            [
+              "범주별 크기",
+              "`ax.bar`",
+              "`ax.bar(names, values)`"
+            ]
+          ]
+        }
+      ],
+      "body": "실기 시험에서 그래프는 보통 **무엇을 가로축·세로축에 놓는지**와 **선·점을 구분하는 방법**을 채점한다. 축과 범례 문구는 문제가 이미 써 둔 경우가 많으니 그대로 두고, 그리는 줄만 채운다.",
+      "pitfalls": [
+        "`plt.subplots()`를 한 번 더 호출하면 문제가 준 `ax`와 다른 그림에 그려진다",
+        "`label`을 주지 않고 `legend()`를 호출하면 범례가 비어 있다",
+        "범주 번호를 측정값 열처럼 더하거나 평균 내지 않는다. 색 구분에만 쓴다"
+      ],
+      "examples": [
+        {
+          "lang": "python",
+          "src": "fig, ax = plt.subplots(figsize=(5, 3.5))\nax.scatter(cars['speed'], cars['noise'], c=cars['type'], cmap='viridis', s=15)\nax.set_xlabel('Speed')\nax.set_ylabel('Noise')\nplt.show()"
+        }
+      ]
+    },
+    {
+      "id": "ml-sklearn",
+      "title": "scikit-learn 모델 사용 흐름",
+      "points": [
+        "모든 모델이 같은 흐름이다: **만들기 → `fit(X, y)` → `predict(X)`**",
+        "`fit`은 모델 자신을 돌려준다. 그래서 `model = KNeighborsClassifier(n_neighbors=5).fit(X, y)`처럼 한 줄로 써도 된다",
+        "`predict`는 범주 번호(또는 수치) 배열, `predict_proba`는 범주별 확률 `(샘플 수, 범주 수)` 배열",
+        "검증용은 `predict`만 한다. 검증용으로 `fit`하지 않는다"
+      ],
+      "tables": [
+        {
+          "caption": "자주 쓰는 모델",
+          "head": [
+            "모델",
+            "종류",
+            "주요 인자"
+          ],
+          "rows": [
+            [
+              "`KNeighborsClassifier`",
+              "분류",
+              "`n_neighbors` (이웃 수)"
+            ],
+            [
+              "`LogisticRegression`",
+              "분류",
+              "`max_iter`, `C`"
+            ],
+            [
+              "`DecisionTreeClassifier`",
+              "분류",
+              "`max_depth`, `random_state`"
+            ],
+            [
+              "`RandomForestClassifier`",
+              "분류",
+              "`n_estimators`, `max_depth`, `random_state`"
+            ],
+            [
+              "`LinearRegression`",
+              "회귀",
+              "(거의 없음)"
+            ],
+            [
+              "`KNeighborsRegressor`",
+              "회귀",
+              "`n_neighbors`"
+            ],
+            [
+              "`RandomForestRegressor`",
+              "회귀",
+              "`n_estimators`, `random_state`"
+            ]
+          ]
+        }
+      ],
+      "body": "kNN은 학습 때 데이터를 외워 두고, 예측할 때 가장 가까운 `k`개의 정답을 보고 다수결(회귀는 평균)로 정한다. 거리를 쓰므로 열의 단위가 다르면 큰 값의 열이 결과를 좌우한다. 그래서 표준화한 입력을 쓴다.\n\n트리 계열 모델은 무작위성이 있어 `random_state`를 정해야 결과가 매번 같다.",
+      "pitfalls": [
+        "`knn = KNeighborsClassifier(5)`만 하고 `fit`을 빼먹는 실수. 문제가 \"학습하세요\"라고 하면 `fit`까지 한다",
+        "`predict_proba`의 열 순서는 `model.classes_` 순서다(보통 0, 1, 2)"
+      ],
+      "examples": [
+        {
+          "lang": "python",
+          "src": "from sklearn.tree import DecisionTreeClassifier\n\ntree = DecisionTreeClassifier(max_depth=3, random_state=0)\ntree.fit(X_train, y_train)\npred = tree.predict(X_valid)          # (검증 샘플 수,)\nproba = tree.predict_proba(X_valid)   # (검증 샘플 수, 범주 수)"
+        }
+      ]
+    },
+    {
+      "id": "ml-metric-cls",
+      "title": "분류 평가: 정확도 · 혼동행렬 · 정밀도 · 재현율",
+      "points": [
+        "정확도 = 맞힌 개수 / 전체 개수. `accuracy_score(정답, 예측)` 또는 `(정답 == 예측).mean()`",
+        "`confusion_matrix(정답, 예측, labels=[0, 1, 2])`: **행 = 실제, 열 = 예측**. 대각선이 맞힌 개수",
+        "실제 k인데 틀린 개수 = `cm[k].sum() - cm[k, k]` (k행 합 - 대각선)",
+        "인자 순서는 항상 **(정답, 예측)**"
+      ],
+      "tables": [
+        {
+          "caption": "이진 분류(양성 = 1) 지표",
+          "head": [
+            "지표",
+            "뜻",
+            "식",
+            "함수"
+          ],
+          "rows": [
+            [
+              "정밀도 precision",
+              "양성이라고 한 것 중 진짜 양성",
+              "TP / (TP + FP)",
+              "`precision_score`"
+            ],
+            [
+              "재현율 recall",
+              "진짜 양성 중 찾아낸 것",
+              "TP / (TP + FN)",
+              "`recall_score`"
+            ],
+            [
+              "F1",
+              "정밀도와 재현율의 조화 평균",
+              "2PR / (P + R)",
+              "`f1_score`"
+            ]
+          ]
+        },
+        {
+          "caption": "이진 혼동행렬 `confusion_matrix(y, p, labels=[0, 1])`",
+          "head": [
+            "실제 \\ 예측",
+            "예측 0",
+            "예측 1"
+          ],
+          "rows": [
+            [
+              "실제 0",
+              "TN `cm[0, 0]`",
+              "FP `cm[0, 1]`"
+            ],
+            [
+              "실제 1",
+              "FN `cm[1, 0]`",
+              "TP `cm[1, 1]`"
+            ]
+          ]
+        }
+      ],
+      "body": "정확도 하나만 보면 어떤 범주를 자주 틀리는지 알 수 없다. 혼동행렬로 **어느 범주를 어느 범주로 헷갈리는지** 확인한다. 양성을 놓치면 위험한 문제(질병 진단 등)는 재현율을, 양성이라고 잘못 말하면 비용이 큰 문제는 정밀도를 중요하게 본다.",
+      "pitfalls": [
+        "`confusion_matrix(예측, 정답)`처럼 순서를 바꾸면 행과 열이 뒤바뀐다",
+        "정확도를 백분율(80)로 저장하라는 말이 없으면 비율(0.8)로 둔다",
+        "`labels`를 지정하지 않으면 예측에 안 나온 범주의 행·열이 빠져 크기가 달라질 수 있다"
+      ],
+      "examples": [
+        {
+          "lang": "python",
+          "src": "from sklearn.metrics import accuracy_score, confusion_matrix\n\nacc = accuracy_score(y_true, y_pred)\ncm = confusion_matrix(y_true, y_pred, labels=[0, 1, 2])\nwrong_2 = cm[2].sum() - cm[2, 2]      # 실제 2인데 틀린 개수\nas_0 = cm[:, 0].sum()                 # 0이라고 예측한 개수"
+        }
+      ]
+    },
+    {
+      "id": "ml-metric-reg",
+      "title": "회귀 평가: MAE · MSE · RMSE · R²",
+      "points": [
+        "회귀는 수치를 예측한다. 맞았는지가 아니라 **얼마나 차이 나는지(오차)** 로 평가한다",
+        "MAE는 오차 절댓값의 평균, MSE는 오차 제곱의 평균, RMSE는 MSE의 제곱근(원래 단위)",
+        "R²는 1에 가까울수록 좋고, 평균으로만 예측하면 0이다(더 나쁘면 음수)"
+      ],
+      "tables": [
+        {
+          "caption": "회귀 지표",
+          "head": [
+            "지표",
+            "식",
+            "함수",
+            "특징"
+          ],
+          "rows": [
+            [
+              "MAE",
+              "mean(abs(y - p))",
+              "`mean_absolute_error(y, p)`",
+              "단위가 원래 값과 같다"
+            ],
+            [
+              "MSE",
+              "mean((y - p)²)",
+              "`mean_squared_error(y, p)`",
+              "큰 오차에 더 큰 벌점"
+            ],
+            [
+              "RMSE",
+              "sqrt(MSE)",
+              "`np.sqrt(mean_squared_error(y, p))`",
+              "MSE를 원래 단위로"
+            ],
+            [
+              "R²",
+              "1 - SSE / SST",
+              "`r2_score(y, p)`",
+              "1이 최고, 0은 평균 수준"
+            ]
+          ]
+        }
+      ],
+      "body": "작을수록 좋은 지표(MAE, MSE, RMSE)와 클수록 좋은 지표(R²)를 구분한다. 신경망 회귀에서 `nn.MSELoss()`로 구한 손실은 MSE와 같은 값이다.",
+      "pitfalls": [
+        "`mean_squared_error(..., squared=False)`는 최신 버전에서 없어졌다. RMSE는 `np.sqrt`로 직접 구한다",
+        "MSE는 제곱 단위라 원래 값과 직접 비교하기 어렵다. 원래 단위로 말할 때는 RMSE나 MAE를 쓴다"
+      ],
+      "examples": [
+        {
+          "lang": "python",
+          "src": "import numpy as np\nfrom sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score\n\nmae = mean_absolute_error(y_valid, pred)\nrmse = np.sqrt(mean_squared_error(y_valid, pred))\nr2 = r2_score(y_valid, pred)"
+        }
+      ]
+    },
+    {
+      "id": "nn-tensor",
+      "title": "텐서와 자료형",
+      "points": [
+        "입력은 `torch.float32`, 분류 정답(범주 번호)은 `torch.long`으로 만든다",
+        "`torch.tensor(넘파이 배열, dtype=...)`로 바꾸고, 결과를 넘파이로 돌릴 때는 `.numpy()`(기울기 기록이 있으면 `.detach().numpy()`)",
+        "`x.shape`로 모양을 확인한다. 첫 번째 차원은 보통 **샘플 수(배치 크기)**",
+        "`view` / `reshape`로 모양을 바꾼다. `-1`은 나머지를 자동으로 계산하라는 뜻"
+      ],
+      "tables": [
+        {
+          "caption": "정답 텐서의 자료형과 모양",
+          "head": [
+            "문제",
+            "손실 함수",
+            "정답 dtype",
+            "정답 모양"
+          ],
+          "rows": [
+            [
+              "다중 분류",
+              "`CrossEntropyLoss`",
+              "`torch.long`",
+              "`(B,)`"
+            ],
+            [
+              "이진 분류",
+              "`BCEWithLogitsLoss`",
+              "`torch.float32`",
+              "`(B, 1)` (출력과 같게)"
+            ],
+            [
+              "회귀",
+              "`MSELoss`",
+              "`torch.float32`",
+              "`(B, 1)` (출력과 같게)"
+            ]
+          ]
+        },
+        {
+          "caption": "모양 바꾸기",
+          "head": [
+            "코드",
+            "결과"
+          ],
+          "rows": [
+            [
+              "`y.view(-1, 1)`",
+              "`(B,)` → `(B, 1)`"
+            ],
+            [
+              "`y.squeeze(1)`",
+              "`(B, 1)` → `(B,)`"
+            ],
+            [
+              "`x.view(B, -1)`",
+              "`(B, 8, 8)` → `(B, 64)`"
+            ],
+            [
+              "`x.unsqueeze(1)`",
+              "`(B, 8, 8)` → `(B, 1, 8, 8)` (채널 추가)"
+            ]
+          ]
+        }
+      ],
+      "body": "넘파이 배열은 기본이 `float64`인 경우가 많다. 모델의 가중치는 `float32`라서 그대로 넣으면 자료형 오류가 난다. 텐서로 바꿀 때 `dtype`을 꼭 적는다.",
+      "pitfalls": [
+        "다중 분류 정답을 `float`로 만들거나 원-핫으로 바꾸면 `CrossEntropyLoss`가 의도와 다르게 동작한다",
+        "회귀·이진 분류에서 출력 `(B, 1)`과 정답 `(B,)`의 모양이 다르면 경고가 나거나 잘못 계산된다"
+      ],
+      "examples": [
+        {
+          "lang": "python",
+          "src": "import torch\n\nx = torch.tensor(X_train, dtype=torch.float32)   # (B, 특성 수)\ny = torch.tensor(y_train, dtype=torch.long)      # (B,)  범주 번호\nt = torch.tensor(price, dtype=torch.float32).view(-1, 1)  # (B, 1) 회귀 정답\nprint(x.shape, y.shape, t.shape)"
+        }
+      ]
+    },
+    {
+      "id": "nn-layers",
+      "title": "nn.Sequential로 층 쌓기",
+      "points": [
+        "`nn.Sequential(층1, 층2, ...)`은 적은 순서대로 데이터를 통과시킨다",
+        "`nn.Linear(입력 수, 출력 수)`: 앞 층의 출력 수 = 다음 `Linear`의 입력 수",
+        "`nn.ReLU()`, `nn.Dropout(p)`은 모양을 바꾸지 않는다. 숫자 인자를 받지 않는다(`Dropout`의 확률 제외)",
+        "마지막 `Linear`의 출력 수: 다중 분류 = 범주 수, 이진 분류 = 1, 회귀 = 1"
+      ],
+      "tables": [
+        {
+          "caption": "자주 쓰는 층",
+          "head": [
+            "층",
+            "하는 일",
+            "모양 변화"
+          ],
+          "rows": [
+            [
+              "`nn.Linear(13, 16)`",
+              "가중치 곱 + 편향",
+              "`(B, 13)` → `(B, 16)`"
+            ],
+            [
+              "`nn.ReLU()`",
+              "음수를 0으로",
+              "그대로"
+            ],
+            [
+              "`nn.Dropout(0.3)`",
+              "학습 때만 30%를 0으로",
+              "그대로"
+            ],
+            [
+              "`nn.Flatten()`",
+              "샘플마다 한 줄로 펴기",
+              "`(B, 1, 8, 8)` → `(B, 64)`"
+            ],
+            [
+              "`nn.Conv2d(1, 8, 3, padding=1)`",
+              "작은 필터로 특징 찾기",
+              "`(B, 1, 8, 8)` → `(B, 8, 8, 8)`"
+            ],
+            [
+              "`nn.MaxPool2d(2)`",
+              "2×2마다 최댓값",
+              "`(B, 8, 8, 8)` → `(B, 8, 4, 4)`"
+            ]
+          ]
+        }
+      ],
+      "body": "분류 신경망의 마지막 출력은 확률이 아니라 **점수(logit)** 다. `CrossEntropyLoss`와 `BCEWithLogitsLoss`가 안에서 Softmax·Sigmoid를 계산하므로 모델 끝에 `Softmax`·`Sigmoid`를 붙이지 않는다.\n\n파라미터 수는 `Linear(a, b)`마다 `a × b + b`(가중치 + 편향)다.",
+      "pitfalls": [
+        "`nn.Linear(16)`처럼 입력 수를 빼먹거나, 앞 층 출력과 다음 층 입력을 다르게 쓰는 실수 → 모양 오류",
+        "`nn.ReLU`처럼 괄호 없이 클래스 자체를 넣으면 층이 아니다. `nn.ReLU()`로 만든다",
+        "`Dropout`의 `p`는 **0으로 바꿀 확률**이다. 남길 확률이 아니다"
+      ],
+      "examples": [
+        {
+          "lang": "python",
+          "src": "from torch import nn\n\nmodel = nn.Sequential(\n    nn.Linear(10, 32),\n    nn.ReLU(),\n    nn.Dropout(0.25),\n    nn.Linear(32, 4),     # 범주 4개의 점수\n)\nout = model(torch.randn(6, 10))\nprint(out.shape)          # torch.Size([6, 4])"
+        }
+      ]
+    },
+    {
+      "id": "nn-loss",
+      "title": "손실 함수 고르기",
+      "points": [
+        "다중 분류: `nn.CrossEntropyLoss()` ← 점수 `(B, C)` + 정답 번호 `(B,)` long",
+        "이진 분류: `nn.BCEWithLogitsLoss()` ← 점수 `(B, 1)` + 정답 0/1 `(B, 1)` float",
+        "회귀: `nn.MSELoss()` (또는 `nn.L1Loss()`) ← 예측 `(B, 1)` + 정답 `(B, 1)` float",
+        "사용법: `loss = loss_fn(모델 출력, 정답)` — **출력이 먼저**"
+      ],
+      "tables": [
+        {
+          "caption": "문제 종류별 정리",
+          "head": [
+            "문제",
+            "마지막 출력 수",
+            "손실 함수",
+            "예측으로 바꾸기"
+          ],
+          "rows": [
+            [
+              "다중 분류 (C개)",
+              "C",
+              "`nn.CrossEntropyLoss()`",
+              "`softmax(dim=1)` → `argmax(dim=1)`"
+            ],
+            [
+              "이진 분류",
+              "1",
+              "`nn.BCEWithLogitsLoss()`",
+              "`sigmoid` → `>= 0.5`"
+            ],
+            [
+              "회귀",
+              "1",
+              "`nn.MSELoss()`",
+              "출력 그대로"
+            ]
+          ]
+        },
+        {
+          "caption": "헷갈리는 짝",
+          "head": [
+            "손실",
+            "모델 끝",
+            "주의"
+          ],
+          "rows": [
+            [
+              "`CrossEntropyLoss`",
+              "Softmax 없음",
+              "안에서 log-softmax를 계산"
+            ],
+            [
+              "`BCEWithLogitsLoss`",
+              "Sigmoid 없음",
+              "안에서 sigmoid를 계산(수치가 안정적)"
+            ],
+            [
+              "`BCELoss`",
+              "Sigmoid 있음",
+              "확률을 직접 받는다. 실기에서는 보통 위의 것을 쓴다"
+            ]
+          ]
+        }
+      ],
+      "body": "손실 함수는 모델이 얼마나 틀렸는지를 숫자 하나로 바꾼다. 학습은 이 숫자를 줄이는 방향으로 가중치를 고친다. 손실 값의 크기는 문제마다 달라서, 절대 크기보다 **줄어드는 흐름**을 본다.",
+      "pitfalls": [
+        "`loss_fn(정답, 출력)`처럼 순서를 바꾸면 오류가 나거나 엉뚱한 값이 된다",
+        "`CrossEntropyLoss`에 원-핫 정답이나 float 번호를 넘기지 않는다",
+        "`nn.CrossEntropyLoss`처럼 괄호 없이 쓰면 함수 객체가 아니라 클래스다"
+      ],
+      "examples": [
+        {
+          "lang": "python",
+          "src": "loss_fn = nn.CrossEntropyLoss()\nscores = model(xb)              # (B, 3)\nloss = loss_fn(scores, yb)      # yb: (B,) long\nprint(loss.item())              # 파이썬 실수"
+        }
+      ]
+    },
+    {
+      "id": "nn-optim",
+      "title": "옵티마이저와 한 번의 갱신",
+      "points": [
+        "`torch.optim.Adam(model.parameters(), lr=0.001)`: 갱신할 가중치 목록과 학습률을 준다",
+        "한 번의 갱신 = `zero_grad()` → 출력·손실 계산 → `loss.backward()` → `optimizer.step()`",
+        "`zero_grad`를 빼면 기울기가 계속 더해져 학습이 망가진다",
+        "학습률이 너무 크면 손실이 튀고, 너무 작으면 거의 줄지 않는다"
+      ],
+      "tables": [
+        {
+          "caption": "한 번의 갱신 순서",
+          "head": [
+            "순서",
+            "코드",
+            "하는 일"
+          ],
+          "rows": [
+            [
+              "1",
+              "`optimizer.zero_grad()`",
+              "지난 기울기 지우기"
+            ],
+            [
+              "2",
+              "`out = model(xb)`",
+              "앞으로 계산"
+            ],
+            [
+              "3",
+              "`loss = loss_fn(out, yb)`",
+              "손실 계산"
+            ],
+            [
+              "4",
+              "`loss.backward()`",
+              "기울기 계산"
+            ],
+            [
+              "5",
+              "`optimizer.step()`",
+              "가중치 고치기"
+            ]
+          ]
+        },
+        {
+          "caption": "옵티마이저",
+          "head": [
+            "이름",
+            "코드",
+            "특징"
+          ],
+          "rows": [
+            [
+              "SGD",
+              "`torch.optim.SGD(model.parameters(), lr=0.1)`",
+              "가장 기본. `momentum` 인자로 보강"
+            ],
+            [
+              "Adam",
+              "`torch.optim.Adam(model.parameters(), lr=0.001)`",
+              "학습률을 알아서 조절. 실기에서 가장 흔함"
+            ]
+          ]
+        }
+      ],
+      "body": "`model.parameters()`를 넘겨야 옵티마이저가 그 모델의 가중치를 고친다. 다른 모델의 `parameters()`를 넘기면 학습해도 내 모델은 그대로다.",
+      "pitfalls": [
+        "`Adam(model, lr=...)`처럼 모델 자체를 넘기는 실수. `model.parameters()`를 넘긴다",
+        "`lr`을 위치 인자로 쓰면 헷갈린다. `lr=0.005`처럼 이름을 붙인다",
+        "`step()`을 `backward()`보다 먼저 호출하면 기울기가 없어 아무것도 바뀌지 않는다"
+      ],
+      "examples": [
+        {
+          "lang": "python",
+          "src": "optimizer = torch.optim.SGD(model.parameters(), lr=0.05, momentum=0.9)\n\noptimizer.zero_grad()\nloss = loss_fn(model(xb), yb)\nloss.backward()\noptimizer.step()"
+        }
+      ]
+    },
+    {
+      "id": "train-loop",
+      "title": "epoch · 배치 반복과 기록",
+      "points": [
+        "**배치**: 한 번에 모델에 넣는 샘플 묶음. **1 epoch**: 학습 데이터 전체를 한 번 다 쓰는 것",
+        "`DataLoader(TensorDataset(x, y), batch_size=32, shuffle=True)` → 반복문에서 `(xb, yb)` 묶음이 나온다",
+        "epoch마다 학습 손실과 검증 손실을 구해 **딕셔너리를 리스트에 추가** → `pd.DataFrame(리스트)`로 표 만들기",
+        "`range(1, N + 1)`로 1부터 N까지 센다"
+      ],
+      "tables": [
+        {
+          "caption": "개수 계산 (학습 샘플 100개, batch_size=32)",
+          "head": [
+            "항목",
+            "값"
+          ],
+          "rows": [
+            [
+              "1 epoch의 배치 수",
+              "4 (32 + 32 + 32 + 4)"
+            ],
+            [
+              "마지막 배치 크기",
+              "4 (`drop_last=False`가 기본)"
+            ],
+            [
+              "10 epoch의 가중치 갱신 횟수",
+              "40"
+            ]
+          ]
+        }
+      ],
+      "body": "평균 학습 손실을 구할 때 배치 크기가 다를 수 있으므로 `손실 × 배치 크기`를 더한 뒤 전체 개수로 나눈다. 검증 손실은 가중치를 바꾸지 않고 계산한다(평가 모드 + `no_grad`).",
+      "pitfalls": [
+        "`range(80)`은 0부터 79까지다. epoch 번호를 1부터 기록하라고 하면 `range(1, 81)`",
+        "`history.append(...)`를 반복문 밖에 두면 마지막 epoch 하나만 기록된다",
+        "손실 텐서를 그대로 저장하지 말고 `loss.item()`으로 실수로 바꿔 저장한다"
+      ],
+      "examples": [
+        {
+          "lang": "python",
+          "src": "log = []\nfor ep in range(1, 31):\n    tr = run_epoch(model, loader, loss_fn, optimizer)\n    va = eval_loss(model, xv, yv, loss_fn)\n    log.append({'epoch': ep, 'train': tr, 'valid': va})\nlog_df = pd.DataFrame(log)"
+        }
+      ]
+    },
+    {
+      "id": "train-overfit",
+      "title": "과대적합과 막는 방법",
+      "points": [
+        "**과대적합**: 학습 손실은 계속 줄지만 검증 손실은 어느 순간부터 다시 커진다",
+        "검증 손실이 가장 낮은 epoch 근처가 가장 좋은 상태다",
+        "막는 방법: Dropout, 모델 줄이기, 데이터 늘리기, 일찍 멈추기(early stopping), 가중치 감쇠(`weight_decay`)"
+      ],
+      "tables": [
+        {
+          "caption": "손실 그래프 읽기",
+          "head": [
+            "모양",
+            "뜻",
+            "할 일"
+          ],
+          "rows": [
+            [
+              "두 손실 모두 높고 잘 안 줄어듦",
+              "과소적합 (덜 배움)",
+              "epoch·모델 크기·학습률 늘리기"
+            ],
+            [
+              "학습 ↓, 검증 ↓ 함께",
+              "잘 배우는 중",
+              "계속 학습"
+            ],
+            [
+              "학습 ↓, 검증 ↑",
+              "과대적합 (외움)",
+              "Dropout, 일찍 멈추기"
+            ]
+          ]
+        }
+      ],
+      "body": "Dropout은 학습 중에 중간 출력의 일부를 무작위로 0으로 만들어 특정 뉴런에만 의존하지 않게 한다. 평가할 때는 꺼야 하므로 `model.eval()`이 필요하다.",
+      "pitfalls": [
+        "검증 손실이 가장 낮은 epoch를 찾을 때 `idxmin()`은 **인덱스**를 돌려준다. epoch 열 값이 필요하면 `df.loc[df['valid'].idxmin(), 'epoch']`"
+      ],
+      "examples": [
+        {
+          "lang": "python",
+          "src": "best_row = log_df.loc[log_df['valid'].idxmin()]\nprint('검증 손실이 가장 낮은 epoch:', int(best_row['epoch']))"
+        }
+      ]
+    },
+    {
+      "id": "infer-eval",
+      "title": "평가 모드와 no_grad",
+      "points": [
+        "`model.train()`: 학습 모드 — Dropout 켜짐. `model.eval()`: 평가 모드 — Dropout 꺼짐",
+        "`with torch.no_grad():` 안에서는 기울기 기록을 하지 않는다 — 메모리·시간 절약, 실수로 학습되는 일 방지",
+        "예측할 때는 **둘 다** 쓴다: `eval()`로 동작을 바꾸고, `no_grad()`로 기록을 끈다"
+      ],
+      "tables": [
+        {
+          "caption": "eval()과 no_grad() 비교",
+          "head": [
+            "구분",
+            "`model.eval()`",
+            "`torch.no_grad()`"
+          ],
+          "rows": [
+            [
+              "바꾸는 것",
+              "층의 동작 (Dropout, BatchNorm)",
+              "기울기 계산 기록"
+            ],
+            [
+              "적용 대상",
+              "모델 하나",
+              "`with` 블록 안의 모든 계산"
+            ],
+            [
+              "안 쓰면",
+              "Dropout 때문에 같은 입력도 결과가 매번 달라짐",
+              "기록 때문에 메모리를 더 씀"
+            ]
+          ]
+        }
+      ],
+      "body": "`eval()`을 한 뒤 다시 학습하려면 `model.train()`으로 되돌려야 한다. 학습 함수 안에서 매번 `model.train()`을 부르는 이유다.",
+      "pitfalls": [
+        "`model.eval`처럼 괄호를 빼면 호출되지 않는다",
+        "`no_grad()`만 쓰고 `eval()`을 빼면 Dropout이 켜진 채로 예측한다",
+        "`with` 블록 밖에서 계산하면 기록이 다시 켜진다. 예측 코드는 블록 안에 둔다"
+      ],
+      "examples": [
+        {
+          "lang": "python",
+          "src": "def predict_logits(model, x):\n    model.eval()\n    with torch.no_grad():\n        result = model(x)\n    return result"
+        }
+      ]
+    },
+    {
+      "id": "infer-prob",
+      "title": "점수를 확률 · 예측으로 바꾸기",
+      "points": [
+        "다중 분류: `torch.softmax(scores, dim=1)` → 행마다 합 1. 예측 = `probs.argmax(dim=1)`",
+        "이진 분류: `torch.sigmoid(score)` → 양성일 확률. 예측 = `(prob >= 0.5).long()`",
+        "가장 큰 확률: `probs.max(dim=1)` → `(값, 위치)` 두 개를 돌려준다",
+        "조건으로 고르기: `ids[mask]` — `mask`는 같은 길이의 True/False 배열"
+      ],
+      "tables": [
+        {
+          "caption": "dim의 뜻 (scores 모양 `(B, C)`)",
+          "head": [
+            "코드",
+            "결과 모양",
+            "뜻"
+          ],
+          "rows": [
+            [
+              "`softmax(scores, dim=1)`",
+              "`(B, C)`",
+              "샘플마다(행마다) 확률로"
+            ],
+            [
+              "`argmax(dim=1)`",
+              "`(B,)`",
+              "샘플마다 가장 큰 범주 번호"
+            ],
+            [
+              "`max(dim=1).values`",
+              "`(B,)`",
+              "샘플마다 가장 큰 확률"
+            ],
+            [
+              "`softmax(scores, dim=0)`",
+              "`(B, C)`",
+              "범주마다(열마다) — 보통 **틀린** 선택"
+            ]
+          ]
+        },
+        {
+          "caption": "기준값 비교",
+          "head": [
+            "문제 문구",
+            "코드"
+          ],
+          "rows": [
+            [
+              "0.9 **미만**이면 표시",
+              "`top < 0.9`"
+            ],
+            [
+              "0.9 **이하**이면 표시",
+              "`top <= 0.9`"
+            ],
+            [
+              "0.5 **이상**이면 양성",
+              "`prob >= 0.5`"
+            ],
+            [
+              "0.5 **초과**이면 양성",
+              "`prob > 0.5`"
+            ]
+          ]
+        }
+      ],
+      "body": "Softmax는 점수의 **순서를 바꾸지 않는다**. 그래서 점수의 `argmax`와 확률의 `argmax`는 같다. 동점이면 `argmax`는 앞쪽(작은 번호)을 고른다.\n\n텐서 마스크로 넘파이 배열을 고를 때는 `mask.numpy()`로 바꿔 쓰면 안전하다.",
+      "pitfalls": [
+        "`dim`을 빼거나 `dim=0`으로 쓰면 샘플이 아니라 범주 방향으로 계산된다",
+        "\"미만\"과 \"이하\"를 구분한다. 경계값(정확히 기준값)이 어느 쪽인지 문제를 다시 읽는다",
+        "`probs.max(dim=1)`을 그대로 쓰면 튜플이다. `.values`나 `[0]`으로 값을 꺼낸다"
+      ],
+      "examples": [
+        {
+          "lang": "python",
+          "src": "probs = torch.softmax(scores, dim=1)\ntop, pred = probs.max(dim=1)          # 가장 큰 확률, 그 범주 번호\nunsure = (top < 0.8).numpy()\ncheck_ids = item_ids[unsure]          # 순서 유지"
+        }
+      ]
+    }
+  ]
+}

@@ -12,6 +12,12 @@
       "group": "ssafy",
       "title": "프론트엔드",
       "description": "HTML · CSS · JavaScript · DOM · 비동기"
+    },
+    {
+      "id": "aitest",
+      "group": "ssafy",
+      "title": "AI 실기 검정",
+      "description": "pandas · scikit-learn · PyTorch 실습 (Jupyter Notebook)"
     }
   ]
 }
