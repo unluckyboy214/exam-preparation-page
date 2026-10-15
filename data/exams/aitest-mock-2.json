@@ -1,0 +1,529 @@
+{
+  "meta": {
+    "id": "aitest-mock-2",
+    "subject": "aitest",
+    "title": "AI 실기 검정 예상 문제 2회",
+    "source": "self-made",
+    "timeLimitMin": 60,
+    "version": 1
+  },
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mc",
+      "tags": [
+        "data-pandas"
+      ],
+      "question": "다음 코드의 출력으로 옳은 것은? (인덱스: 값)",
+      "code": {
+        "lang": "python",
+        "src": "s = pd.Series([2, 0, 2, 1, 2, 0])\nprint(s.value_counts().sort_index())"
+      },
+      "options": [
+        "2: 3, 0: 2, 1: 1",
+        "0: 3, 1: 2, 2: 1",
+        "0: 2, 1: 1, 2: 3",
+        "0: 2, 1: 3, 2: 1"
+      ],
+      "answer": 2,
+      "explain": "값 0은 2번, 1은 1번, 2는 3번 나온다. `value_counts()`만 하면 많은 순서(2: 3, 0: 2, 1: 1)지만, `sort_index()`로 인덱스(값) 순서로 다시 정렬했다."
+    },
+    {
+      "id": "q2",
+      "type": "mc",
+      "tags": [
+        "data-pandas"
+      ],
+      "question": "행 인덱스가 `[10, 11, 12, 13]`인 DataFrame `df`가 있다. `df.loc[11:12]`와 `df.iloc[1:3]`이 고르는 행은?",
+      "options": [
+        "둘 다 인덱스 11, 12인 행",
+        "`loc`은 11만, `iloc`은 11, 12",
+        "`loc`은 11, 12, `iloc`은 11, 12, 13",
+        "둘 다 11, 12, 13"
+      ],
+      "answer": 0,
+      "explain": "`loc`은 인덱스 이름으로 고르고 끝(12)을 **포함**한다. `iloc`은 위치로 고르고 끝(3)을 **제외**하므로 위치 1, 2 = 인덱스 11, 12다."
+    },
+    {
+      "id": "q3",
+      "type": "mc",
+      "tags": [
+        "data-split"
+      ],
+      "question": "수치를 예측하는 회귀 문제에서 연속값 `target`을 `stratify=df['target']`으로 넘기면 어떻게 되는가?",
+      "options": [
+        "자동으로 구간을 나눠 비율을 맞춘다",
+        "`random_state`가 무시된다",
+        "아무 영향이 없다",
+        "값마다 범주로 보려다 개수가 너무 적어 오류가 날 수 있다"
+      ],
+      "answer": 3,
+      "explain": "`stratify`는 값을 범주로 본다. 연속값은 서로 다른 값이 많아 한 범주에 1개뿐인 경우가 생기고, 이때 나눌 수 없다는 오류가 난다. 회귀에서는 `stratify`를 쓰지 않는다."
+    },
+    {
+      "id": "q4",
+      "type": "mc",
+      "tags": [
+        "data-scaling"
+      ],
+      "question": "다음 코드의 문제점으로 가장 알맞은 것은?",
+      "code": {
+        "lang": "python",
+        "src": "scaler = StandardScaler()\nX_all = scaler.fit_transform(np.vstack([X_train, X_valid]))\nX_train_s, X_valid_s = X_all[:len(X_train)], X_all[len(X_train):]"
+      },
+      "options": [
+        "`np.vstack`이 행 순서를 섞어 정답과 어긋난다",
+        "검증용의 평균·표준편차가 기준에 섞여 데이터 누수가 생긴다",
+        "`StandardScaler`는 2차원 배열을 받을 수 없다",
+        "`fit_transform`은 한 번에 한 배열만 받아 오류가 난다"
+      ],
+      "answer": 1,
+      "explain": "학습용과 검증용을 합쳐 `fit`하면 검증용의 정보가 표준화 기준에 들어간다. 검증 성능이 실제보다 좋게 보일 수 있다. `vstack`은 순서를 그대로 두고 이어 붙인다."
+    },
+    {
+      "id": "q5",
+      "type": "mc",
+      "tags": [
+        "data-plot"
+      ],
+      "question": "다음 코드를 실행하면 범례는 어떻게 되는가?",
+      "code": {
+        "lang": "python",
+        "src": "fig, ax = plt.subplots()\nax.plot(log_df['epoch'], log_df['train_loss'])\nax.plot(log_df['epoch'], log_df['valid_loss'])\nax.legend()"
+      },
+      "options": [
+        "선에 `label`을 주지 않아 범례에 이름이 나오지 않는다",
+        "`ax.plot`은 한 축에 한 번만 부를 수 있어 오류가 난다",
+        "범례는 `plt.legend()`로만 만들 수 있어 오류가 난다",
+        "두 선의 x가 같아 하나로 합쳐져 보인다"
+      ],
+      "answer": 0,
+      "explain": "범례는 `label=`을 가진 선만 보여 준다. `ax.plot(..., label='train')`처럼 이름을 주어야 한다. 한 축에 `plot`을 여러 번 부르는 것은 문제없다."
+    },
+    {
+      "id": "q6",
+      "type": "mc",
+      "tags": [
+        "ml-sklearn"
+      ],
+      "question": "다음 코드를 실행한 결과는?",
+      "code": {
+        "lang": "python",
+        "src": "knn = KNeighborsClassifier(n_neighbors=3)\npred = knn.predict(X_valid)"
+      },
+      "options": [
+        "이웃 3개로 예측한 배열이 나온다",
+        "모든 값이 0인 배열이 나온다",
+        "학습하지 않은 모델이라 오류(NotFittedError)가 난다",
+        "`X_valid`로 자동 학습한 뒤 예측한다"
+      ],
+      "answer": 2,
+      "explain": "scikit-learn 모델은 `fit`을 하기 전에 `predict`할 수 없다. `knn.fit(X_train, y_train)`을 먼저 해야 한다."
+    },
+    {
+      "id": "q7",
+      "type": "mc",
+      "tags": [
+        "ml-sklearn"
+      ],
+      "question": "다음 중 매번 같은 결과를 얻으려면 `random_state`를 정해 주어야 하는 것은?",
+      "options": [
+        "`KNeighborsClassifier`",
+        "`RandomForestClassifier`",
+        "`LinearRegression`",
+        "`StandardScaler`"
+      ],
+      "answer": 1,
+      "explain": "랜덤 포레스트는 트리마다 샘플과 열을 무작위로 뽑는다. kNN, 선형 회귀, 표준화는 같은 입력이면 항상 같은 결과가 나와 `random_state` 인자가 없다."
+    },
+    {
+      "id": "q8",
+      "type": "mc",
+      "tags": [
+        "ml-metric-cls"
+      ],
+      "question": "다음 이진 혼동행렬(행 = 실제, 열 = 예측, 1이 양성)에서 정밀도는?",
+      "code": {
+        "lang": "python",
+        "src": "cm = np.array([[50, 10],\n               [ 5, 35]])"
+      },
+      "options": [
+        "35 / 40",
+        "85 / 100",
+        "50 / 55",
+        "35 / 45"
+      ],
+      "answer": 3,
+      "explain": "정밀도 = TP / (TP + FP)다. TP는 `cm[1, 1]` = 35, FP는 `cm[0, 1]` = 10이므로 35 / 45다. 35 / 40은 재현율, 85 / 100은 정확도다."
+    },
+    {
+      "id": "q9",
+      "type": "mc",
+      "tags": [
+        "ml-metric-cls"
+      ],
+      "question": "다음 혼동행렬(행 = 실제, 열 = 예측)에서 **1이라고 예측한 것 중 실제 1의 비율**은?",
+      "code": {
+        "lang": "python",
+        "src": "cm = np.array([[9, 1, 0],\n               [2, 7, 1],\n               [0, 3, 7]])"
+      },
+      "options": [
+        "7 / 10",
+        "7 / 30",
+        "4 / 11",
+        "7 / 11"
+      ],
+      "answer": 3,
+      "explain": "1로 예측한 것은 1열이다: 1 + 7 + 3 = 11개. 그중 실제 1은 `cm[1, 1]` = 7이다. 7 / 10은 1행(실제 1)으로 나눈 재현율이다."
+    },
+    {
+      "id": "q10",
+      "type": "mc",
+      "tags": [
+        "ml-metric-cls"
+      ],
+      "question": "혼동행렬 `cm`(행 = 실제, 열 = 예측)에서 **실제 2인데 틀리게 예측한 개수**를 구하는 코드는?",
+      "options": [
+        "`cm[2].sum() - cm[2, 2]`",
+        "`cm[:, 2].sum() - cm[2, 2]`",
+        "`cm.sum() - cm[2, 2]`",
+        "`cm[2, 2]`"
+      ],
+      "answer": 0,
+      "explain": "실제 2는 2행이다. 2행의 합에서 맞힌 개수(대각선)를 빼면 틀린 개수다. `cm[:, 2]`는 2열, 즉 2라고 **예측한** 것들이다."
+    },
+    {
+      "id": "q11",
+      "type": "mc",
+      "tags": [
+        "ml-metric-reg"
+      ],
+      "question": "실제 값 `[10, 20, 30]`, 예측 값 `[12, 18, 36]`일 때 MAE는?",
+      "options": [
+        "2",
+        "44 / 3",
+        "10 / 3",
+        "6"
+      ],
+      "answer": 2,
+      "explain": "오차는 2, -2, 6이고 절댓값은 2, 2, 6이다. 평균은 10 / 3 ≈ 3.33이다. 2는 절댓값 없이 평균 낸 값, 44 / 3은 MSE다."
+    },
+    {
+      "id": "q12",
+      "type": "mc",
+      "tags": [
+        "ml-metric-reg"
+      ],
+      "question": "검증용에서 회귀 모델의 R²가 -0.2로 나왔다. 이것이 뜻하는 것은?",
+      "options": [
+        "예측과 실제가 정확히 반대로 움직인다",
+        "모든 값을 평균으로 예측한 것보다 못하다",
+        "오차가 0.2 단위로 작다",
+        "계산이 잘못되었다는 신호다"
+      ],
+      "answer": 1,
+      "explain": "R²는 평균으로만 예측할 때 0이고, 그보다 나쁘면 음수가 된다. 검증용처럼 학습에 쓰지 않은 데이터에서는 음수도 충분히 나올 수 있다."
+    },
+    {
+      "id": "q13",
+      "type": "mc",
+      "tags": [
+        "nn-tensor"
+      ],
+      "question": "`X_np`는 `float64` NumPy 배열이다. `x = torch.tensor(X_np)`로 만든 `x`를 `nn.Linear(4, 8)`에 넣으면?",
+      "options": [
+        "자료형이 달라 오류가 난다. `dtype=torch.float32`로 만들어야 한다",
+        "자동으로 `float32`로 바뀌어 문제없다",
+        "`Linear`의 가중치가 `float64`로 바뀐다",
+        "결과가 정수 텐서로 나온다"
+      ],
+      "answer": 0,
+      "explain": "`torch.tensor`는 넘파이의 자료형(`float64`)을 그대로 따른다. 층의 가중치는 `float32`라서 자료형이 맞지 않는다는 오류가 난다."
+    },
+    {
+      "id": "q14",
+      "type": "mc",
+      "tags": [
+        "nn-layers"
+      ],
+      "question": "입력 모양이 `(B, 13)`일 때 **오류가 나는** 모델은?",
+      "options": [
+        "`nn.Sequential(nn.Linear(13, 32), nn.ReLU(), nn.Linear(32, 3))`",
+        "`nn.Sequential(nn.Linear(13, 8), nn.Dropout(0.5), nn.Linear(8, 3))`",
+        "`nn.Sequential(nn.Linear(13, 3))`",
+        "`nn.Sequential(nn.Linear(13, 16), nn.ReLU(), nn.Linear(32, 3))`"
+      ],
+      "answer": 3,
+      "explain": "첫 층의 출력은 16개인데 다음 `Linear`가 32개를 입력으로 받아 모양이 맞지 않는다. 앞 층의 출력 수와 다음 `Linear`의 입력 수가 같아야 한다."
+    },
+    {
+      "id": "q15",
+      "type": "mc",
+      "tags": [
+        "nn-loss"
+      ],
+      "question": "`CrossEntropyLoss`를 쓰는 다중 분류 모델 끝에 `nn.Softmax(dim=1)`을 넣지 않는 이유로 가장 알맞은 것은?",
+      "options": [
+        "softmax를 넣으면 출력 모양이 바뀌어 오류가 나기 때문",
+        "손실 함수가 안에서 softmax를 계산해 두 번 적용되기 때문",
+        "softmax는 학습 모드에서 동작하지 않기 때문",
+        "softmax를 넣으면 정답을 원-핫으로 바꿔야 하기 때문"
+      ],
+      "answer": 1,
+      "explain": "`CrossEntropyLoss`는 점수를 받아 안에서 log-softmax를 계산한다. 모델이 이미 softmax를 했다면 확률에 다시 softmax가 걸려 기울기가 작아지고 학습이 느려진다. 오류는 나지 않아 알아채기 어렵다."
+    },
+    {
+      "id": "q16",
+      "type": "mc",
+      "tags": [
+        "nn-loss",
+        "nn-tensor"
+      ],
+      "question": "회귀 모델의 출력 `out`은 `(B, 1)`, 정답 `y`는 `(B,)`이다. `nn.MSELoss()(out, y)`는 어떻게 되는가?",
+      "options": [
+        "자동으로 `y`를 `(B, 1)`로 맞춰 바르게 계산한다",
+        "모양이 달라 항상 오류로 멈춘다",
+        "모양이 `(B, B)`로 늘어나 잘못된 손실이 계산된다 (경고만 나온다)",
+        "손실이 항상 0이 된다"
+      ],
+      "answer": 2,
+      "explain": "`(B, 1)`과 `(B,)`는 브로드캐스팅으로 `(B, B)`가 되어 모든 예측과 모든 정답의 차이를 평균 낸다. 오류가 아니라 경고만 나오므로 `y.view(-1, 1)`로 미리 맞춘다."
+    },
+    {
+      "id": "q17",
+      "type": "mc",
+      "tags": [
+        "nn-optim"
+      ],
+      "question": "학습 반복문에서 `optimizer.zero_grad()`를 빼먹으면 어떻게 되는가?",
+      "options": [
+        "기울기가 배치마다 계속 더해져 갱신이 엉뚱해진다",
+        "가중치가 전혀 갱신되지 않는다",
+        "손실을 계산할 수 없어 오류가 난다",
+        "학습률이 0이 된다"
+      ],
+      "answer": 0,
+      "explain": "PyTorch는 `backward()`를 할 때 기울기를 **더한다**. 지우지 않으면 앞 배치의 기울기가 쌓여 갈수록 큰 값으로 갱신된다. 오류는 나지 않는다."
+    },
+    {
+      "id": "q18",
+      "type": "mc",
+      "tags": [
+        "train-loop"
+      ],
+      "question": "다음 코드를 실행한 뒤 `history`에 들어 있는 것은?",
+      "code": {
+        "lang": "python",
+        "src": "history = []\nfor epoch in range(1, 11):\n    tr = train_one_epoch(model, loader, loss_fn, opt)\nhistory.append({'epoch': epoch, 'train_loss': tr})"
+      },
+      "options": [
+        "기록 10개 (epoch 1 ~ 10)",
+        "기록 1개 (epoch 10)",
+        "기록 0개",
+        "기록 1개 (epoch 1)"
+      ],
+      "answer": 1,
+      "explain": "`append`가 반복문 밖에 있어 반복이 다 끝난 뒤 한 번만 실행된다. 그때 `epoch`은 마지막 값 10이다. epoch마다 기록하려면 `append`를 반복문 안으로 들여 쓴다."
+    },
+    {
+      "id": "q19",
+      "type": "mc",
+      "tags": [
+        "infer-eval"
+      ],
+      "question": "Dropout이 있는 모델이 **학습 모드**인 상태에서 아래처럼 같은 입력으로 두 번 예측했다. 결과에 대한 설명으로 옳은 것은?",
+      "code": {
+        "lang": "python",
+        "src": "with torch.no_grad():\n    out1 = model(x)\n    out2 = model(x)"
+      },
+      "options": [
+        "`no_grad()`가 Dropout도 끄므로 두 결과가 같다",
+        "학습 모드에서는 `no_grad()`를 쓸 수 없어 오류가 난다",
+        "첫 호출 뒤 Dropout이 고정되어 두 번째부터 같다",
+        "Dropout이 켜져 있어 두 결과가 다를 수 있다"
+      ],
+      "answer": 3,
+      "explain": "`no_grad()`는 기울기 기록만 끈다. Dropout을 끄려면 `model.eval()`이 필요하다. 그래서 예측 함수에는 둘을 함께 쓴다."
+    },
+    {
+      "id": "q20",
+      "type": "mc",
+      "tags": [
+        "infer-prob"
+      ],
+      "question": "점수 `scores`의 모양이 `(B, 3)`일 때 `probs = torch.softmax(scores, dim=0)`의 문제점은?",
+      "options": [
+        "행마다 합이 1이 되어 문제없다",
+        "결과 모양이 `(3,)`이 된다",
+        "열(범주)마다 합이 1이 되어 샘플별 확률이 아니다",
+        "모양이 맞지 않아 오류가 난다"
+      ],
+      "answer": 2,
+      "explain": "`dim=0`은 샘플 방향으로 softmax를 계산해 범주마다 B개의 합이 1이 된다. 샘플마다 세 범주의 확률을 구하려면 `dim=1`을 쓴다. 모양은 그대로 `(B, 3)`이라 오류가 나지 않는다."
+    },
+    {
+      "id": "s1",
+      "type": "short",
+      "tags": [
+        "ml-metric-cls"
+      ],
+      "question": "다음 이진 혼동행렬(행 = 실제, 열 = 예측, 1이 양성)에서 재현율을 소수로 쓰시오.",
+      "code": {
+        "lang": "python",
+        "src": "cm = np.array([[50, 10],\n               [ 5, 35]])"
+      },
+      "answers": [
+        "0.875",
+        "35/40",
+        "7/8"
+      ],
+      "explain": "재현율 = TP / (TP + FN) = 35 / (35 + 5) = 0.875다."
+    },
+    {
+      "id": "s2",
+      "type": "short",
+      "tags": [
+        "nn-layers"
+      ],
+      "question": "다음 모델의 학습 가능한 값(가중치 + 편향)은 모두 몇 개인가?",
+      "code": {
+        "lang": "python",
+        "src": "model = nn.Sequential(nn.Linear(4, 10), nn.ReLU(), nn.Linear(10, 3))"
+      },
+      "answers": [
+        "83"
+      ],
+      "explain": "`Linear(4, 10)`은 4 × 10 + 10 = 50개, `Linear(10, 3)`은 10 × 3 + 3 = 33개다. `ReLU`에는 학습할 값이 없으므로 합은 83개다."
+    },
+    {
+      "id": "s3",
+      "type": "short",
+      "tags": [
+        "infer-prob"
+      ],
+      "question": "`r = probs.max(dim=1)`은 가장 큰 값과 그 위치를 함께 돌려준다. 가장 큰 **값**만 꺼내는 `r.____`의 빈칸에 들어갈 속성 이름을 쓰시오.",
+      "answers": [
+        "values"
+      ],
+      "explain": "`r.values`가 값, `r.indices`가 위치(범주 번호)다. `r[0]`, `r[1]`로 꺼내도 된다."
+    },
+    {
+      "id": "s4",
+      "type": "short",
+      "tags": [
+        "train-loop"
+      ],
+      "question": "학습 데이터 230개를 `batch_size=64`로 나누었다(`drop_last=False`). 한 epoch의 **마지막 배치**에는 샘플이 몇 개 들어 있는가?",
+      "answers": [
+        "38"
+      ],
+      "explain": "64 × 3 = 192개가 앞의 배치 3개에 들어가고, 나머지 230 - 192 = 38개가 마지막 배치가 된다."
+    },
+    {
+      "id": "s5",
+      "type": "short",
+      "tags": [
+        "data-scaling"
+      ],
+      "question": "학습용에 `scaler.fit_transform(X_train)`을 한 뒤, 같은 기준으로 검증용을 바꿀 때 부르는 메서드 이름을 쓰시오.",
+      "answers": [
+        "transform"
+      ],
+      "explain": "검증용에는 `scaler.transform(X_valid)`만 쓴다. `fit`을 다시 하면 기준이 검증용으로 바뀐다."
+    },
+    {
+      "id": "s6",
+      "type": "short",
+      "tags": [
+        "infer-prob"
+      ],
+      "question": "\"가장 큰 확률이 0.8 **미만**이면 다시 확인\"을 코드 `top ? 0.8`로 옮길 때 `?`에 들어갈 비교 연산자를 쓰시오.",
+      "answers": [
+        "<"
+      ],
+      "explain": "미만은 기준값을 포함하지 않으므로 `<`다. 이하라면 `<=`를 쓴다."
+    },
+    {
+      "id": "e1",
+      "type": "essay",
+      "tags": [
+        "data-scaling",
+        "ml-sklearn",
+        "ml-metric-cls"
+      ],
+      "question": "표준화하지 않은 `X_train`, `X_valid`와 정답 `y_train`, `y_valid`가 있다. `StandardScaler`로 표준화한 뒤 `RandomForestClassifier(n_estimators=100, random_state=0)`를 학습하고, 검증 정확도를 `acc`에 저장하는 코드를 쓰시오.",
+      "model": "표준화 기준은 학습용으로만 정하고 검증용은 `transform`만 한다. 학습은 학습용으로만 하고, 검증용은 예측과 평가에만 쓴다.",
+      "modelCode": {
+        "lang": "python",
+        "src": "scaler = StandardScaler()\nX_train_s = scaler.fit_transform(X_train)\nX_valid_s = scaler.transform(X_valid)\n\nforest = RandomForestClassifier(n_estimators=100, random_state=0)\nforest.fit(X_train_s, y_train)\nacc = accuracy_score(y_valid, forest.predict(X_valid_s))"
+      },
+      "points": [
+        "학습용에 `fit_transform`, 검증용에 `transform`을 썼다",
+        "`n_estimators=100`, `random_state=0`을 지정했다",
+        "표준화한 학습용으로 `fit`했다",
+        "`accuracy_score(정답, 예측)` 순서로 검증 정확도를 구했다"
+      ]
+    },
+    {
+      "id": "e2",
+      "type": "essay",
+      "tags": [
+        "ml-metric-reg"
+      ],
+      "question": "회귀 모델의 검증 결과 `y_valid`(실제), `pred`(예측)와 학습용 정답 `y_train`이 있다. MAE, RMSE, R²를 구하고, 모든 값을 **학습용 평균**으로 예측했을 때의 MAE `mae_base`도 구하는 코드를 쓰시오.",
+      "model": "RMSE는 MSE의 제곱근으로 직접 구한다. 기준 예측은 학습용 평균으로 채운 배열이고, 모델의 MAE가 이보다 작아야 쓸모가 있다.",
+      "modelCode": {
+        "lang": "python",
+        "src": "mae = mean_absolute_error(y_valid, pred)\nrmse = np.sqrt(mean_squared_error(y_valid, pred))\nr2 = r2_score(y_valid, pred)\n\nbase = np.full(len(y_valid), y_train.mean())\nmae_base = mean_absolute_error(y_valid, base)"
+      },
+      "points": [
+        "MAE, R²를 (실제, 예측) 순서로 구했다",
+        "RMSE를 `np.sqrt(mean_squared_error(...))`로 구했다",
+        "기준 예측에 검증용이 아닌 학습용 평균을 썼다",
+        "기준 예측을 검증용 개수만큼의 배열로 만들었다"
+      ]
+    },
+    {
+      "id": "e3",
+      "type": "essay",
+      "tags": [
+        "train-loop",
+        "infer-eval",
+        "train-overfit"
+      ],
+      "question": "모델 `model`, 학습용 `loader`, 검증용 `xv`, `yv`, 손실 함수 `loss_fn`, 옵티마이저 `opt`가 있다. 1부터 30까지 epoch마다 학습하고 검증 손실을 구해 `history`(`epoch`, `valid_loss` 키)에 기록한 뒤, 검증 손실이 가장 작은 epoch를 `best_epoch`에 저장하는 코드를 쓰시오. (학습 손실 기록은 생략해도 된다)",
+      "model": "epoch마다 학습 모드로 배치를 돌며 갱신하고, 그다음 평가 모드와 `no_grad()`로 검증 손실을 구한다. 다음 epoch에서 다시 `train()`을 부른다.",
+      "modelCode": {
+        "lang": "python",
+        "src": "history = []\nfor epoch in range(1, 31):\n    model.train()\n    for xb, yb in loader:\n        opt.zero_grad()\n        loss = loss_fn(model(xb), yb)\n        loss.backward()\n        opt.step()\n\n    model.eval()\n    with torch.no_grad():\n        va = loss_fn(model(xv), yv).item()\n    history.append({'epoch': epoch, 'valid_loss': va})\n\nhistory_df = pd.DataFrame(history)\nbest_epoch = int(history_df.loc[history_df['valid_loss'].idxmin(), 'epoch'])"
+      },
+      "points": [
+        "`range(1, 31)`로 epoch를 1부터 30까지 셌다",
+        "epoch마다 `model.train()`과 `model.eval()`을 오갔다",
+        "검증 손실을 `torch.no_grad()` 안에서 구하고 `.item()`으로 실수로 바꿨다",
+        "`append`를 반복문 안에 두었다",
+        "검증 손실이 가장 작은 행의 `epoch` 값을 꺼냈다"
+      ]
+    },
+    {
+      "id": "e4",
+      "type": "essay",
+      "tags": [
+        "infer-prob",
+        "infer-eval"
+      ],
+      "question": "점수 하나를 내는 이진 분류 모델 `model`(출력 `(N, 1)`)과 입력 `x`, 같은 순서의 번호 배열 `ids`(NumPy)가 있다. 1일 확률 `prob`(모양 `(N,)`)을 구하고, 확률이 **0.4 이상**이면 1로 본 예측 `pred`(정수), 1로 본 샘플의 번호 `flag_ids`를 구하는 코드를 쓰시오.",
+      "model": "평가 모드와 `no_grad()`로 점수를 구한 뒤 sigmoid로 확률을 만든다. 기준값이 0.5가 아니라 0.4라는 점과 \"이상\"을 `>=`로 옮기는 점에 주의한다.",
+      "modelCode": {
+        "lang": "python",
+        "src": "model.eval()\nwith torch.no_grad():\n    prob = torch.sigmoid(model(x)).squeeze(1)\npred = (prob >= 0.4).long()\nflag_ids = ids[(prob >= 0.4).numpy()]"
+      },
+      "points": [
+        "`model.eval()`과 `torch.no_grad()`를 함께 썼다",
+        "`torch.sigmoid`로 확률을 구하고 `squeeze(1)` 등으로 `(N,)`을 만들었다",
+        "0.4 '이상'을 `>= 0.4`로 썼다",
+        "마스크로 `ids`를 골라 1로 본 번호를 구했다"
+      ]
+    }
+  ]
+}

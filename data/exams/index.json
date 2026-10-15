@@ -1,6 +1,36 @@
 {
   "sets": [
     {
+      "id": "aitest-mock-1",
+      "file": "aitest-mock-1.json",
+      "subject": "aitest",
+      "title": "AI 실기 검정 예상 문제 1회",
+      "source": "self-made",
+      "timeLimitMin": 60,
+      "version": 1,
+      "counts": {
+        "mc": 20,
+        "multi": 0,
+        "short": 6,
+        "essay": 4
+      }
+    },
+    {
+      "id": "aitest-mock-2",
+      "file": "aitest-mock-2.json",
+      "subject": "aitest",
+      "title": "AI 실기 검정 예상 문제 2회",
+      "source": "self-made",
+      "timeLimitMin": 60,
+      "version": 1,
+      "counts": {
+        "mc": 20,
+        "multi": 0,
+        "short": 6,
+        "essay": 4
+      }
+    },
+    {
       "id": "frontend-mock-1",
       "file": "frontend-mock-1.json",
       "subject": "frontend",
